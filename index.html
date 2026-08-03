@@ -194,13 +194,14 @@
   .brand-word .name{font-family:'Chakra Petch',sans-serif;font-weight:600;font-size:1rem;line-height:1;color:var(--text-0);white-space:nowrap;}
   .brand-word .sub{margin-top:0;font-family:'IBM Plex Mono',monospace;font-size:0.6rem;line-height:1;letter-spacing:0.16em;color:var(--text-2);text-transform:uppercase;white-space:nowrap;}
 
-  nav.links{display:flex;align-items:center;gap:34px;}
+  nav.links{display:flex;align-items:center;gap:clamp(14px,2vw,34px);}
   nav.links a{
     font-size:0.88rem;color:var(--text-1);
     transition:color .2s ease;
     position:relative;
   }
   nav.links a:hover{color:var(--text-0);}
+  nav.links a[aria-current="page"]{color:var(--text-0);font-weight:600;}
 
   .nav-toggle{
     width:44px;height:44px;border-radius:50%;flex-shrink:0;
@@ -645,6 +646,264 @@
   .card.is-project-keyboard-active .pill svg,
   .card:focus-visible .pill svg{transform:translateX(2px);}
 
+  /* ---------- about lab / team ---------- */
+  .about-lab{
+    max-width:1160px;margin:0 auto;
+    padding:120px 32px 48px;
+    scroll-margin-top:110px;
+  }
+  body:not(.about-view) .about-lab{display:none;}
+  body.about-view .hero-wrap,
+  body.about-view .modules,
+  body.about-view footer{display:none;}
+  body.about-view #mainContent{min-height:100vh;min-height:100dvh;}
+  body.about-view .about-lab{
+    display:block;
+    padding-top:calc(32px + env(safe-area-inset-top, 0px));
+    padding-bottom:calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+  .about-head{
+    max-width:680px;margin:0 auto 54px;text-align:center;
+  }
+  .about-head .eyebrow{margin-bottom:18px;}
+  .about-head h2{
+    font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;
+    font-size:clamp(1.65rem,3.5vw,2.35rem);font-weight:600;
+    color:var(--text-0);
+  }
+  .about-head p{
+    margin-top:15px;color:var(--text-1);
+    font-size:0.96rem;line-height:1.75;
+  }
+  .team-leader-row{
+    display:flex;justify-content:center;margin-bottom:24px;
+  }
+  .team-grid{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:20px;
+  }
+  .team-card{
+    position:relative;width:calc(50% - 10px);min-height:188px;
+    display:grid;grid-template-columns:138px minmax(0,1fr);gap:22px;
+    align-items:stretch;padding:18px;
+    border:1px solid var(--panel-line);border-radius:22px;
+    background:
+      radial-gradient(circle at 0% 0%,var(--sky-soft),transparent 46%),
+      linear-gradient(180deg,var(--veil-1),transparent);
+    overflow:hidden;
+    cursor:pointer;touch-action:manipulation;outline:none;
+    transition:transform .32s cubic-bezier(.2,.75,.25,1),border-color .28s ease,box-shadow .32s ease;
+  }
+  .team-card::after{
+    content:'';position:absolute;right:-42px;bottom:-42px;
+    width:120px;height:120px;border:1px solid var(--panel-line);border-radius:50%;
+    pointer-events:none;
+  }
+  .team-card:hover{
+    transform:translateY(-4px);border-color:rgba(148,201,253,0.3);
+    box-shadow:0 18px 42px rgba(5,4,14,0.22);
+  }
+  .team-card:focus-visible{
+    transform:translateY(-4px);border-color:var(--sky);
+    box-shadow:0 0 0 3px var(--sky-soft),0 18px 42px rgba(5,4,14,0.22);
+  }
+  .team-card:active{transform:translateY(-1px) scale(0.992);}
+  .team-card--leader{
+    width:min(100%,640px);min-height:226px;
+    grid-template-columns:174px minmax(0,1fr);gap:28px;padding:22px;
+    border-color:rgba(106,27,255,0.4);
+    background:
+      radial-gradient(circle at 0% 0%,rgba(148,201,253,0.2),transparent 48%),
+      radial-gradient(circle at 100% 100%,rgba(106,27,255,0.16),transparent 48%),
+      linear-gradient(180deg,var(--panel),var(--panel-2));
+    box-shadow:0 22px 60px rgba(6,4,16,0.24),0 0 0 1px rgba(148,201,253,0.04);
+  }
+  .team-avatar{
+    position:relative;min-height:152px;border-radius:16px;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--panel-line);
+    background:
+      linear-gradient(135deg,rgba(148,201,253,0.16),rgba(106,27,255,0.22)),
+      var(--panel-2);
+    color:var(--text-0);
+  }
+  .team-card--leader .team-avatar{min-height:180px;}
+  .team-avatar::before,
+  .team-avatar::after{
+    content:'';position:absolute;border:1px solid rgba(255,255,255,0.09);border-radius:50%;
+  }
+  .team-avatar::before{width:104px;height:104px;top:-42px;right:-36px;}
+  .team-avatar::after{width:76px;height:76px;bottom:-30px;left:-25px;}
+  .team-avatar-code{
+    position:relative;z-index:1;
+    font-family:'Chakra Petch',sans-serif;font-size:2rem;font-weight:700;
+    letter-spacing:0.08em;
+    background:linear-gradient(120deg,var(--sky),#a982ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .team-avatar-photo,
+  .team-profile-photo{
+    position:absolute;inset:0;z-index:2;width:100%;height:100%;display:block;
+    object-fit:cover;object-position:center center;
+  }
+  .team-avatar-photo[hidden],
+  .team-profile-photo[hidden]{display:none;}
+  .team-avatar-label{
+    position:absolute;left:10px;bottom:9px;z-index:3;padding:3px 6px;border-radius:6px;
+    background:rgba(5,4,14,0.58);text-shadow:0 1px 6px rgba(0,0,0,0.65);
+    font-family:'IBM Plex Mono',monospace;font-size:0.52rem;
+    letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.84);
+  }
+  .team-info{
+    position:relative;z-index:1;min-width:0;
+    display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  }
+  .team-info::after{
+    content:'View Profile  ↗';display:block;margin-top:13px;
+    color:var(--sky);font-family:'IBM Plex Mono',monospace;
+    font-size:0.54rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+    opacity:0.72;transform:translateX(0);
+    transition:opacity .25s ease,transform .3s cubic-bezier(.2,.75,.25,1);
+  }
+  .team-card:hover .team-info::after,
+  .team-card:focus-visible .team-info::after{opacity:1;transform:translateX(4px);}
+  .team-index{
+    font-family:'IBM Plex Mono',monospace;font-size:0.58rem;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--sky);
+  }
+  .team-card h3{
+    margin-top:9px;color:var(--text-0);
+    font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;
+    font-size:1.12rem;font-weight:600;line-height:1.35;
+  }
+  .team-card--leader h3{font-size:1.35rem;}
+  .team-role{
+    margin-top:7px;color:var(--text-1);
+    font-size:0.83rem;line-height:1.5;
+  }
+  .team-card--leader .team-role{color:var(--sky);font-weight:600;}
+  .team-status{
+    display:inline-flex;align-items:center;gap:7px;
+    margin-top:16px;padding:6px 10px;border:1px solid var(--panel-line);border-radius:100px;
+    color:var(--text-2);font-family:'IBM Plex Mono',monospace;
+    font-size:0.54rem;letter-spacing:0.08em;text-transform:uppercase;
+  }
+  .team-status::before{
+    content:'';width:5px;height:5px;border-radius:50%;background:var(--violet);
+    box-shadow:0 0 7px rgba(106,27,255,0.75);
+  }
+
+  /* ---------- team profile modal ---------- */
+  .team-modal-overlay{z-index:180;background:rgba(4,3,12,0.82);}
+  .modal-panel.team-profile-panel{
+    width:100%;max-width:820px;min-height:390px;
+    padding:34px;text-align:left;overflow:hidden;border-radius:28px;
+    border-color:rgba(148,201,253,0.22);
+    background:
+      radial-gradient(circle at 0% 0%,rgba(148,201,253,0.13),transparent 42%),
+      radial-gradient(circle at 100% 100%,rgba(106,27,255,0.17),transparent 46%),
+      linear-gradient(180deg,var(--panel),var(--panel-2));
+  }
+  .team-profile-panel::before{
+    content:'';position:absolute;right:-72px;bottom:-82px;width:220px;height:220px;
+    border:1px solid var(--panel-line);border-radius:50%;pointer-events:none;
+  }
+  .team-profile-layout{
+    position:relative;z-index:1;display:grid;grid-template-columns:220px minmax(0,1fr);
+    gap:34px;align-items:center;
+  }
+  .team-profile-avatar{
+    position:relative;min-height:270px;border:1px solid var(--panel-line);border-radius:22px;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+    background:linear-gradient(135deg,rgba(148,201,253,0.18),rgba(106,27,255,0.28)),var(--panel-2);
+    padding:0;color:inherit;text-align:inherit;
+  }
+  .team-profile-avatar.has-image{cursor:zoom-in;}
+  .team-profile-avatar:disabled{cursor:default;opacity:1;}
+  .team-profile-avatar.has-image:focus-visible{
+    outline:3px solid var(--sky);outline-offset:3px;
+  }
+  .team-profile-avatar.has-image .team-profile-photo{transition:transform .42s cubic-bezier(.2,.75,.25,1),filter .3s ease;}
+  .team-profile-avatar.has-image:hover .team-profile-photo,
+  .team-profile-avatar.has-image:focus-visible .team-profile-photo{transform:scale(1.035);filter:brightness(1.05);}
+  .team-profile-avatar::before,
+  .team-profile-avatar::after{
+    content:'';position:absolute;border:1px solid rgba(255,255,255,0.1);border-radius:50%;
+  }
+  .team-profile-avatar::before{width:136px;height:136px;right:-48px;top:-54px;}
+  .team-profile-avatar::after{width:96px;height:96px;left:-34px;bottom:-38px;}
+  .team-profile-avatar-code{
+    position:relative;z-index:1;font-family:'Chakra Petch',sans-serif;
+    font-size:3.2rem;font-weight:700;letter-spacing:0.08em;
+    background:linear-gradient(120deg,var(--sky),#a982ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .team-profile-avatar-label{
+    position:absolute;left:14px;bottom:12px;z-index:3;padding:4px 7px;border-radius:7px;
+    color:rgba(255,255,255,0.86);background:rgba(5,4,14,0.58);text-shadow:0 1px 6px rgba(0,0,0,0.65);
+    font-family:'IBM Plex Mono',monospace;font-size:0.54rem;letter-spacing:0.12em;text-transform:uppercase;
+  }
+  .team-profile-content{min-width:0;padding:18px 0 8px;}
+  .team-profile-index{
+    color:var(--sky);font-family:'IBM Plex Mono',monospace;
+    font-size:0.62rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+  }
+  .team-profile-name{
+    margin-top:12px;padding-right:44px;color:var(--text-0);
+    font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;
+    font-size:clamp(1.35rem,3vw,1.85rem);font-weight:600;line-height:1.3;
+  }
+  .team-profile-role{margin-top:9px;color:var(--sky);font-size:0.94rem;font-weight:600;line-height:1.5;}
+  .team-profile-description{
+    margin-top:20px;padding-top:18px;border-top:1px solid var(--panel-line);
+    color:var(--text-1);font-size:0.88rem;line-height:1.75;
+  }
+  .team-profile-status{
+    display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:7px 11px;
+    border:1px solid var(--panel-line);border-radius:999px;color:var(--text-2);
+    font-family:'IBM Plex Mono',monospace;font-size:0.56rem;letter-spacing:0.08em;text-transform:uppercase;
+  }
+  .team-profile-status::before{
+    content:'';width:6px;height:6px;border-radius:50%;background:var(--violet);
+    box-shadow:0 0 8px rgba(106,27,255,0.8);
+  }
+  .team-profile-hint{
+    position:relative;z-index:1;display:block;margin-top:22px;text-align:center;
+    color:var(--text-2);font-family:'IBM Plex Mono',monospace;font-size:0.56rem;letter-spacing:0.06em;
+  }
+  .team-profile-image-hint{
+    position:absolute;right:12px;bottom:12px;z-index:3;padding:6px 8px;border-radius:8px;
+    color:#fff;background:rgba(5,4,14,0.68);font-family:'IBM Plex Mono',monospace;
+    font-size:0.5rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+    -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
+  }
+  .team-profile-image-hint[hidden]{display:none;}
+
+  /* ---------- expanded team image ---------- */
+  .team-image-lightbox{z-index:210;background:rgba(2,2,8,0.94);}
+  .team-image-lightbox-panel{
+    position:relative;width:min(100%,1180px);max-height:calc(100vh - 40px);
+    max-height:calc(100dvh - 40px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    display:flex;flex-direction:column;gap:14px;padding:18px;overflow:hidden;
+    border:1px solid rgba(148,201,253,0.22);border-radius:24px;
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    box-shadow:0 36px 110px rgba(0,0,0,0.72);
+    transform:translateY(16px) scale(0.96);transition:transform .28s cubic-bezier(.2,.8,.2,1);
+  }
+  .team-image-lightbox.open .team-image-lightbox-panel{transform:translateY(0) scale(1);}
+  .team-image-lightbox .modal-close{z-index:5;background:rgba(5,4,14,0.72);color:#fff;}
+  .team-image-lightbox-photo{
+    display:block;width:100%;height:auto;max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);
+    object-fit:contain;border-radius:16px;background:#05040d;
+  }
+  .team-image-lightbox-caption{padding:0 56px 2px 4px;min-width:0;}
+  .team-image-lightbox-name{
+    display:block;color:var(--text-0);font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;
+    font-size:1rem;font-weight:600;line-height:1.4;
+  }
+  .team-image-lightbox-role{
+    display:block;margin-top:3px;color:var(--sky);font-size:0.72rem;line-height:1.45;
+  }
+
   /* ---------- contact modal ---------- */
   .modal-overlay{
     position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:100;
@@ -853,6 +1112,7 @@
     }
     nav.links a:hover,nav.links a:focus-visible{background:var(--violet-soft);}
     .card-grid{grid-template-columns:1fr;}
+    .team-card,.team-card--leader{width:100%;max-width:680px;}
     .chip{font-size:0.58rem;padding:6px 10px;}
     footer{flex-direction:column;align-items:flex-start;text-align:left;}
     footer .fine{text-align:left;}
@@ -887,16 +1147,43 @@
       right:calc(18px + env(safe-area-inset-right, 0px));
       top:calc(100% - 4px);
     }
-    .hero-wrap,.alpha-bar,footer{
+    .hero-wrap,.alpha-bar,.modules,.about-lab,footer{
       padding-left:calc(18px + env(safe-area-inset-left, 0px));
       padding-right:calc(18px + env(safe-area-inset-right, 0px));
     }
+    .about-lab{padding-top:90px;}
+    .about-head{margin-bottom:38px;}
+    .team-card,.team-card--leader{
+      grid-template-columns:92px minmax(0,1fr);gap:15px;
+      min-height:148px;padding:14px;border-radius:18px;
+    }
+    .team-avatar,.team-card--leader .team-avatar{min-height:118px;border-radius:13px;}
+    .team-avatar-code{font-size:1.45rem;}
+    .team-card--leader h3{font-size:1.16rem;}
+    .modal-panel.team-profile-panel{min-height:0;padding:22px 18px 20px;border-radius:20px;}
+    .team-profile-layout{grid-template-columns:110px minmax(0,1fr);gap:18px;align-items:start;}
+    .team-profile-avatar{min-height:132px;border-radius:15px;}
+    .team-profile-avatar-code{font-size:2.15rem;}
+    .team-profile-avatar-label{left:9px;bottom:8px;font-size:0.45rem;}
+    .team-profile-content{padding:12px 0 2px;}
+    .team-profile-name{padding-right:38px;font-size:1.2rem;}
+    .team-profile-description{grid-column:1 / -1;margin-top:8px;}
+    .team-profile-hint{margin-top:16px;}
+    .team-profile-image-hint{right:8px;bottom:8px;padding:5px 6px;font-size:0.44rem;}
+    .team-image-lightbox-panel{padding:10px;border-radius:18px;gap:10px;}
+    .team-image-lightbox-photo{max-height:calc(100vh - 128px);max-height:calc(100dvh - 128px);border-radius:12px;}
+    .team-image-lightbox-caption{padding-left:2px;}
     footer{padding-bottom:calc(40px + env(safe-area-inset-bottom, 0px));}
   }
 
   @media (max-width:360px){
     .brand-word .name{font-size:0.82rem;}
     .brand-word .sub{font-size:0.46rem;letter-spacing:0.12em;}
+    .team-card,.team-card--leader{grid-template-columns:1fr;}
+    .team-avatar,.team-card--leader .team-avatar{min-height:168px;}
+    .team-profile-layout{grid-template-columns:1fr;}
+    .team-profile-avatar{width:118px;min-height:118px;}
+    .team-profile-description{grid-column:auto;}
   }
 
   @media (max-height:520px) and (orientation:landscape){
@@ -916,7 +1203,7 @@
 
   @media (forced-colors:active){
     .brand-mark,.dot-live{forced-color-adjust:none;}
-    .card,.modal-panel,nav.links,.theme-toggle,.nav-toggle,.social-btn{border:1px solid CanvasText;}
+    .card,.team-card,.modal-panel,.team-image-lightbox-panel,nav.links,.theme-toggle,.nav-toggle,.social-btn{border:1px solid CanvasText;}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -928,6 +1215,7 @@
     .card h3,
     .card p,
     .card .pill{transform:none !important;}
+    .team-card{transform:none !important;}
     .card-grid.is-project-interacting .card:not(.is-project-active):not(.is-project-keyboard-active){
       opacity:1;filter:none;
     }
@@ -950,7 +1238,7 @@
 <div class="glow-field"><div class="ghost-text">CREATOR LAB</div></div>
 
 <header id="siteHeader">
-  <div class="brand">
+  <a class="brand" href="#home" aria-label="กลับหน้า Home ของ Nitade Creator Lab">
     <div class="brand-mark">
       <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="#06090f"/></svg>
     </div>
@@ -958,12 +1246,12 @@
       <div class="name">Nitade Creator Lab</div>
       <div class="sub">Learning Hub</div>
     </div>
-  </div>
+  </a>
   <nav class="links" id="mainNav" aria-label="เมนูหลัก">
     <a href="#modules">โซนเรียนรู้</a>
     <a href="#">ห้อง &amp; อุปกรณ์</a>
     <a href="#">ผลงานนักศึกษา</a>
-    <a href="#">เกี่ยวกับ Lab</a>
+    <a href="#about-lab">เกี่ยวกับ Lab</a>
   </nav>
   <div class="header-actions">
     <button class="nav-toggle" id="navToggle" type="button" aria-label="เปิดเมนูหลัก" aria-controls="mainNav" aria-expanded="false">
@@ -991,7 +1279,7 @@
 </div>
 
 <main id="mainContent" tabindex="-1">
-  <section class="hero-wrap">
+  <section class="hero-wrap" id="home">
     <span class="eyebrow"><span class="dot-live"></span> Faculty of Communication Arts · DPU</span>
 
     <h1>สร้างไอเดีย<br><span class="accent">ให้พร้อมลงมือจริง</span></h1>
@@ -1100,6 +1388,123 @@
     </div>
   </section>
 
+  <section class="about-lab" id="about-lab" aria-labelledby="aboutLabTitle">
+    <div class="about-head">
+      <span class="eyebrow">TEAM DIRECTORY · 08 PEOPLE</span>
+      <h2 id="aboutLabTitle">ทีมงาน Creator Lab</h2>
+      <p>รู้จักทีมงานเบื้องหลังพื้นที่เรียนรู้และการสร้างสรรค์ของ Nitade Creator Lab</p>
+    </div>
+
+    <div class="team-leader-row">
+      <article class="team-card team-card--leader">
+        <div class="team-avatar" role="img" aria-label="ช่องสำหรับรูป Creator Lab Team Leader">
+          <span class="team-avatar-code">CL</span>
+          <span class="team-avatar-label">Leader Photo</span>
+        </div>
+        <div class="team-info">
+          <span class="team-index">Team Leader · 01</span>
+          <h3>ชเนศ วิจิตรานนท์ (โอป)</h3>
+          <p class="team-role">Creator Lab Team Leader</p>
+          <span class="team-status">Profile Update Soon</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="team-grid" aria-label="สมาชิกทีม Creator Lab 7 คน">
+      <article class="team-card">
+        <div class="team-avatar" role="img" aria-label="ช่องสำหรับรูปสมาชิกทีมคนที่ 2">
+          <span class="team-avatar-code">02</span>
+          <span class="team-avatar-label">Member Photo</span>
+        </div>
+        <div class="team-info">
+          <span class="team-index">Team Member · 02</span>
+          <h3>เบญจมาศ เจียมสกุลคีรี (เบญ)</h3>
+          <p class="team-role">Admin &amp; Student Service</p>
+          <span class="team-status">Profile Update Soon</span>
+        </div>
+      </article>
+
+      <article class="team-card">
+        <div class="team-avatar" role="img" aria-label="รูปพงศธร ธรรมขันธ์ (โอ๋)">
+          <span class="team-avatar-code" hidden>03</span>
+          <img class="team-avatar-photo" src="assets/images/team-live-streaming-sound.png" alt="" width="2048" height="1152" loading="lazy" decoding="async">
+          <span class="team-avatar-label">Profile Photo</span>
+        </div>
+        <div class="team-info">
+          <span class="team-index">Team Member · 03</span>
+          <h3>พงศธร ธรรมขันธ์ (โอ๋)</h3>
+          <p class="team-role">Live Streaming &amp; Sound Specialist</p>
+          <span class="team-status">Profile Update Soon</span>
+        </div>
+      </article>
+
+      <article class="team-card">
+        <div class="team-avatar" role="img" aria-label="ช่องสำหรับรูปสมาชิกทีมคนที่ 4">
+          <span class="team-avatar-code">04</span>
+          <span class="team-avatar-label">Member Photo</span>
+        </div>
+        <div class="team-info">
+          <span class="team-index">Team Member · 04</span>
+          <h3>พลวัฒน์ บุญญะเลิศลักษณ์ (พลพล)</h3>
+          <p class="team-role">Social Media Specialist</p>
+          <span class="team-status">Profile Update Soon</span>
+        </div>
+      </article>
+
+      <article class="team-card">
+        <div class="team-avatar" role="img" aria-label="ช่องสำหรับรูปสมาชิกทีมคนที่ 5">
+          <span class="team-avatar-code">05</span>
+          <span class="team-avatar-label">Member Photo</span>
+        </div>
+        <div class="team-info">
+          <span class="team-index">Team Member · 05</span>
+          <h3>ภัทรพล ขวัญเพ็ง (พล)</h3>
+          <p class="team-role">Production Specialist</p>
+          <span class="team-status">Profile Update Soon</span>
+        </div>
+      </article>
+
+      <article class="team-card">
+        <div class="team-avatar" role="img" aria-label="ช่องสำหรับรูปสมาชิกทีมคนที่ 6">
+          <span class="team-avatar-code">06</span>
+          <span class="team-avatar-label">Member Photo</span>
+        </div>
+        <div class="team-info">
+          <span class="team-index">Team Member · 06</span>
+          <h3>นัทพรรณ น้ำทับทิม (เดริก)</h3>
+          <p class="team-role">Production Specialist</p>
+          <span class="team-status">Profile Update Soon</span>
+        </div>
+      </article>
+
+      <article class="team-card">
+        <div class="team-avatar" role="img" aria-label="ช่องสำหรับรูปสมาชิกทีมคนที่ 7">
+          <span class="team-avatar-code">07</span>
+          <span class="team-avatar-label">Member Photo</span>
+        </div>
+        <div class="team-info">
+          <span class="team-index">Team Member · 07</span>
+          <h3>อนันต์ ดีนาค (ก๊อต)</h3>
+          <p class="team-role">Production Specialist</p>
+          <span class="team-status">Profile Update Soon</span>
+        </div>
+      </article>
+
+      <article class="team-card">
+        <div class="team-avatar" role="img" aria-label="ช่องสำหรับรูปสมาชิกทีมคนที่ 8">
+          <span class="team-avatar-code">08</span>
+          <span class="team-avatar-label">Member Photo</span>
+        </div>
+        <div class="team-info">
+          <span class="team-index">Team Member · 08</span>
+          <h3>รอยืนยันรายชื่อ</h3>
+          <p class="team-role">Post Production Specialist</p>
+          <span class="team-status">Profile Update Soon</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <footer>
     <div class="brand">
       <div class="brand-word">
@@ -1119,6 +1524,43 @@
     <p id="testNoticeDescription">เว็ปไซค์นี้ อยู่ในขั้นตอนการทดสอบ ข้อมูลบางอย่างอาจจะยังไม่ได้รับการอัพเดต หรือ ได้รับข้อมูลที่ถูกต้อง 100%</p>
     <button class="test-notice-accept" id="testNoticeAccept" type="button">ตกลงและยอมรับ</button>
     <small class="test-notice-footnote">ข้อความนี้จะแสดงทุกครั้งที่เข้าใช้งานหรือรีเฟรชหน้าเว็บ</small>
+  </div>
+</div>
+
+<div class="modal-overlay team-modal-overlay" id="teamProfileModal" aria-hidden="true" inert>
+  <div class="modal-panel team-profile-panel" role="dialog" aria-modal="true" aria-labelledby="teamProfileName" aria-describedby="teamProfileDescription">
+    <button class="modal-close" id="teamProfileClose" type="button" aria-label="ปิดรายละเอียดทีมงาน">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="team-profile-layout">
+      <button class="team-profile-avatar" id="teamProfileImageTrigger" type="button" aria-label="ยังไม่มีรูปสำหรับขยาย" disabled>
+        <img class="team-profile-photo" id="teamProfilePhoto" alt="" hidden>
+        <span class="team-profile-avatar-code" id="teamProfileCode">CL</span>
+        <span class="team-profile-avatar-label">Team Profile</span>
+        <span class="team-profile-image-hint" id="teamProfileImageHint" hidden>View Image</span>
+      </button>
+      <div class="team-profile-content">
+        <span class="team-profile-index" id="teamProfileIndex">Team Member · 01</span>
+        <h3 class="team-profile-name" id="teamProfileName">Creator Lab Team</h3>
+        <p class="team-profile-role" id="teamProfileRole">Nitade Creator Lab</p>
+        <p class="team-profile-description" id="teamProfileDescription">รายละเอียดโปรไฟล์อยู่ระหว่างการอัปเดต</p>
+        <span class="team-profile-status" id="teamProfileStatus">Profile Update Soon</span>
+      </div>
+    </div>
+    <small class="team-profile-hint">กด Esc หรือแตะพื้นที่ด้านนอกเพื่อปิด</small>
+  </div>
+</div>
+
+<div class="modal-overlay team-image-lightbox" id="teamImageLightbox" aria-hidden="true" inert>
+  <div class="team-image-lightbox-panel" role="dialog" aria-modal="true" aria-labelledby="teamImageLightboxName" aria-describedby="teamImageLightboxRole">
+    <button class="modal-close" id="teamImageLightboxClose" type="button" aria-label="ปิดรูปขนาดใหญ่">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img class="team-image-lightbox-photo" id="teamImageLightboxPhoto" alt="">
+    <div class="team-image-lightbox-caption">
+      <span class="team-image-lightbox-name" id="teamImageLightboxName">Creator Lab Team</span>
+      <span class="team-image-lightbox-role" id="teamImageLightboxRole">Nitade Creator Lab</span>
+    </div>
   </div>
 </div>
 
@@ -1376,6 +1818,28 @@
       if(clickedLink) setMainNavOpen(false,false);
     });
   }
+
+  const homePageTitle = 'Nitade Creator Lab — Learning Hub';
+  const aboutPageTitle = 'เกี่ยวกับ Lab — Nitade Creator Lab';
+  const aboutNavLink = mainNav ? mainNav.querySelector('a[href="#about-lab"]') : null;
+
+  function syncSingleFileView(){
+    const showAbout = window.location.hash === '#about-lab';
+    document.body.classList.toggle('about-view',showAbout);
+    document.title = showAbout ? aboutPageTitle : homePageTitle;
+    if(aboutNavLink){
+      if(showAbout) aboutNavLink.setAttribute('aria-current','page');
+      else aboutNavLink.removeAttribute('aria-current');
+    }
+    if(showAbout){
+      setMainNavOpen(false,false);
+      window.scrollTo(0,0);
+    }
+  }
+
+  window.addEventListener('hashchange',syncSingleFileView);
+  syncSingleFileView();
+
   document.addEventListener('click',(event)=>{
     if(siteHeader && siteHeader.classList.contains('nav-open') && !siteHeader.contains(event.target)){
       setMainNavOpen(false,false);
@@ -1409,9 +1873,29 @@
   const contactModalDescription = document.getElementById('contactModalDescription');
   const contactModalNote = document.getElementById('contactModalNote');
   const googleIssueLink = document.getElementById('googleIssueLink');
+  const teamProfileModal = document.getElementById('teamProfileModal');
+  const teamProfileClose = document.getElementById('teamProfileClose');
+  const teamProfileImageTrigger = document.getElementById('teamProfileImageTrigger');
+  const teamProfileImageHint = document.getElementById('teamProfileImageHint');
+  const teamProfilePhoto = document.getElementById('teamProfilePhoto');
+  const teamProfileCode = document.getElementById('teamProfileCode');
+  const teamProfileIndex = document.getElementById('teamProfileIndex');
+  const teamProfileName = document.getElementById('teamProfileName');
+  const teamProfileRole = document.getElementById('teamProfileRole');
+  const teamProfileDescription = document.getElementById('teamProfileDescription');
+  const teamProfileStatus = document.getElementById('teamProfileStatus');
+  const teamCards = Array.from(document.querySelectorAll('#about-lab .team-card'));
+  const teamImageLightbox = document.getElementById('teamImageLightbox');
+  const teamImageLightboxClose = document.getElementById('teamImageLightboxClose');
+  const teamImageLightboxPhoto = document.getElementById('teamImageLightboxPhoto');
+  const teamImageLightboxName = document.getElementById('teamImageLightboxName');
+  const teamImageLightboxRole = document.getElementById('teamImageLightboxRole');
   const testNoticeModal = document.getElementById('testNoticeModal');
   const testNoticeAccept = document.getElementById('testNoticeAccept');
   let lastModalTrigger = null;
+  let lastTeamProfileTrigger = null;
+  let teamProfileClosing = false;
+  let teamImageLightboxClosing = false;
   let lockedScrollY = 0;
 
   const modalFocusableSelector = [
@@ -1455,6 +1939,47 @@
     });
   }
 
+  function setTeamProfileInteractive(enabled){
+    if(!teamProfileModal) return;
+    if(enabled) teamProfileModal.removeAttribute('inert');
+    else teamProfileModal.setAttribute('inert','');
+  }
+
+  function getTeamProfileFocusables(){
+    if(!teamProfileModal) return [];
+    return Array.from(teamProfileModal.querySelectorAll(modalFocusableSelector)).filter((element)=>{
+      return !element.hidden && element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0;
+    });
+  }
+
+  function setTeamImageLightboxInteractive(enabled){
+    if(!teamImageLightbox) return;
+    if(enabled) teamImageLightbox.removeAttribute('inert');
+    else teamImageLightbox.setAttribute('inert','');
+  }
+
+  function getTeamImageLightboxFocusables(){
+    if(!teamImageLightbox) return [];
+    return Array.from(teamImageLightbox.querySelectorAll(modalFocusableSelector)).filter((element)=>{
+      return !element.hidden && element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0;
+    });
+  }
+
+  function setTeamProfileBackgroundInteractive(enabled){
+    const backgroundTargets = document.querySelectorAll('.skip-link,.glow-field,#siteHeader,.alpha-bar,#mainContent,#contactModal');
+    backgroundTargets.forEach((element)=>{
+      if(enabled){
+        if(element.hasAttribute('data-team-profile-inert')){
+          element.removeAttribute('inert');
+          element.removeAttribute('data-team-profile-inert');
+        }
+      }else if(!element.hasAttribute('inert')){
+        element.setAttribute('inert','');
+        element.setAttribute('data-team-profile-inert','');
+      }
+    });
+  }
+
   function lockPageScroll(){
     lockedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
     document.body.style.top = `-${lockedScrollY}px`;
@@ -1469,7 +1994,7 @@
   }
 
   function setTestNoticeBackgroundInteractive(enabled){
-    const backgroundTargets = document.querySelectorAll('.skip-link,.glow-field,#siteHeader,.alpha-bar,#mainContent,#contactModal');
+    const backgroundTargets = document.querySelectorAll('.skip-link,.glow-field,#siteHeader,.alpha-bar,#mainContent,#contactModal,#teamProfileModal,#teamImageLightbox');
     backgroundTargets.forEach((element)=>{
       if(enabled){
         if(element.hasAttribute('data-test-notice-inert')){
@@ -1588,6 +2113,206 @@
     if(trigger) requestAnimationFrame(()=>focusWithoutScroll(trigger));
   }
 
+  function getTeamProfileData(card){
+    const nameElement = card.querySelector('h3');
+    const roleElement = card.querySelector('.team-role');
+    const indexElement = card.querySelector('.team-index');
+    const codeElement = card.querySelector('.team-avatar-code');
+    const statusElement = card.querySelector('.team-status');
+    const photoElement = card.querySelector('.team-avatar-photo');
+    const name = nameElement ? nameElement.textContent.trim() : 'Creator Lab Team';
+    const role = roleElement ? roleElement.textContent.trim() : 'Nitade Creator Lab';
+    const index = indexElement ? indexElement.textContent.trim() : 'Team Member';
+    const code = codeElement ? codeElement.textContent.trim() : 'CL';
+    const status = statusElement ? statusElement.textContent.trim() : 'Profile Update Soon';
+    const photo = photoElement ? photoElement.getAttribute('src') : '';
+    const description = name === 'รอยืนยันรายชื่อ'
+      ? 'รายชื่อของตำแหน่งนี้อยู่ระหว่างการยืนยัน และรายละเอียดโปรไฟล์จะได้รับการอัปเดตในภายหลัง'
+      : `รับผิดชอบในตำแหน่ง ${role} ของทีม Nitade Creator Lab ข้อมูลประวัติและผลงานเพิ่มเติมอยู่ระหว่างการอัปเดต`;
+    return {name,role,index,code,status,description,photo};
+  }
+
+  function animateTeamProfileIn(card){
+    if(!canUseGsapMotion() || !teamProfileModal) return;
+    const panel = teamProfileModal.querySelector('.team-profile-panel');
+    const avatar = teamProfileModal.querySelector('.team-profile-avatar');
+    const contentItems = teamProfileModal.querySelectorAll('.team-profile-index,.team-profile-name,.team-profile-role,.team-profile-description,.team-profile-status,.team-profile-hint');
+    const animatedTargets = [teamProfileModal,panel,avatar,card].concat(Array.from(contentItems));
+    window.gsap.killTweensOf(animatedTargets);
+    if(card){
+      window.gsap.fromTo(card,
+        {scale:0.985},
+        {scale:1,duration:0.34,ease:'back.out(2)',clearProps:'transform'});
+    }
+    const timeline = window.gsap.timeline();
+    timeline
+      .fromTo(teamProfileModal,
+        {opacity:0},
+        {opacity:1,duration:0.26,ease:'power2.out',clearProps:'opacity'},0)
+      .fromTo(panel,
+        {autoAlpha:0,y:26,scale:0.9,rotationX:4},
+        {autoAlpha:1,y:0,scale:1,rotationX:0,duration:0.52,ease:'back.out(1.45)',clearProps:'opacity,visibility,transform'},0.04)
+      .fromTo(avatar,
+        {autoAlpha:0,scale:0.82,rotation:-4},
+        {autoAlpha:1,scale:1,rotation:0,duration:0.44,ease:'power3.out',clearProps:'opacity,visibility,transform'},0.14)
+      .fromTo(contentItems,
+        {autoAlpha:0,y:13},
+        {autoAlpha:1,y:0,duration:0.38,stagger:0.045,ease:'power3.out',clearProps:'opacity,visibility,transform'},0.18);
+  }
+
+  function openTeamProfile(card,event){
+    if(event) event.preventDefault();
+    if(!teamProfileModal || !card || teamProfileClosing) return;
+    const data = getTeamProfileData(card);
+    teamProfileCode.textContent = data.code;
+    if(data.photo){
+      teamProfilePhoto.setAttribute('src',data.photo);
+      teamProfilePhoto.hidden = false;
+      teamProfileCode.hidden = true;
+      teamProfileImageTrigger.disabled = false;
+      teamProfileImageTrigger.classList.add('has-image');
+      teamProfileImageTrigger.setAttribute('aria-label',`ดูรูปขนาดใหญ่ของ ${data.name}`);
+      teamProfileImageHint.hidden = false;
+    }else{
+      teamProfilePhoto.hidden = true;
+      teamProfilePhoto.removeAttribute('src');
+      teamProfileCode.hidden = false;
+      teamProfileImageTrigger.disabled = true;
+      teamProfileImageTrigger.classList.remove('has-image');
+      teamProfileImageTrigger.setAttribute('aria-label','ยังไม่มีรูปสำหรับขยาย');
+      teamProfileImageHint.hidden = true;
+    }
+    teamProfileIndex.textContent = data.index;
+    teamProfileName.textContent = data.name;
+    teamProfileRole.textContent = data.role;
+    teamProfileDescription.textContent = data.description;
+    teamProfileStatus.textContent = data.status;
+    lastTeamProfileTrigger = card;
+    setMainNavOpen(false,false);
+    setTeamProfileBackgroundInteractive(false);
+    setTeamProfileInteractive(true);
+    teamProfileModal.classList.add('open');
+    teamProfileModal.setAttribute('aria-hidden','false');
+    lockPageScroll();
+    animateTeamProfileIn(card);
+    requestAnimationFrame(()=>focusWithoutScroll(teamProfileClose));
+  }
+
+  function finalizeTeamProfileClose(){
+    if(!teamProfileModal) return;
+    const panel = teamProfileModal.querySelector('.team-profile-panel');
+    const animatedItems = teamProfileModal.querySelectorAll('.team-profile-avatar,.team-profile-index,.team-profile-name,.team-profile-role,.team-profile-description,.team-profile-status,.team-profile-hint');
+    if(window.gsap) window.gsap.set([teamProfileModal,panel].concat(Array.from(animatedItems)),{clearProps:'opacity,visibility,transform'});
+    teamProfileModal.classList.remove('open');
+    teamProfileModal.setAttribute('aria-hidden','true');
+    setTeamProfileInteractive(false);
+    setTeamProfileBackgroundInteractive(true);
+    unlockPageScroll();
+    const trigger = lastTeamProfileTrigger;
+    lastTeamProfileTrigger = null;
+    teamProfileClosing = false;
+    if(trigger) requestAnimationFrame(()=>focusWithoutScroll(trigger));
+  }
+
+  function closeTeamProfile(){
+    if(!teamProfileModal || !teamProfileModal.classList.contains('open') || teamProfileClosing) return;
+    if(!canUseGsapMotion()){
+      finalizeTeamProfileClose();
+      return;
+    }
+    teamProfileClosing = true;
+    const panel = teamProfileModal.querySelector('.team-profile-panel');
+    const contentItems = teamProfileModal.querySelectorAll('.team-profile-avatar,.team-profile-index,.team-profile-name,.team-profile-role,.team-profile-description,.team-profile-status,.team-profile-hint');
+    window.gsap.killTweensOf([teamProfileModal,panel].concat(Array.from(contentItems)));
+    window.gsap.timeline({onComplete:finalizeTeamProfileClose})
+      .to(contentItems,{autoAlpha:0,y:8,duration:0.14,stagger:{each:0.015,from:'end'},ease:'power2.in'},0)
+      .to(panel,{autoAlpha:0,y:18,scale:0.96,duration:0.24,ease:'power2.in'},0.03)
+      .to(teamProfileModal,{opacity:0,duration:0.22,ease:'power2.in'},0.05);
+  }
+
+  function animateTeamImageLightboxIn(){
+    if(!canUseGsapMotion() || !teamImageLightbox) return;
+    const panel = teamImageLightbox.querySelector('.team-image-lightbox-panel');
+    const caption = teamImageLightbox.querySelector('.team-image-lightbox-caption');
+    window.gsap.killTweensOf([teamImageLightbox,panel,teamImageLightboxPhoto,caption]);
+    window.gsap.timeline()
+      .fromTo(teamImageLightbox,
+        {opacity:0},
+        {opacity:1,duration:0.24,ease:'power2.out',clearProps:'opacity'},0)
+      .fromTo(panel,
+        {autoAlpha:0,y:20,scale:0.94},
+        {autoAlpha:1,y:0,scale:1,duration:0.46,ease:'power3.out',clearProps:'opacity,visibility,transform'},0.03)
+      .fromTo(teamImageLightboxPhoto,
+        {autoAlpha:0,scale:0.96},
+        {autoAlpha:1,scale:1,duration:0.42,ease:'power3.out',clearProps:'opacity,visibility,transform'},0.1)
+      .fromTo(caption,
+        {autoAlpha:0,y:8},
+        {autoAlpha:1,y:0,duration:0.3,ease:'power2.out',clearProps:'opacity,visibility,transform'},0.2);
+  }
+
+  function openTeamImageLightbox(event){
+    if(event) event.preventDefault();
+    if(!teamImageLightbox || !teamProfilePhoto || teamProfilePhoto.hidden || !teamProfilePhoto.getAttribute('src')) return;
+    teamImageLightboxClosing = false;
+    teamImageLightboxPhoto.setAttribute('src',teamProfilePhoto.getAttribute('src'));
+    teamImageLightboxPhoto.setAttribute('alt',`รูปขนาดใหญ่ของ ${teamProfileName.textContent.trim()}`);
+    teamImageLightboxName.textContent = teamProfileName.textContent;
+    teamImageLightboxRole.textContent = teamProfileRole.textContent;
+    setTeamProfileInteractive(false);
+    setTeamImageLightboxInteractive(true);
+    teamImageLightbox.classList.add('open');
+    teamImageLightbox.setAttribute('aria-hidden','false');
+    animateTeamImageLightboxIn();
+    requestAnimationFrame(()=>focusWithoutScroll(teamImageLightboxClose));
+  }
+
+  function finalizeTeamImageLightboxClose(){
+    if(!teamImageLightbox) return;
+    const panel = teamImageLightbox.querySelector('.team-image-lightbox-panel');
+    const caption = teamImageLightbox.querySelector('.team-image-lightbox-caption');
+    if(window.gsap) window.gsap.set([teamImageLightbox,panel,teamImageLightboxPhoto,caption],{clearProps:'opacity,visibility,transform'});
+    teamImageLightbox.classList.remove('open');
+    teamImageLightbox.setAttribute('aria-hidden','true');
+    setTeamImageLightboxInteractive(false);
+    setTeamProfileInteractive(true);
+    teamImageLightboxPhoto.removeAttribute('src');
+    teamImageLightboxPhoto.setAttribute('alt','');
+    teamImageLightboxClosing = false;
+    requestAnimationFrame(()=>focusWithoutScroll(teamProfileImageTrigger));
+  }
+
+  function closeTeamImageLightbox(){
+    if(!teamImageLightbox || !teamImageLightbox.classList.contains('open') || teamImageLightboxClosing) return;
+    if(!canUseGsapMotion()){
+      finalizeTeamImageLightboxClose();
+      return;
+    }
+    teamImageLightboxClosing = true;
+    const panel = teamImageLightbox.querySelector('.team-image-lightbox-panel');
+    const caption = teamImageLightbox.querySelector('.team-image-lightbox-caption');
+    window.gsap.killTweensOf([teamImageLightbox,panel,teamImageLightboxPhoto,caption]);
+    window.gsap.timeline({onComplete:finalizeTeamImageLightboxClose})
+      .to(caption,{autoAlpha:0,y:6,duration:0.12,ease:'power2.in'},0)
+      .to(teamImageLightboxPhoto,{autoAlpha:0,scale:0.97,duration:0.2,ease:'power2.in'},0)
+      .to(panel,{autoAlpha:0,y:14,scale:0.97,duration:0.23,ease:'power2.in'},0.02)
+      .to(teamImageLightbox,{opacity:0,duration:0.2,ease:'power2.in'},0.04);
+  }
+
+  teamCards.forEach((card)=>{
+    const profile = getTeamProfileData(card);
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.setAttribute('aria-haspopup','dialog');
+    card.setAttribute('aria-controls','teamProfileModal');
+    card.setAttribute('aria-label',`ดูรายละเอียด ${profile.name} ตำแหน่ง ${profile.role}`);
+    card.addEventListener('click',(event)=>openTeamProfile(card,event));
+    card.addEventListener('keydown',(event)=>{
+      if(event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      openTeamProfile(card,event);
+    });
+  });
+
   if(contactTrigger) contactTrigger.addEventListener('click', (e)=>openContactModal(e,'contact'));
   if(issueTrigger) issueTrigger.addEventListener('click', (e)=>openContactModal(e,'issue'));
   if(contactClose) contactClose.addEventListener('click', closeContactModal);
@@ -1596,7 +2321,22 @@
       if(e.target === contactModal) closeContactModal();
     });
   }
+  if(teamProfileClose) teamProfileClose.addEventListener('click',closeTeamProfile);
+  if(teamProfileModal){
+    teamProfileModal.addEventListener('click',(event)=>{
+      if(event.target === teamProfileModal) closeTeamProfile();
+    });
+  }
+  if(teamProfileImageTrigger) teamProfileImageTrigger.addEventListener('click',openTeamImageLightbox);
+  if(teamImageLightboxClose) teamImageLightboxClose.addEventListener('click',closeTeamImageLightbox);
+  if(teamImageLightbox){
+    teamImageLightbox.addEventListener('click',(event)=>{
+      if(event.target === teamImageLightbox) closeTeamImageLightbox();
+    });
+  }
   setModalInteractive(false);
+  setTeamProfileInteractive(false);
+  setTeamImageLightboxInteractive(false);
   if(testNoticeAccept) testNoticeAccept.addEventListener('click',acceptTestNotice);
   if(testNoticeModal) openTestNotice();
   else{
@@ -1614,7 +2354,19 @@
       return;
     }
     const modalOpen = contactModal && contactModal.classList.contains('open');
+    const teamModalOpen = teamProfileModal && teamProfileModal.classList.contains('open');
+    const imageModalOpen = teamImageLightbox && teamImageLightbox.classList.contains('open');
     if(e.key === 'Escape'){
+      if(imageModalOpen){
+        e.preventDefault();
+        closeTeamImageLightbox();
+        return;
+      }
+      if(teamModalOpen){
+        e.preventDefault();
+        closeTeamProfile();
+        return;
+      }
       if(modalOpen){
         e.preventDefault();
         closeContactModal();
@@ -1626,17 +2378,20 @@
       }
       return;
     }
-    if(e.key !== 'Tab' || !modalOpen) return;
+    if(e.key !== 'Tab' || (!modalOpen && !teamModalOpen && !imageModalOpen)) return;
 
-    const focusables = getModalFocusables();
+    const activeModal = imageModalOpen ? teamImageLightbox : (teamModalOpen ? teamProfileModal : contactModal);
+    const focusables = imageModalOpen
+      ? getTeamImageLightboxFocusables()
+      : (teamModalOpen ? getTeamProfileFocusables() : getModalFocusables());
     if(!focusables.length){
       e.preventDefault();
-      focusWithoutScroll(contactClose);
+      focusWithoutScroll(imageModalOpen ? teamImageLightboxClose : (teamModalOpen ? teamProfileClose : contactClose));
       return;
     }
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
-    if(!contactModal.contains(document.activeElement)){
+    if(!activeModal.contains(document.activeElement)){
       e.preventDefault();
       focusWithoutScroll(first);
     }else if(e.shiftKey && document.activeElement === first){
