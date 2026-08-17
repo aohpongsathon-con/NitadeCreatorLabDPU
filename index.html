@@ -646,6 +646,182 @@
   .card.is-project-keyboard-active .pill svg,
   .card:focus-visible .pill svg{transform:translateX(2px);}
 
+  /* ---------- student showcase / cover flow ---------- */
+  .student-showcase{
+    max-width:1160px;margin:0 auto;
+    padding:96px 32px 40px;
+    scroll-margin-top:110px;
+  }
+  body:not(.student-work-view) .student-showcase{display:none;}
+  body.student-work-view .student-showcase{
+    display:block;padding-top:120px;padding-bottom:48px;
+  }
+  .student-showcase-head{
+    max-width:620px;margin:0 auto 42px;text-align:center;
+  }
+  .student-showcase-head .eyebrow{margin-bottom:18px;}
+  .student-showcase-head h2{
+    color:var(--text-0);font-family:'Chakra Petch',sans-serif;
+    font-size:clamp(1.5rem,3vw,2.1rem);font-weight:600;
+  }
+  .student-showcase-head p{
+    margin-top:14px;color:var(--text-1);font-size:0.95rem;line-height:1.7;
+  }
+  .coverflow-carousel{
+    padding:22px;border:1px solid var(--panel-line);border-radius:28px;
+    background:
+      radial-gradient(circle at 50% 0%,rgba(106,27,255,0.16),transparent 46%),
+      linear-gradient(180deg,var(--veil-1),transparent 76%);
+    box-shadow:0 20px 58px rgba(3,2,12,0.16);
+  }
+  .coverflow-toolbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:18px;margin:0 2px 16px;
+  }
+  .coverflow-kicker{
+    color:var(--text-2);font-family:'IBM Plex Mono',monospace;
+    font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;
+  }
+  .coverflow-controls{display:flex;gap:8px;}
+  .coverflow-control{
+    width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;
+    -webkit-appearance:none;appearance:none;
+    border:1px solid var(--panel-line);border-radius:50%;background:var(--veil-1);
+    color:var(--text-0);transition:transform .22s ease,border-color .22s ease,background .22s ease;
+  }
+  .coverflow-control svg{width:18px;height:18px;}
+  .coverflow-control:hover{transform:translateY(-2px);border-color:rgba(148,201,253,0.48);background:var(--sky-soft);}
+  .coverflow-control:focus-visible{outline:2px solid var(--sky);outline-offset:3px;}
+  .coverflow-viewport{overflow:hidden;outline:none;touch-action:pan-y;}
+  .coverflow-viewport:focus-visible{outline:2px solid rgba(148,201,253,0.78);outline-offset:5px;border-radius:22px;}
+  .coverflow-track{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;}
+  .coverflow-card{
+    display:flex;min-width:0;min-height:292px;overflow:hidden;
+    flex-direction:column;justify-content:space-between;
+    -webkit-appearance:none;appearance:none;
+    padding:0;border:1px solid var(--panel-line);border-radius:22px;
+    background:var(--panel);color:var(--text-0);font:inherit;text-align:left;
+    cursor:pointer;box-shadow:0 14px 36px rgba(1,1,8,0.22);
+  }
+  .coverflow-carousel.is-ready .coverflow-track{
+    display:block;position:relative;height:390px;
+    perspective:1200px;transform-style:preserve-3d;
+  }
+  .coverflow-carousel.is-ready .coverflow-card{
+    position:absolute;top:12px;left:50%;width:min(62vw,390px);min-height:340px;
+    opacity:var(--coverflow-opacity,1);z-index:var(--coverflow-layer,1);
+    pointer-events:var(--coverflow-events,auto);
+    transform:translate3d(calc(-50% + var(--coverflow-x,0px)),0,var(--coverflow-z,0px)) rotateY(var(--coverflow-rotate,0deg)) scale(var(--coverflow-scale,1));
+    transform-style:preserve-3d;backface-visibility:hidden;
+    transition:transform .58s cubic-bezier(.2,.76,.2,1),opacity .44s ease,border-color .3s ease,box-shadow .42s ease;
+  }
+  .coverflow-card.is-active{
+    border-color:rgba(148,201,253,0.62);
+    box-shadow:0 26px 58px rgba(2,1,12,0.42),0 0 0 1px rgba(106,27,255,0.12);
+  }
+  .coverflow-card:focus-visible{outline:2px solid var(--sky);outline-offset:4px;}
+  .coverflow-cover{
+    position:relative;display:flex;min-height:220px;align-items:flex-end;justify-content:space-between;
+    overflow:hidden;padding:18px;
+    border-bottom:1px solid rgba(255,255,255,0.12);
+    isolation:isolate;
+  }
+  .coverflow-cover::before,.coverflow-cover::after{
+    position:absolute;content:'';pointer-events:none;
+  }
+  .coverflow-cover::before{
+    width:150%;height:150%;left:-25%;top:-62%;z-index:-1;
+    border:1px solid rgba(255,255,255,0.2);border-radius:50%;
+  }
+  .coverflow-cover::after{
+    width:110%;height:1px;left:-5%;bottom:48px;z-index:-1;
+    background:rgba(255,255,255,0.24);transform:rotate(-18deg);
+  }
+  .cover-01{background:linear-gradient(135deg,#352b88 0%,#191438 55%,#08071b 100%);}
+  .cover-02{background:linear-gradient(135deg,#0d5a68 0%,#123054 58%,#09091a 100%);}
+  .cover-03{background:linear-gradient(135deg,#7f2559 0%,#412257 48%,#0a0819 100%);}
+  .cover-04{background:linear-gradient(135deg,#75501a 0%,#563151 48%,#0a0819 100%);}
+  .cover-05{background:linear-gradient(135deg,#275451 0%,#243069 52%,#090919 100%);}
+  .cover-number{
+    color:#fff;font-family:'Chakra Petch',sans-serif;font-size:clamp(3.5rem,8vw,5.2rem);
+    font-weight:600;line-height:.8;letter-spacing:-0.07em;text-shadow:0 12px 30px rgba(0,0,0,0.35);
+  }
+  .cover-label{
+    align-self:flex-start;color:rgba(255,255,255,0.78);font-family:'IBM Plex Mono',monospace;
+    font-size:0.56rem;letter-spacing:0.15em;text-align:right;
+  }
+  .coverflow-card-content{display:flex;min-height:118px;flex-direction:column;gap:7px;padding:16px 18px 18px;}
+  .coverflow-card-type{color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;}
+  .coverflow-card-content strong{font-family:'Chakra Petch',sans-serif;font-size:1.08rem;font-weight:600;}
+  .coverflow-card-content small{color:var(--text-1);font-size:0.78rem;line-height:1.5;}
+  .coverflow-footer{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:14px;}
+  .coverflow-dots{display:flex;align-items:center;justify-content:center;gap:7px;}
+  .coverflow-dot{
+    width:8px;height:8px;padding:0;border:0;border-radius:999px;
+    -webkit-appearance:none;appearance:none;
+    background:var(--panel-line);transition:width .25s ease,background .25s ease,transform .25s ease;
+  }
+  .coverflow-dot[aria-pressed="true"]{width:24px;background:var(--sky);}
+  .coverflow-dot:focus-visible{outline:2px solid var(--sky);outline-offset:3px;}
+  .coverflow-status{min-width:154px;color:var(--text-2);font-family:'IBM Plex Mono',monospace;font-size:0.58rem;letter-spacing:0.06em;text-align:left;}
+
+  /* ---------- facilities hub ---------- */
+  .facilities-hub{
+    max-width:980px;margin:0 auto;
+    padding:96px 32px 40px;
+    scroll-margin-top:110px;
+  }
+  body:not(.facilities-view) .facilities-hub{display:none;}
+  body.facilities-view .facilities-hub{
+    display:block;padding-top:120px;padding-bottom:48px;
+  }
+  .facilities-head{max-width:620px;margin:0 auto 38px;text-align:center;}
+  .facilities-head .eyebrow{margin-bottom:18px;}
+  .facilities-head h2{
+    color:var(--text-0);font-family:'Chakra Petch',sans-serif;
+    font-size:clamp(1.5rem,3vw,2.1rem);font-weight:600;
+  }
+  .facilities-head p{margin-top:14px;color:var(--text-1);font-size:0.95rem;line-height:1.7;}
+  .facility-tabs{
+    display:flex;justify-content:center;gap:8px;margin:0 auto 22px;
+    padding:6px;width:max-content;max-width:100%;
+    border:1px solid var(--panel-line);border-radius:16px;background:var(--veil-1);
+  }
+  .facility-tab{
+    min-width:126px;min-height:42px;padding:9px 18px;
+    border:1px solid transparent;border-radius:11px;background:transparent;
+    color:var(--text-1);font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;
+    font-size:0.95rem;font-weight:600;
+    transition:color .22s ease,background .22s ease,border-color .22s ease,transform .22s ease;
+  }
+  .facility-tab[aria-selected="true"]{
+    border-color:rgba(148,201,253,0.38);background:linear-gradient(135deg,rgba(106,27,255,0.38),rgba(148,201,253,0.12));
+    color:var(--text-0);box-shadow:0 7px 20px rgba(3,2,14,0.2);
+  }
+  .facility-tab:hover{color:var(--text-0);transform:translateY(-1px);}
+  .facility-tab:focus-visible{outline:2px solid var(--sky);outline-offset:3px;}
+  .facility-panel{
+    display:flex;min-height:290px;align-items:center;justify-content:center;
+    padding:28px;border:1px solid var(--panel-line);border-radius:26px;
+    background:
+      radial-gradient(circle at 50% 0%,rgba(106,27,255,0.16),transparent 48%),
+      linear-gradient(180deg,var(--veil-1),transparent 88%);
+    box-shadow:0 20px 58px rgba(3,2,12,0.16);
+  }
+  .facility-panel[hidden]{display:none;}
+  .facility-notice{max-width:480px;text-align:center;}
+  .facility-notice-icon{
+    width:58px;height:58px;margin:0 auto 20px;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(148,201,253,0.28);border-radius:18px;
+    background:linear-gradient(135deg,var(--violet),#7c3cff);
+    color:#fff;font-family:'Chakra Petch',sans-serif;font-size:1.45rem;font-weight:700;
+    box-shadow:0 12px 30px rgba(106,27,255,0.28);
+  }
+  .facility-notice-kicker{display:block;color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;}
+  .facility-notice h3{margin-top:10px;color:var(--text-0);font-family:'Chakra Petch',sans-serif;font-size:1.35rem;font-weight:600;}
+  .facility-notice p{margin-top:12px;color:var(--text-1);font-size:0.95rem;line-height:1.7;}
+
   /* ---------- about lab / team ---------- */
   .about-lab{
     max-width:1160px;margin:0 auto;
@@ -655,8 +831,22 @@
   body:not(.about-view) .about-lab{display:none;}
   body.about-view .hero-wrap,
   body.about-view .modules,
+  body.about-view .student-showcase,
+  body.about-view .facilities-hub,
   body.about-view footer{display:none;}
+  body.student-work-view .hero-wrap,
+  body.student-work-view .modules,
+  body.student-work-view .about-lab,
+  body.student-work-view .facilities-hub,
+  body.student-work-view footer{display:none;}
+  body.facilities-view .hero-wrap,
+  body.facilities-view .modules,
+  body.facilities-view .student-showcase,
+  body.facilities-view .about-lab,
+  body.facilities-view footer{display:none;}
   body.about-view #mainContent{min-height:100vh;min-height:100dvh;}
+  body.student-work-view #mainContent{min-height:100vh;min-height:100dvh;}
+  body.facilities-view #mainContent{min-height:100vh;min-height:100dvh;}
   body.about-view .about-lab{
     display:block;
     padding-top:calc(32px + env(safe-area-inset-top, 0px));
@@ -1112,6 +1302,7 @@
     }
     nav.links a:hover,nav.links a:focus-visible{background:var(--violet-soft);}
     .card-grid{grid-template-columns:1fr;}
+    .coverflow-carousel.is-ready .coverflow-card{width:min(74vw,390px);}
     .team-card,.team-card--leader{width:100%;max-width:680px;}
     .chip{font-size:0.58rem;padding:6px 10px;}
     footer{flex-direction:column;align-items:flex-start;text-align:left;}
@@ -1147,10 +1338,25 @@
       right:calc(18px + env(safe-area-inset-right, 0px));
       top:calc(100% - 4px);
     }
-    .hero-wrap,.alpha-bar,.modules,.about-lab,footer{
+    .hero-wrap,.alpha-bar,.modules,.student-showcase,.facilities-hub,.about-lab,footer{
       padding-left:calc(18px + env(safe-area-inset-left, 0px));
       padding-right:calc(18px + env(safe-area-inset-right, 0px));
     }
+    .student-showcase{padding-top:78px;}
+    body.student-work-view .student-showcase{padding-top:90px;}
+    .facilities-hub{padding-top:78px;}
+    body.facilities-view .facilities-hub{padding-top:90px;}
+    .facility-tabs{width:100%;}
+    .facility-tab{flex:1;min-width:0;padding-left:10px;padding-right:10px;}
+    .facility-panel{min-height:250px;padding:24px 18px;border-radius:22px;}
+    .coverflow-carousel{padding:16px;border-radius:22px;}
+    .coverflow-toolbar{align-items:flex-start;}
+    .coverflow-kicker{max-width:190px;line-height:1.6;}
+    .coverflow-carousel.is-ready .coverflow-track{height:344px;}
+    .coverflow-carousel.is-ready .coverflow-card{top:8px;width:min(86vw,360px);min-height:310px;}
+    .coverflow-cover{min-height:192px;}
+    .coverflow-footer{align-items:center;gap:8px;}
+    .coverflow-status{min-width:0;font-size:0.52rem;}
     .about-lab{padding-top:90px;}
     .about-head{margin-bottom:38px;}
     .team-card,.team-card--leader{
@@ -1219,6 +1425,11 @@
     .card-grid.is-project-interacting .card:not(.is-project-active):not(.is-project-keyboard-active){
       opacity:1;filter:none;
     }
+    .coverflow-carousel.is-ready .coverflow-track{display:grid;height:auto;perspective:none;}
+    .coverflow-carousel.is-ready .coverflow-card{
+      position:relative;top:auto;left:auto;width:auto;min-height:292px;
+      opacity:1 !important;pointer-events:auto !important;transform:none !important;
+    }
   }
 </style>
 <noscript>
@@ -1249,8 +1460,8 @@
   </a>
   <nav class="links" id="mainNav" aria-label="เมนูหลัก">
     <a href="#modules">โซนเรียนรู้</a>
-    <a href="#">ห้อง &amp; อุปกรณ์</a>
-    <a href="#">ผลงานนักศึกษา</a>
+    <a href="#facilities">ห้อง &amp; อุปกรณ์</a>
+    <a href="#student-work">ผลงานนักศึกษา</a>
     <a href="#about-lab">เกี่ยวกับ Lab</a>
   </nav>
   <div class="header-actions">
@@ -1291,7 +1502,7 @@
         เริ่มเรียนรู้
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
-      <a href="#" class="secondary-link">หรือดูผลงานนักศึกษา →</a>
+      <a href="#student-work" class="secondary-link">หรือดูผลงานนักศึกษา →</a>
     </div>
 
     <div class="stage">
@@ -1357,34 +1568,125 @@
         <p>ออกแบบและบันทึกเสียงสำหรับงานภาพยนตร์และไลฟ์</p>
         <span class="pill">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-      <a class="card" href="#">
+      <a class="card" href="https://aohpongsathon-con.github.io/dpu-ca-lab-camera/" target="_blank" rel="noopener">
         <span class="tag">02 · Camera Production</span>
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l1.5-2.5h3L10 8H20a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
         <h3>Camera Production</h3>
         <p>เทคนิคกล้องและมุมภาพสำหรับงานโปรดักชัน</p>
         <span class="pill">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-      <a class="card" href="#">
+      <a class="card" href="https://aohpongsathon-con.github.io/dpu-ca-lab-cinema/" target="_blank" rel="noopener">
         <span class="tag">03 · Cinematography</span>
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="6" r="1"/><circle cx="12" cy="18" r="1"/><circle cx="6" cy="12" r="1"/><circle cx="18" cy="12" r="1"/></svg></div>
         <h3>Cinematography</h3>
         <p>ภาษาภาพและการเล่าเรื่องด้วยกล้อง</p>
         <span class="pill">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-      <a class="card" href="#">
+      <a class="card" href="https://aohpongsathon-con.github.io/dpu-ca-lab-lighting/#home" target="_blank" rel="noopener">
         <span class="tag">04 · Lighting</span>
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0012 3z"/></svg></div>
         <h3>Lighting</h3>
         <p>ออกแบบแสงสำหรับสตูดิโอและกองถ่าย</p>
         <span class="pill">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-      <a class="card" href="#">
+      <a class="card" href="https://aohpongsathon-con.github.io/dpu-ca-lab-location/" target="_blank" rel="noopener">
         <span class="tag">05 · Location</span>
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
         <h3>Location</h3>
         <p>สำรวจและจัดการสถานที่ถ่ายทำ</p>
         <span class="pill">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
+    </div>
+  </section>
+
+  <section class="facilities-hub" id="facilities" aria-labelledby="facilitiesTitle">
+    <div class="facilities-head">
+      <span class="eyebrow">CREATOR LAB · FACILITIES HUB</span>
+      <h2 id="facilitiesTitle">ห้อง &amp; อุปกรณ์</h2>
+      <p>เลือกหมวดที่ต้องการดูรายละเอียด ข้อมูลจะทยอยอัปเดตเพื่อรองรับการใช้งานในอนาคต</p>
+    </div>
+
+    <div class="facilities-tabs-wrap" data-facilities-tabs>
+      <div class="facility-tabs" role="tablist" aria-label="เลือกข้อมูลห้องและอุปกรณ์">
+        <button class="facility-tab" id="facilitiesRoomsTab" type="button" role="tab" aria-selected="true" aria-controls="facilitiesRoomsPanel" data-facility-tab="rooms">ห้อง</button>
+        <button class="facility-tab" id="facilitiesEquipmentTab" type="button" role="tab" aria-selected="false" aria-controls="facilitiesEquipmentPanel" data-facility-tab="equipment" tabindex="-1">อุปกรณ์</button>
+      </div>
+
+      <section class="facility-panel" id="facilitiesRoomsPanel" role="tabpanel" aria-labelledby="facilitiesRoomsTab" data-facility-panel="rooms">
+        <div class="facility-notice">
+          <div class="facility-notice-icon" aria-hidden="true">01</div>
+          <span class="facility-notice-kicker">ROOM DIRECTORY</span>
+          <h3>ข้อมูลห้อง</h3>
+          <p role="status">ข้อมูลรอการอัพเดตเร็วๆนี้</p>
+        </div>
+      </section>
+
+      <section class="facility-panel" id="facilitiesEquipmentPanel" role="tabpanel" aria-labelledby="facilitiesEquipmentTab" data-facility-panel="equipment" hidden>
+        <div class="facility-notice">
+          <div class="facility-notice-icon" aria-hidden="true">02</div>
+          <span class="facility-notice-kicker">EQUIPMENT DIRECTORY</span>
+          <h3>ข้อมูลอุปกรณ์</h3>
+          <p role="status">ข้อมูลรอการอัพเดตเร็วๆนี้</p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="student-showcase" id="student-work" aria-labelledby="studentWorkTitle">
+    <div class="student-showcase-head">
+      <span class="eyebrow">STUDENT SHOWCASE · FUTURE ARCHIVE</span>
+      <h2 id="studentWorkTitle">ผลงานนักศึกษา</h2>
+      <p>พื้นที่สำหรับรวบรวมภาพ โครงงาน และผลงานสร้างสรรค์ของนักศึกษา สามารถเพิ่มผลงานจริงได้ในภายหลัง</p>
+    </div>
+
+    <div class="coverflow-carousel" data-coverflow aria-roledescription="carousel" aria-label="แกลเลอรีผลงานนักศึกษา">
+      <div class="coverflow-toolbar">
+        <p class="coverflow-kicker">SELECT A PROJECT SLOT · SWIPE OR USE ARROW KEYS</p>
+        <div class="coverflow-controls" aria-label="ควบคุมแกลเลอรีผลงานนักศึกษา">
+          <button class="coverflow-control" type="button" data-coverflow-prev aria-label="ดูช่องผลงานก่อนหน้า">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <button class="coverflow-control" type="button" data-coverflow-next aria-label="ดูช่องผลงานถัดไป">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="coverflow-viewport" data-coverflow-viewport tabindex="0" aria-describedby="coverflowStatus">
+        <div class="coverflow-track">
+          <button class="coverflow-card" type="button" data-coverflow-card data-title="Project Slot 01" aria-label="เลือกช่องผลงาน 1">
+            <span class="coverflow-cover cover-01"><span class="cover-number">01</span><span class="cover-label">STUDENT<br>WORK</span></span>
+            <span class="coverflow-card-content"><span class="coverflow-card-type">PHOTO · FILM · DESIGN</span><strong>Project Slot 01</strong><small>พร้อมเพิ่มรูปหรือผลงานในอนาคต</small></span>
+          </button>
+          <button class="coverflow-card" type="button" data-coverflow-card data-title="Project Slot 02" aria-label="เลือกช่องผลงาน 2">
+            <span class="coverflow-cover cover-02"><span class="cover-number">02</span><span class="cover-label">STUDENT<br>WORK</span></span>
+            <span class="coverflow-card-content"><span class="coverflow-card-type">PHOTO · FILM · DESIGN</span><strong>Project Slot 02</strong><small>พร้อมเพิ่มรูปหรือผลงานในอนาคต</small></span>
+          </button>
+          <button class="coverflow-card" type="button" data-coverflow-card data-title="Project Slot 03" aria-label="เลือกช่องผลงาน 3">
+            <span class="coverflow-cover cover-03"><span class="cover-number">03</span><span class="cover-label">STUDENT<br>WORK</span></span>
+            <span class="coverflow-card-content"><span class="coverflow-card-type">PHOTO · FILM · DESIGN</span><strong>Project Slot 03</strong><small>พร้อมเพิ่มรูปหรือผลงานในอนาคต</small></span>
+          </button>
+          <button class="coverflow-card" type="button" data-coverflow-card data-title="Project Slot 04" aria-label="เลือกช่องผลงาน 4">
+            <span class="coverflow-cover cover-04"><span class="cover-number">04</span><span class="cover-label">STUDENT<br>WORK</span></span>
+            <span class="coverflow-card-content"><span class="coverflow-card-type">PHOTO · FILM · DESIGN</span><strong>Project Slot 04</strong><small>พร้อมเพิ่มรูปหรือผลงานในอนาคต</small></span>
+          </button>
+          <button class="coverflow-card" type="button" data-coverflow-card data-title="Project Slot 05" aria-label="เลือกช่องผลงาน 5">
+            <span class="coverflow-cover cover-05"><span class="cover-number">05</span><span class="cover-label">STUDENT<br>WORK</span></span>
+            <span class="coverflow-card-content"><span class="coverflow-card-type">PHOTO · FILM · DESIGN</span><strong>Project Slot 05</strong><small>พร้อมเพิ่มรูปหรือผลงานในอนาคต</small></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="coverflow-footer">
+        <div class="coverflow-dots" role="group" aria-label="เลือกช่องผลงาน">
+          <button class="coverflow-dot" type="button" data-coverflow-dot="0" aria-label="ไปที่ช่องผลงาน 1"></button>
+          <button class="coverflow-dot" type="button" data-coverflow-dot="1" aria-label="ไปที่ช่องผลงาน 2"></button>
+          <button class="coverflow-dot" type="button" data-coverflow-dot="2" aria-label="ไปที่ช่องผลงาน 3"></button>
+          <button class="coverflow-dot" type="button" data-coverflow-dot="3" aria-label="ไปที่ช่องผลงาน 4"></button>
+          <button class="coverflow-dot" type="button" data-coverflow-dot="4" aria-label="ไปที่ช่องผลงาน 5"></button>
+        </div>
+        <p class="coverflow-status" id="coverflowStatus" aria-live="polite"></p>
+      </div>
     </div>
   </section>
 
@@ -1827,17 +2129,33 @@
 
   const homePageTitle = 'Nitade Creator Lab — Learning Hub';
   const aboutPageTitle = 'เกี่ยวกับ Lab — Nitade Creator Lab';
+  const studentWorkPageTitle = 'ผลงานนักศึกษา — Nitade Creator Lab';
+  const facilitiesPageTitle = 'ห้อง & อุปกรณ์ — Nitade Creator Lab';
   const aboutNavLink = mainNav ? mainNav.querySelector('a[href="#about-lab"]') : null;
+  const studentWorkNavLink = mainNav ? mainNav.querySelector('a[href="#student-work"]') : null;
+  const facilitiesNavLink = mainNav ? mainNav.querySelector('a[href="#facilities"]') : null;
 
   function syncSingleFileView(){
     const showAbout = window.location.hash === '#about-lab';
+    const showStudentWork = window.location.hash === '#student-work';
+    const showFacilities = window.location.hash === '#facilities';
     document.body.classList.toggle('about-view',showAbout);
-    document.title = showAbout ? aboutPageTitle : homePageTitle;
+    document.body.classList.toggle('student-work-view',showStudentWork);
+    document.body.classList.toggle('facilities-view',showFacilities);
+    document.title = showAbout ? aboutPageTitle : (showStudentWork ? studentWorkPageTitle : (showFacilities ? facilitiesPageTitle : homePageTitle));
     if(aboutNavLink){
       if(showAbout) aboutNavLink.setAttribute('aria-current','page');
       else aboutNavLink.removeAttribute('aria-current');
     }
-    if(showAbout){
+    if(studentWorkNavLink){
+      if(showStudentWork) studentWorkNavLink.setAttribute('aria-current','page');
+      else studentWorkNavLink.removeAttribute('aria-current');
+    }
+    if(facilitiesNavLink){
+      if(showFacilities) facilitiesNavLink.setAttribute('aria-current','page');
+      else facilitiesNavLink.removeAttribute('aria-current');
+    }
+    if(showAbout || showStudentWork || showFacilities){
       setMainNavOpen(false,false);
       window.scrollTo(0,0);
     }
@@ -2678,6 +2996,178 @@
   }
 
   handleProjectHover();
+
+  function initStudentCoverflow(){
+    const carousel = document.querySelector('[data-coverflow]');
+    if(!carousel) return;
+
+    const viewport = carousel.querySelector('[data-coverflow-viewport]');
+    const cards = Array.from(carousel.querySelectorAll('[data-coverflow-card]'));
+    const previousButton = carousel.querySelector('[data-coverflow-prev]');
+    const nextButton = carousel.querySelector('[data-coverflow-next]');
+    const dots = Array.from(carousel.querySelectorAll('[data-coverflow-dot]'));
+    const status = carousel.querySelector('#coverflowStatus');
+    if(!viewport || !cards.length) return;
+
+    const compactQuery = window.matchMedia ? window.matchMedia('(max-width: 680px)') : null;
+    const reducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    let activeIndex = 0;
+    let pointerStart = null;
+
+    const normalizeIndex = (index)=>((index % cards.length) + cards.length) % cards.length;
+    const circularOffset = (index)=>{
+      let offset = index - activeIndex;
+      const half = cards.length / 2;
+      if(offset > half) offset -= cards.length;
+      if(offset < -half) offset += cards.length;
+      return offset;
+    };
+
+    const getCoverflowValues = (offset)=>{
+      const compact = compactQuery && compactQuery.matches;
+      const reduced = reducedMotionQuery && reducedMotionQuery.matches;
+      const distance = Math.abs(offset);
+      if(reduced){
+        return {x:0,z:0,scale:1,rotate:0,opacity:1,layer:cards.length - distance,events:'auto'};
+      }
+      if(compact){
+        const isActive = offset === 0;
+        return {
+          x:0,z:isActive ? 0 : -80,scale:isActive ? 1 : 0.94,rotate:0,
+          opacity:isActive ? 1 : 0,layer:isActive ? 10 : 1,events:isActive ? 'auto' : 'none'
+        };
+      }
+      const side = offset < 0 ? -1 : 1;
+      const x = distance === 0 ? 0 : (distance === 1 ? 216 : 378) * side;
+      const z = distance === 0 ? 0 : (distance === 1 ? -72 : -204);
+      const scale = distance === 0 ? 1 : (distance === 1 ? 0.84 : 0.69);
+      const rotate = distance === 0 ? 0 : -side * (distance === 1 ? 25 : 34);
+      const opacity = distance === 0 ? 1 : (distance === 1 ? 0.8 : 0.48);
+      return {x,z,scale,rotate,opacity,layer:10 - distance,events:'auto'};
+    };
+
+    const updateCoverflow = ()=>{
+      const reduced = reducedMotionQuery && reducedMotionQuery.matches;
+      cards.forEach((card,index)=>{
+        const offset = circularOffset(index);
+        const values = getCoverflowValues(offset);
+        const isActive = index === activeIndex;
+        card.classList.toggle('is-active',isActive);
+        card.style.setProperty('--coverflow-x',values.x + 'px');
+        card.style.setProperty('--coverflow-z',values.z + 'px');
+        card.style.setProperty('--coverflow-scale',String(values.scale));
+        card.style.setProperty('--coverflow-rotate',values.rotate + 'deg');
+        card.style.setProperty('--coverflow-opacity',String(values.opacity));
+        card.style.setProperty('--coverflow-layer',String(values.layer));
+        card.style.setProperty('--coverflow-events',values.events);
+        card.setAttribute('aria-pressed',String(isActive));
+        card.tabIndex = reduced || isActive ? 0 : -1;
+      });
+      dots.forEach((dot,index)=>dot.setAttribute('aria-pressed',String(index === activeIndex)));
+      if(status){
+        const title = cards[activeIndex].getAttribute('data-title') || ('Project Slot ' + String(activeIndex + 1).padStart(2,'0'));
+        status.textContent = 'ช่อง ' + (activeIndex + 1) + ' / ' + cards.length + ' · ' + title;
+      }
+    };
+
+    const setActiveIndex = (index,focusCard=false)=>{
+      activeIndex = normalizeIndex(index);
+      updateCoverflow();
+      if(focusCard) requestAnimationFrame(()=>focusWithoutScroll(cards[activeIndex]));
+    };
+
+    cards.forEach((card,index)=>{
+      card.addEventListener('click',()=>setActiveIndex(index,false));
+    });
+    if(previousButton) previousButton.addEventListener('click',()=>setActiveIndex(activeIndex - 1,false));
+    if(nextButton) nextButton.addEventListener('click',()=>setActiveIndex(activeIndex + 1,false));
+    dots.forEach((dot)=>{
+      dot.addEventListener('click',()=>setActiveIndex(Number(dot.getAttribute('data-coverflow-dot')),false));
+    });
+
+    viewport.addEventListener('keydown',(event)=>{
+      if(event.key === 'ArrowLeft'){
+        event.preventDefault();
+        setActiveIndex(activeIndex - 1,true);
+      }else if(event.key === 'ArrowRight'){
+        event.preventDefault();
+        setActiveIndex(activeIndex + 1,true);
+      }else if(event.key === 'Home'){
+        event.preventDefault();
+        setActiveIndex(0,true);
+      }else if(event.key === 'End'){
+        event.preventDefault();
+        setActiveIndex(cards.length - 1,true);
+      }
+    });
+
+    viewport.addEventListener('pointerdown',(event)=>{
+      if(!event.isPrimary || event.pointerType === 'mouse') return;
+      pointerStart = {id:event.pointerId,x:event.clientX,y:event.clientY};
+    },{passive:true});
+    viewport.addEventListener('pointerup',(event)=>{
+      if(!pointerStart || pointerStart.id !== event.pointerId) return;
+      const deltaX = event.clientX - pointerStart.x;
+      const deltaY = event.clientY - pointerStart.y;
+      pointerStart = null;
+      if(Math.abs(deltaX) < 44 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+      setActiveIndex(activeIndex + (deltaX < 0 ? 1 : -1),false);
+    },{passive:true});
+    viewport.addEventListener('pointercancel',()=>{pointerStart = null;},{passive:true});
+
+    const handleLayoutPreferenceChange = ()=>updateCoverflow();
+    [compactQuery,reducedMotionQuery].forEach((query)=>{
+      if(!query) return;
+      if(typeof query.addEventListener === 'function') query.addEventListener('change',handleLayoutPreferenceChange);
+      else if(typeof query.addListener === 'function') query.addListener(handleLayoutPreferenceChange);
+    });
+
+    carousel.classList.add('is-ready');
+    updateCoverflow();
+  }
+
+  initStudentCoverflow();
+
+  function initFacilitiesTabs(){
+    const tabRoot = document.querySelector('[data-facilities-tabs]');
+    if(!tabRoot) return;
+    const tabs = Array.from(tabRoot.querySelectorAll('[data-facility-tab]'));
+    const panels = Array.from(tabRoot.querySelectorAll('[data-facility-panel]'));
+    if(!tabs.length || !panels.length) return;
+
+    const selectFacility = (key,focusTab=false)=>{
+      const selectedIndex = tabs.findIndex((tab)=>tab.getAttribute('data-facility-tab') === key);
+      if(selectedIndex < 0) return;
+      tabs.forEach((tab,index)=>{
+        const selected = index === selectedIndex;
+        tab.setAttribute('aria-selected',String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel)=>{
+        panel.hidden = panel.getAttribute('data-facility-panel') !== key;
+      });
+      if(focusTab) requestAnimationFrame(()=>focusWithoutScroll(tabs[selectedIndex]));
+    };
+
+    tabs.forEach((tab,index)=>{
+      tab.addEventListener('click',()=>selectFacility(tab.getAttribute('data-facility-tab'),false));
+      tab.addEventListener('keydown',(event)=>{
+        let nextIndex = null;
+        if(event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % tabs.length;
+        else if(event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + tabs.length) % tabs.length;
+        else if(event.key === 'Home') nextIndex = 0;
+        else if(event.key === 'End') nextIndex = tabs.length - 1;
+        if(nextIndex === null) return;
+        event.preventDefault();
+        selectFacility(tabs[nextIndex].getAttribute('data-facility-tab'),true);
+      });
+    });
+
+    const selectedTab = tabs.find((tab)=>tab.getAttribute('aria-selected') === 'true') || tabs[0];
+    selectFacility(selectedTab.getAttribute('data-facility-tab'),false);
+  }
+
+  initFacilitiesTabs();
 
   const themeToggle = document.getElementById('themeToggle');
   const themeColorMeta = document.getElementById('themeColorMeta');
