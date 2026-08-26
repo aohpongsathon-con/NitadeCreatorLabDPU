@@ -27,6 +27,7 @@
   })();
 </script>
 <link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="assets/vendor/pannellum/pannellum.css">
 <style>
   :root{
     color-scheme:dark;
@@ -773,7 +774,7 @@
   }
   body:not(.facilities-view) .facilities-hub{display:none;}
   body.facilities-view .facilities-hub{
-    display:block;padding-top:120px;padding-bottom:48px;
+    display:block;max-width:1200px;padding-top:120px;padding-bottom:48px;
   }
   .facilities-head{max-width:620px;margin:0 auto 38px;text-align:center;}
   .facilities-head .eyebrow{margin-bottom:18px;}
@@ -822,8 +823,121 @@
   .facility-notice h3{margin-top:10px;color:var(--text-0);font-family:'Chakra Petch',sans-serif;font-size:1.35rem;font-weight:600;}
   .facility-notice p{margin-top:12px;color:var(--text-1);font-size:0.95rem;line-height:1.7;}
 
+  /* ---------- room directory / floor plan ---------- */
+  .facility-panel--rooms{display:block;min-height:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;}
+  .room-directory{
+    position:relative;padding:28px;border:1px solid var(--panel-line);border-radius:28px;overflow:hidden;
+    background:
+      radial-gradient(circle at 88% 0%,var(--violet-soft),transparent 34%),
+      radial-gradient(circle at 2% 8%,var(--sky-soft),transparent 28%),
+      linear-gradient(180deg,var(--veil-1),transparent 86%);
+    box-shadow:0 24px 72px rgba(3,2,12,.18);
+  }
+  .room-directory::before{content:'ROOMS';position:absolute;right:-10px;top:-34px;pointer-events:none;color:transparent;-webkit-text-stroke:1px var(--ghost-stroke);font-family:'Chakra Petch',sans-serif;font-size:clamp(4.6rem,11vw,8rem);font-weight:700;line-height:1;}
+  .room-directory-head{position:relative;z-index:1;max-width:680px;}
+  .room-directory-head h3{margin-top:10px;font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;font-size:clamp(1.65rem,3vw,2.25rem);font-weight:600;}
+  .room-directory-head p{margin-top:11px;color:var(--text-1);font-size:.92rem;line-height:1.7;}
+  .room-location-controls{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:14px;margin-top:24px;padding:15px;border:1px solid var(--panel-line);border-radius:18px;background:var(--veil-1);}
+  .room-location-group{display:flex;align-items:center;gap:9px;min-width:0;}
+  .room-location-label{color:var(--text-2);font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;}
+  .room-location-options{display:flex;flex-wrap:wrap;gap:7px;}
+  .room-location-chip{min-width:44px;min-height:44px;padding:8px 11px;border:1px solid var(--panel-line);border-radius:11px;background:var(--chip-bg);color:var(--text-1);font-family:'Chakra Petch',sans-serif;font-size:.82rem;font-weight:600;transition:color .2s ease,border-color .2s ease,background .2s ease,transform .2s ease;}
+  .room-location-chip:hover:not(:disabled){transform:translateY(-1px);border-color:var(--sky);color:var(--text-0);}
+  .room-location-chip[aria-pressed="true"]{border-color:rgba(148,201,253,.52);background:linear-gradient(135deg,rgba(106,27,255,.48),rgba(148,201,253,.14));color:var(--text-0);box-shadow:0 7px 18px rgba(3,2,14,.2);}
+  .room-location-chip:disabled{opacity:.32;cursor:not-allowed;}
+  .room-location-chip:focus-visible,.lab-room-block:focus-visible,.room-directory-card:focus-visible,.room-detail-close:focus-visible{outline:2px solid var(--sky);outline-offset:3px;}
+  .room-location-summary{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--text-2);font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.06em;}
+  .room-location-summary b{color:var(--text-0);font-size:.72rem;}
+  .room-plan-layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:16px;margin-top:18px;align-items:stretch;}
+  .room-plan-stage,.room-detail-panel{border:1px solid var(--panel-line);border-radius:20px;background:var(--panel);overflow:hidden;}
+  .room-plan-stage{position:relative;min-width:0;}
+  .room-plan-caption{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 15px;border-bottom:1px solid var(--panel-line);color:var(--text-2);font-family:'IBM Plex Mono',monospace;font-size:.54rem;letter-spacing:.06em;}
+  .room-plan-caption strong{color:var(--sky);font-weight:600;}
+  .room-plan-scroll{position:relative;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:var(--panel-line) transparent;}
+  #labRoomPlan{display:block;width:100%;height:auto;min-width:720px;background:linear-gradient(145deg,var(--panel-2),var(--bg-1));}
+  .lab-room-zone rect{fill:var(--veil-1);stroke:var(--panel-line);stroke-width:1.5;}
+  .lab-room-zone.is-lounge rect{fill:rgba(74,222,128,.08);stroke:rgba(74,222,128,.22);}
+  .lab-room-zone text{fill:var(--text-2);font-family:'IBM Plex Sans Thai',sans-serif;text-anchor:middle;dominant-baseline:middle;pointer-events:none;}
+  .lab-room-block{cursor:pointer;outline:none;transform-box:fill-box;transform-origin:center;transition:opacity .2s ease,filter .2s ease;}
+  .lab-room-block .room-shape{fill:color-mix(in srgb,var(--room-color) 22%,var(--panel));stroke:color-mix(in srgb,var(--room-color) 72%,white 8%);stroke-width:1.8;transition:fill .2s ease,stroke-width .2s ease;}
+  .lab-room-block:hover .room-shape,.lab-room-block.is-selected .room-shape{fill:color-mix(in srgb,var(--room-color) 42%,var(--panel));stroke-width:3.4;filter:drop-shadow(0 7px 10px rgba(3,2,14,.28));}
+  .lab-room-block text{fill:var(--text-0);font-family:'IBM Plex Sans Thai',sans-serif;text-anchor:middle;dominant-baseline:middle;pointer-events:none;}
+  .lab-room-block .room-code{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.04em;}
+  .lab-room-block .room-label{fill:var(--text-1);font-size:8px;}
+  .room-plan-pending{position:absolute;inset:0;z-index:3;display:grid;place-content:center;justify-items:center;padding:26px;text-align:center;background:linear-gradient(145deg,var(--panel-2),var(--bg-1));}
+  .room-plan-pending[hidden]{display:none;}
+  .room-plan-pending svg{width:44px;height:44px;color:var(--sky);}
+  .room-plan-pending span{margin-bottom:13px;color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.13em;text-transform:uppercase;}
+  .room-plan-pending h4{margin-top:13px;font-family:'Chakra Petch',sans-serif;font-size:1.15rem;}
+  .room-plan-pending p{margin-top:8px;color:var(--text-1);font-size:.78rem;}
+  .room-detail-panel{position:relative;min-height:360px;padding:22px;}
+  .room-detail-idle{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--text-2);text-align:center;font-size:.78rem;line-height:1.65;}
+  .room-detail-idle svg{width:50px;height:50px;color:var(--sky);opacity:.72;}
+  .room-detail-content[hidden],.room-detail-idle[hidden]{display:none;}
+  .room-detail-close{position:absolute;right:14px;top:14px;width:38px;height:38px;border:1px solid var(--panel-line);border-radius:999px;background:var(--chip-bg);color:var(--text-1);font-size:1.15rem;line-height:1;}
+  .room-detail-kicker{display:block;padding-right:42px;color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.12em;}
+  .room-detail-code{margin-top:22px;color:var(--text-0);font-family:'Chakra Petch',sans-serif;font-size:2.4rem;font-weight:600;line-height:1;}
+  .room-detail-category{margin-top:11px;color:var(--sky);font-size:.72rem;font-weight:600;}
+  .room-detail-name{margin-top:18px;font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;font-size:1.12rem;font-weight:600;line-height:1.35;}
+  .room-detail-name-en{margin-top:4px;color:var(--text-1);font-size:.75rem;line-height:1.45;}
+  .room-detail-rows{margin-top:18px;border-top:1px solid var(--panel-line);}
+  .room-detail-row{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--panel-line);font-size:.7rem;line-height:1.5;}
+  .room-detail-row span{color:var(--text-2);}.room-detail-row b{color:var(--text-0);font-weight:600;overflow-wrap:anywhere;}
+  .room-detail-air{margin-top:14px;padding:9px 10px;border:1px solid rgba(239,68,68,.28);border-radius:10px;background:rgba(239,68,68,.08);color:#fb7185;font-size:.66rem;font-weight:600;}
+  .room-legend{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;}
+  .room-legend-item{display:flex;align-items:center;gap:7px;padding:7px 9px;border:1px solid var(--panel-line);border-radius:999px;background:var(--chip-bg);color:var(--text-1);font-size:.65rem;}
+  .room-legend-item i{width:9px;height:9px;border-radius:3px;background:var(--legend-color);box-shadow:0 0 12px color-mix(in srgb,var(--legend-color) 55%,transparent);}
+  .room-directory-list-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-top:34px;padding-top:25px;border-top:1px solid var(--panel-line);}
+  .room-directory-list-head h4{font-family:'Chakra Petch',sans-serif;font-size:1.15rem;}.room-directory-list-head p{color:var(--text-2);font-size:.7rem;}
+  .room-directory-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px;}
+  .room-directory-card{min-width:0;padding:14px;border:1px solid var(--panel-line);border-radius:14px;background:var(--chip-bg);color:var(--text-0);text-align:left;transition:transform .2s ease,border-color .2s ease,background .2s ease;}
+  .room-directory-card:hover,.room-directory-card.is-active{transform:translateY(-2px);border-color:var(--room-card-color);background:color-mix(in srgb,var(--room-card-color) 10%,var(--chip-bg));}
+  .room-directory-card span{display:block;color:var(--room-card-color);font-family:'IBM Plex Mono',monospace;font-size:.54rem;letter-spacing:.08em;}
+  .room-directory-card strong{display:block;margin-top:7px;font-size:.78rem;line-height:1.4;overflow-wrap:anywhere;}
+  .room-directory-card small{display:block;margin-top:4px;color:var(--text-2);font-size:.63rem;line-height:1.4;}
+  @supports not (color:color-mix(in srgb,#000 50%,#fff)){.lab-room-block .room-shape{fill:var(--panel-2);stroke:var(--room-color);}.lab-room-block:hover .room-shape,.lab-room-block.is-selected .room-shape{fill:var(--violet-soft);}.room-directory-card:hover,.room-directory-card.is-active{background:var(--veil-1);}}
+
+  @media (max-width:900px){.room-plan-layout{grid-template-columns:1fr;}.room-detail-panel{min-height:0;}.room-detail-idle{min-height:150px;}.room-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media (max-width:620px){.room-directory{padding:18px;border-radius:22px;}.room-location-controls{display:grid;gap:13px;padding:13px;}.room-location-group{align-items:flex-start;justify-content:space-between;}.room-location-summary{margin-left:0;padding-top:11px;border-top:1px solid var(--panel-line);justify-content:space-between;}.room-plan-caption{align-items:flex-start;flex-direction:column;gap:5px;}.room-directory-grid{grid-template-columns:1fr;}.room-directory-list-head{align-items:flex-start;flex-direction:column;gap:5px;}.room-detail-panel{padding:18px;}.room-detail-code{font-size:2rem;}}
+
+  /* ---------- room media popup ---------- */
+  body.room-popup-open{overflow:hidden;}
+  body.room-popup-open header,body.room-popup-open .alpha-bar{pointer-events:none;}
+  .room-popup-overlay{
+    position:fixed;inset:0;z-index:470;display:flex;align-items:center;justify-content:center;
+    padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-right:calc(24px + env(safe-area-inset-right,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));padding-left:calc(24px + env(safe-area-inset-left,0px));
+    background:rgba(4,3,12,.78);-webkit-backdrop-filter:blur(11px);backdrop-filter:blur(11px);overflow-y:auto;overscroll-behavior:contain;opacity:0;transition:opacity .22s ease;
+  }
+  .room-popup-overlay[hidden]{display:none;}.room-popup-overlay.is-open{opacity:1;}
+  .room-popup-card{position:relative;width:min(960px,100%);max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);overflow:hidden;border:1px solid var(--panel-line-strong);border-radius:28px;background:var(--bg-1);box-shadow:0 34px 100px rgba(2,1,10,.62);opacity:0;transform:translateY(16px) scale(.975);transition:opacity .24s ease,transform .3s cubic-bezier(.2,.8,.3,1);}
+  .room-popup-overlay.is-open .room-popup-card{opacity:1;transform:none;}
+  .room-popup-close{position:absolute;right:16px;top:16px;z-index:12;width:44px;height:44px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(6,5,14,.66);color:#fff;display:grid;place-items:center;font-size:1.35rem;line-height:1;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);touch-action:manipulation;}
+  .room-popup-close:hover{border-color:var(--sky);background:rgba(6,5,14,.88);}.room-popup-close:focus-visible,.room-popup-nav:focus-visible,.room-popup-panorama:focus-visible{outline:2px solid var(--sky);outline-offset:3px;}
+  .room-popup-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);max-height:inherit;}
+  .room-popup-media{position:relative;min-height:520px;overflow:hidden;border-right:1px solid var(--panel-line);background:linear-gradient(var(--blueprint-line) 1px,transparent 1px),linear-gradient(90deg,var(--blueprint-line) 1px,transparent 1px),radial-gradient(circle at 50% 45%,var(--violet-soft),transparent 55%),var(--panel-2);background-size:30px 30px,30px 30px,auto,auto;}
+  .room-popup-media::before,.room-popup-media::after{content:'';position:absolute;z-index:3;width:25px;height:25px;border-color:var(--sky);border-style:solid;pointer-events:none;opacity:.72;}.room-popup-media::before{left:15px;top:15px;border-width:2px 0 0 2px;}.room-popup-media::after{right:15px;bottom:15px;border-width:0 2px 2px 0;}
+  .room-popup-media-tag{position:absolute;left:50%;top:17px;z-index:8;max-width:calc(100% - 130px);transform:translateX(-50%);padding:6px 11px;border:1px solid rgba(148,201,253,.42);border-radius:999px;background:rgba(6,5,14,.62);color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);pointer-events:none;}
+  .room-popup-placeholder{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:40px;text-align:center;color:var(--text-2);}
+  .room-popup-placeholder[hidden]{display:none;}
+  .room-popup-placeholder svg{width:54px;height:54px;color:var(--sky);opacity:.68;}.room-popup-placeholder strong{color:var(--text-0);font-family:'Chakra Petch',sans-serif;font-size:1.02rem;}.room-popup-placeholder span{max-width:330px;font-size:.76rem;line-height:1.65;}.room-popup-placeholder small{margin-top:5px;padding:6px 9px;border:1px solid var(--panel-line);border-radius:999px;color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:.49rem;letter-spacing:.08em;}
+  .room-popup-image,.room-popup-panorama{position:absolute;inset:0;z-index:1;width:100%;height:100%;}.room-popup-image{display:none;object-fit:cover;}.room-popup-image.is-active{display:block;}.room-popup-panorama{background:#07060f;}.room-popup-panorama[hidden]{display:none;}.room-popup-panorama .pnlm-container{width:100%;height:100%;background-color:#07060f;}.room-popup-panorama .pnlm-controls{border-color:rgba(255,255,255,.35);}.room-popup-media.is-panorama::before,.room-popup-media.is-panorama::after{z-index:5;}
+  .room-popup-nav{position:absolute;top:50%;z-index:8;width:42px;height:42px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(6,5,14,.58);color:#fff;display:grid;place-items:center;transform:translateY(-50%);font-size:1.35rem;line-height:1;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);touch-action:manipulation;}.room-popup-nav.prev{left:14px;}.room-popup-nav.next{right:14px;}.room-popup-nav[hidden]{display:none;}
+  .room-popup-dots{position:absolute;left:50%;bottom:17px;z-index:8;display:flex;gap:7px;transform:translateX(-50%);pointer-events:none;}.room-popup-dots i{width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.36);}.room-popup-dots i.is-active{width:20px;background:var(--sky);}
+  .room-popup-content{min-width:0;padding:58px 30px 30px;overflow-y:auto;overscroll-behavior:contain;}
+  .room-popup-kicker{color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.13em;}.room-popup-code{margin-top:17px;font-family:'Chakra Petch',sans-serif;font-size:clamp(2.6rem,6vw,4.4rem);font-weight:600;line-height:.9;letter-spacing:-.04em;}.room-popup-category{display:inline-flex;align-items:center;gap:7px;margin-top:15px;padding:6px 9px;border:1px solid color-mix(in srgb,var(--popup-room-color) 46%,transparent);border-radius:999px;background:color-mix(in srgb,var(--popup-room-color) 12%,transparent);color:var(--text-0);font-size:.67rem;font-weight:600;}.room-popup-category i{width:8px;height:8px;border-radius:3px;background:var(--popup-room-color);}
+  .room-popup-title{margin-top:24px;font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;font-size:1.3rem;font-weight:600;line-height:1.3;overflow-wrap:anywhere;}.room-popup-name-en{margin-top:5px;color:var(--text-1);font-size:.78rem;line-height:1.45;}.room-popup-rows{margin-top:22px;border-top:1px solid var(--panel-line);}.room-popup-row{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--panel-line);font-size:.72rem;line-height:1.55;}.room-popup-row span{color:var(--text-2);}.room-popup-row b{color:var(--text-0);font-weight:600;overflow-wrap:anywhere;}.room-popup-air{margin-top:16px;padding:10px 11px;border:1px solid rgba(239,68,68,.3);border-radius:11px;background:rgba(239,68,68,.08);color:#fb7185;font-size:.68rem;font-weight:600;}.room-popup-media-note{margin-top:17px;color:var(--text-2);font-size:.65rem;line-height:1.6;}.room-popup-media-note b{color:var(--sky);font-weight:600;}
+  @supports not (color:color-mix(in srgb,#000 50%,#fff)){.room-popup-category{border-color:var(--popup-room-color);background:var(--veil-1);}}
+  @media (max-width:720px){.room-popup-overlay{align-items:flex-start;padding:10px;padding-top:calc(10px + env(safe-area-inset-top,0px));padding-right:calc(10px + env(safe-area-inset-right,0px));padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:calc(10px + env(safe-area-inset-left,0px));}.room-popup-card{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);border-radius:21px;overflow-y:auto;}.room-popup-layout{display:block;max-height:none;}.room-popup-media{min-height:260px;border-right:0;border-bottom:1px solid var(--panel-line);}.room-popup-content{padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));overflow:visible;}.room-popup-code{font-size:2.8rem;}.room-popup-close{right:12px;top:12px;}.room-popup-media-tag{top:14px;max-width:calc(100% - 120px);}}
+  @media (max-height:540px) and (orientation:landscape){.room-popup-overlay{align-items:flex-start;padding:8px;}.room-popup-card{max-height:calc(100dvh - 16px);border-radius:18px;}.room-popup-layout{grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);}.room-popup-media{min-height:calc(100dvh - 18px);}.room-popup-content{padding:48px 24px 22px;}.room-popup-title{margin-top:15px;}.room-popup-rows{margin-top:15px;}.room-popup-row{padding:7px 0;}.room-popup-media-note{margin-top:10px;}}
+  @media (prefers-reduced-motion:reduce){.room-popup-overlay,.room-popup-card{transition:none!important;}}
+
   /* ---------- equipment directory ---------- */
   body.equipment-layer-open{overflow:hidden;}
+  body.equipment-layer-open header,
+  body.equipment-layer-open .alpha-bar{
+    z-index:1;
+    pointer-events:none;
+  }
   .facility-panel--equipment{
     display:block;min-height:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;
   }
@@ -921,12 +1035,13 @@
   .equipment-layer-overlay{position:fixed;inset:0;z-index:420;background:rgba(3,2,12,0.76);opacity:0;transition:opacity .22s ease;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
   #equipmentItemOverlay{z-index:435;}
   .equipment-layer-overlay.is-open{opacity:1;}
-  .equipment-drawer{position:fixed;top:0;right:0;z-index:430;width:min(520px,100%);height:100%;height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;border-left:1px solid var(--panel-line);background:var(--bg-1);box-shadow:-24px 0 70px rgba(3,2,12,0.4);transform:translateX(102%);transition:transform .24s cubic-bezier(.22,.8,.22,1);}
+  .equipment-drawer{position:fixed;top:0;right:0;z-index:430;width:min(520px,100vw);height:100%;height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;border-left:1px solid var(--panel-line);background:var(--bg-1);box-shadow:-24px 0 70px rgba(3,2,12,0.4);transform:translateX(102%);transition:transform .24s cubic-bezier(.22,.8,.22,1);}
   .equipment-drawer.is-open{transform:translateX(0);}
   .equipment-drawer-head,.equipment-drawer-footer{padding:21px;border-bottom:1px solid var(--panel-line);}
-  .equipment-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:18px;}
+  .equipment-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-top:calc(21px + env(safe-area-inset-top,0px));padding-right:calc(21px + env(safe-area-inset-right,0px));}
+  .equipment-drawer-head>div{min-width:0;}
   .equipment-drawer-head span{color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:0.54rem;letter-spacing:0.12em;}
-  .equipment-drawer-head h3{margin-top:4px;font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;font-size:1.25rem;font-weight:600;}
+  .equipment-drawer-head h3{margin-top:4px;font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;font-size:1.25rem;font-weight:600;line-height:1.25;overflow-wrap:anywhere;}
   .equipment-layer-close{width:40px;height:40px;flex:0 0 40px;border:1px solid var(--panel-line);border-radius:50%;background:var(--veil-1);color:var(--text-0);font-size:1.1rem;}
   .equipment-drawer-body{padding:16px 20px 24px;overflow-y:auto;overscroll-behavior:contain;}
   .equipment-drawer-category{padding:16px;border:1px solid var(--panel-line);border-radius:18px;background:var(--veil-1);}
@@ -1010,9 +1125,10 @@
     .equipment-catalog{padding:18px;border-radius:22px;}.equipment-toolbar{grid-template-columns:1fr;}.equipment-result-count{order:3;}.equipment-selection-button{justify-content:space-between;}
     .equipment-grid{grid-template-columns:1fr;}.equipment-card-info{grid-template-columns:82px minmax(0,1fr);}.equipment-category-section+.equipment-category-section{margin-top:44px;}
     .equipment-item-modal{width:calc(100% - 22px);max-height:calc(100dvh - 22px);border-radius:20px;}.equipment-item-layout{display:block;}.equipment-item-photo{min-height:210px;border-right:0;border-bottom:1px solid var(--panel-line);}.equipment-item-photo.has-image{padding:18px;}.equipment-item-photo img{max-height:190px;}.equipment-item-photo b{font-size:3rem;}.equipment-item-content{padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));overflow:visible;}.equipment-item-content h3{padding-right:44px;}
-    .equipment-drawer-actions{grid-template-columns:1fr;}.equipment-print-overlay{padding:10px;}.equipment-print-dialog{max-height:calc(100dvh - 20px);border-radius:18px;}.equipment-print-head,.equipment-print-footer{padding:15px;}.equipment-print-scroll{padding:12px;}.equipment-print-paper{padding:22px 16px;border-radius:12px;}.equipment-print-paper-head{grid-template-columns:1fr;gap:12px;}.equipment-print-date{text-align:left;}.equipment-print-table th:nth-child(3),.equipment-print-table td:nth-child(3){display:none;}
+    .equipment-drawer-head{align-items:flex-start;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) 16px 16px;}.equipment-drawer-head h3{font-size:1.08rem;}.equipment-drawer-body{padding:14px 14px 20px;}.equipment-drawer-footer{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));}.equipment-drawer-actions{grid-template-columns:1fr;}.equipment-print-overlay{padding:10px;}.equipment-print-dialog{max-height:calc(100dvh - 20px);border-radius:18px;}.equipment-print-head,.equipment-print-footer{padding:15px;}.equipment-print-scroll{padding:12px;}.equipment-print-paper{padding:22px 16px;border-radius:12px;}.equipment-print-paper-head{grid-template-columns:1fr;gap:12px;}.equipment-print-date{text-align:left;}.equipment-print-table th:nth-child(3),.equipment-print-table td:nth-child(3){display:none;}
   }
   @media (max-height:520px) and (orientation:landscape){
+    .equipment-drawer-head{padding-top:10px;padding-bottom:10px;}.equipment-drawer-head h3{font-size:1rem;}.equipment-drawer-body{padding-top:10px;padding-bottom:12px;}.equipment-drawer-footer{padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));}.equipment-drawer-actions{margin-top:9px;}
     .equipment-print-overlay{align-items:flex-start;padding:10px;}.equipment-print-dialog{max-height:calc(100dvh - 20px);}
   }
   @media print{
@@ -1484,7 +1600,7 @@
   footer .brand{opacity:0.9;}
   footer .fine{color:var(--text-2);font-size:0.78rem;line-height:1.6;text-align:right;}
 
-  @media (max-width:860px){
+  @media (max-width:1080px){
     header{flex-wrap:wrap;}
     .nav-toggle{display:inline-flex;}
     nav.links{
@@ -1513,6 +1629,9 @@
       min-height:44px;padding:10px 12px;border-radius:11px;
     }
     nav.links a:hover,nav.links a:focus-visible{background:var(--violet-soft);}
+  }
+
+  @media (max-width:860px){
     .card-grid{grid-template-columns:1fr;}
     .coverflow-carousel.is-ready .coverflow-card{width:min(74vw,390px);}
     .team-card,.team-card--leader{width:100%;max-width:680px;}
@@ -1525,6 +1644,16 @@
     .hud-res, .hud-timecode, .hud-topright, .lr-meter, .ruler, .cam-settings, .chip.iso{
       display:none;
     }
+  }
+
+  @media (max-width:640px){
+    header{gap:14px 10px;}
+    .header-actions{width:100%;gap:7px;align-items:flex-start;}
+    .contact-action-stack{flex:1;min-width:0;}
+    .nav-cta{min-height:44px;padding:9px 12px;font-size:0.76rem;justify-content:center;}
+    .nav-cta svg{display:none;}
+    .issue-btn{max-width:none;min-height:36px;padding:6px 8px;font-size:0.66rem;white-space:normal;}
+    nav.links{top:calc(100% - 4px);}
   }
 
   @media (max-width:520px){
@@ -1646,7 +1775,7 @@
 </style>
 <noscript>
   <style>
-    @media (max-width:860px){
+    @media (max-width:1080px){
       header{flex-wrap:wrap;}
       .nav-toggle{display:none;}
       nav.links{position:static;width:100%;order:3;opacity:1;visibility:visible;pointer-events:auto;transform:none;}
@@ -1824,12 +1953,70 @@
         <button class="facility-tab" id="facilitiesEquipmentTab" type="button" role="tab" aria-selected="false" aria-controls="facilitiesEquipmentPanel" data-facility-tab="equipment" tabindex="-1">อุปกรณ์</button>
       </div>
 
-      <section class="facility-panel" id="facilitiesRoomsPanel" role="tabpanel" aria-labelledby="facilitiesRoomsTab" data-facility-panel="rooms">
-        <div class="facility-notice">
-          <div class="facility-notice-icon" aria-hidden="true">01</div>
-          <span class="facility-notice-kicker">ROOM DIRECTORY</span>
-          <h3>ข้อมูลห้อง</h3>
-          <p role="status">ข้อมูลรอการอัพเดตเร็วๆนี้</p>
+      <section class="facility-panel facility-panel--rooms" id="facilitiesRoomsPanel" role="tabpanel" aria-labelledby="facilitiesRoomsTab" data-facility-panel="rooms">
+        <div class="room-directory" data-room-directory>
+          <div class="room-directory-head">
+            <span class="equipment-eyebrow">NCL ROOM DIRECTORY · INTERACTIVE FLOOR PLAN</span>
+            <h3>ข้อมูลห้องและผังพื้นที่</h3>
+            <p>เลือกอาคารและชั้น จากนั้นแตะห้องบนผังหรือเลือกรายชื่อด้านล่างเพื่อดูรายละเอียด ข้อมูลผังปัจจุบันอ้างอิงจากไฟล์ Location ของ Creator Lab</p>
+          </div>
+
+          <div class="room-location-controls" role="group" aria-label="เลือกอาคารและชั้น">
+            <div class="room-location-group">
+              <span class="room-location-label">อาคาร</span>
+              <div class="room-location-options" id="labBuildingOptions">
+                <button class="room-location-chip" type="button" data-building="7" aria-pressed="true">7</button>
+                <button class="room-location-chip" type="button" data-building="8" aria-pressed="false">8</button>
+                <button class="room-location-chip" type="button" data-building="9" aria-pressed="false">9</button>
+                <button class="room-location-chip" type="button" data-building="12" aria-pressed="false">12</button>
+              </div>
+            </div>
+            <div class="room-location-group">
+              <span class="room-location-label">ชั้น</span>
+              <div class="room-location-options" id="labFloorOptions">
+                <button class="room-location-chip" type="button" data-floor="1" aria-pressed="false">1</button>
+                <button class="room-location-chip" type="button" data-floor="4" aria-pressed="true">4</button>
+                <button class="room-location-chip" type="button" data-floor="5" aria-pressed="false">5</button>
+              </div>
+            </div>
+            <div class="room-location-summary" aria-live="polite"><span id="labRoomLocationStatus">อาคาร 7 · ชั้น 4</span><b id="labRoomCount">29 ห้อง/พื้นที่</b></div>
+          </div>
+
+          <div class="room-plan-layout">
+            <div class="room-plan-stage">
+              <div class="room-plan-caption"><span><strong id="labRoomPlanCode">NITADE·07·04</strong> <span id="labRoomPlanLabel">Building 7 / Floor 4</span></span><span>ผังจำลอง · ไม่ใช่มาตราส่วนจริง</span></div>
+              <div class="room-plan-scroll" id="labRoomPlanScroll" tabindex="0" aria-label="เลื่อนดูผังห้องในแนวนอน">
+                <svg id="labRoomPlan" viewBox="0 0 1080 610" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ผังพื้นที่ชั้น 4 อาคาร 7 แบบเลือกห้องได้"></svg>
+                <div class="room-plan-pending" id="labRoomPlanPending" hidden>
+                  <span>Coming soon</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5l6-2 4 2 6-2v16l-6 2-4-2-6 2V5z"></path><path d="M10 3v16M14 5v16"></path></svg>
+                  <h4 id="labRoomPendingTitle">ผังพื้นที่ชั้น 4 อาคาร 8</h4>
+                  <p>แผนผังของพื้นที่นี้กำลังจัดทำ — รออัปเดตเร็วๆ นี้</p>
+                </div>
+              </div>
+            </div>
+
+            <aside class="room-detail-panel" id="labRoomDetailPanel" aria-live="polite">
+              <div class="room-detail-idle" id="labRoomDetailIdle">
+                <svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="28" cy="28" r="18"></circle><circle cx="28" cy="28" r="2"></circle><path d="M28 2v10M28 44v10M2 28h10M44 28h10"></path></svg>
+                <p>แตะห้องบนผัง หรือเลือกการ์ดด้านล่าง<br>เพื่อดูรายละเอียดห้อง</p>
+              </div>
+              <div class="room-detail-content" id="labRoomDetailContent" hidden>
+                <button class="room-detail-close" id="labRoomDetailClose" type="button" aria-label="ปิดรายละเอียดห้อง">×</button>
+                <span class="room-detail-kicker" id="labRoomDetailKicker">ROOM SELECTED</span>
+                <div class="room-detail-code" id="labRoomDetailCode">—</div>
+                <div class="room-detail-category" id="labRoomDetailCategory">—</div>
+                <div class="room-detail-name" id="labRoomDetailName">—</div>
+                <div class="room-detail-name-en" id="labRoomDetailNameEn">—</div>
+                <div class="room-detail-rows" id="labRoomDetailRows"></div>
+                <div class="room-detail-air" id="labRoomDetailAir" hidden>● ห้องนี้มีไฟสัญญาณ ON AIR</div>
+              </div>
+            </aside>
+          </div>
+
+          <div class="room-legend" id="labRoomLegend" aria-label="ประเภทห้อง"></div>
+          <div class="room-directory-list-head"><div><h4>ห้องทั้งหมด</h4><p>อาคาร 7 ชั้น 4 · เลือกเพื่อดูตำแหน่งบนผัง</p></div><p>ข้อมูลขนาดแสดงเฉพาะรายการที่ระบุในผังต้นฉบับ</p></div>
+          <div class="room-directory-grid" id="labRoomDirectoryGrid"></div>
         </div>
       </section>
 
@@ -2103,6 +2290,38 @@
   </section>
 </div>
 
+<div class="room-popup-overlay" id="roomPopup" aria-hidden="true" hidden>
+  <section class="room-popup-card" id="roomPopupCard" role="dialog" aria-modal="true" aria-labelledby="roomPopupTitle" aria-describedby="roomPopupNameEn">
+    <button class="room-popup-close" id="roomPopupClose" type="button" aria-label="ปิดรายละเอียดห้อง">×</button>
+    <div class="room-popup-layout">
+      <div class="room-popup-media" id="roomPopupMedia">
+        <span class="room-popup-media-tag" id="roomPopupMediaTag">PHOTO · 360° READY</span>
+        <div class="room-popup-placeholder" id="roomPopupPlaceholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="14" rx="2"></rect><circle cx="9" cy="11" r="2.1"></circle><path d="M21 16l-5-4.2-4 3.4-2.5-2-5.5 4.3"></path><path d="M8.5 3.5h7l1 2h-9l1-2z"></path></svg>
+          <strong id="roomPopupPlaceholderTitle">ยังไม่มีรูปตัวอย่างห้อง</strong>
+          <span id="roomPopupPlaceholderHint">ระบบพร้อมรองรับรูปปกติและภาพพาโนรามา 360° แบบ equirectangular อัตราส่วน 2:1</span>
+          <small>PHOTO · 360° EQUIRECTANGULAR READY</small>
+        </div>
+        <img class="room-popup-image" id="roomPopupImage" alt="">
+        <div class="room-popup-panorama" id="roomPopupPanorama" tabindex="0" aria-label="ภาพพาโนรามา 360 องศาของห้อง" hidden></div>
+        <button class="room-popup-nav prev" id="roomPopupPrev" type="button" aria-label="สื่อก่อนหน้า" hidden>‹</button>
+        <button class="room-popup-nav next" id="roomPopupNext" type="button" aria-label="สื่อถัดไป" hidden>›</button>
+        <div class="room-popup-dots" id="roomPopupDots" aria-hidden="true"></div>
+      </div>
+      <div class="room-popup-content">
+        <span class="room-popup-kicker">ROOM PROFILE · BUILDING 07</span>
+        <div class="room-popup-code" id="roomPopupCode">—</div>
+        <span class="room-popup-category" id="roomPopupCategory"><i></i><span>—</span></span>
+        <h3 class="room-popup-title" id="roomPopupTitle">—</h3>
+        <p class="room-popup-name-en" id="roomPopupNameEn">—</p>
+        <div class="room-popup-rows" id="roomPopupRows"></div>
+        <div class="room-popup-air" id="roomPopupAir" hidden>● ห้องนี้มีไฟสัญญาณ ON AIR</div>
+        <p class="room-popup-media-note"><b>รองรับสื่อ:</b> รูปภาพทั่วไป และภาพ 360° equirectangular JPEG / WebP อัตราส่วน 2:1</p>
+      </div>
+    </div>
+  </section>
+</div>
+
 <div class="test-notice-overlay" id="testNoticeModal" aria-hidden="true" inert>
   <div class="test-notice-panel" role="dialog" aria-modal="true" aria-labelledby="testNoticeTitle" aria-describedby="testNoticeDescription">
     <div class="test-notice-icon" aria-hidden="true">!</div>
@@ -2185,6 +2404,7 @@
   </div>
 </div>
 
+<script src="assets/vendor/pannellum/pannellum.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/js/equipment-catalog.js"></script>
 <script>
@@ -3407,6 +3627,348 @@
   }
 
   initStudentCoverflow();
+
+  function initRoomDirectory(){
+    const root = document.querySelector('[data-room-directory]');
+    if(!root) return;
+
+    const categories = {
+      editing:{label:'ห้องตัดต่อ',color:'#8b5cf6'},
+      live:{label:'ไลฟ์สตรีมมิ่ง',color:'#38bdf8'},
+      content:{label:'คอนเทนต์สตูดิโอ & ควบคุมออกอากาศ',color:'#ec4899'},
+      sound:{label:'บันทึกเสียง & พากย์เสียง',color:'#22c55e'},
+      performance:{label:'การแสดง & Performing Arts',color:'#f59e0b'},
+      support:{label:'อุปกรณ์ & บริการ',color:'#f97316'}
+    };
+    const rooms = [
+      {code:'7401',nameEn:'Editing Room 1',nameTh:'ห้องตัดต่อ 1',cat:'editing',x:219,y:85,w:77,h:97},{code:'7402',nameEn:'Editing Room 2',nameTh:'ห้องตัดต่อ 2',cat:'editing',x:296,y:85,w:77,h:97},{code:'7403',nameEn:'Editing Room 3',nameTh:'ห้องตัดต่อ 3',cat:'editing',x:373,y:85,w:76,h:97},{code:'7404',nameEn:'Editing Room 4',nameTh:'ห้องตัดต่อ 4',cat:'editing',x:496,y:85,w:83,h:97},{code:'7405',nameEn:'Editing Room 5',nameTh:'ห้องตัดต่อ 5',cat:'editing',x:579,y:85,w:83,h:97},{code:'7406',nameEn:'Editing Room 6',nameTh:'ห้องตัดต่อ 6',cat:'editing',x:219,y:182,w:77,h:97},{code:'7407',nameEn:'Editing Room 7',nameTh:'ห้องตัดต่อ 7',cat:'editing',x:296,y:182,w:77,h:97},{code:'7408',nameEn:'Editing Room 8',nameTh:'ห้องตัดต่อ 8',cat:'editing',x:373,y:182,w:76,h:97},{code:'7409',nameEn:'Editing Room 9',nameTh:'ห้องตัดต่อ 9',cat:'editing',x:496,y:182,w:83,h:97},{code:'7410',nameEn:'Editing Room 10',nameTh:'ห้องตัดต่อ 10',cat:'editing',x:579,y:182,w:83,h:97},
+      {code:'7411',nameEn:'Live Streaming Studio 4',nameTh:'ห้องไลฟ์สตรีมมิ่ง 4',cat:'live',dims:'3 × 4 ม.',area:12,x:662,y:85,w:89,h:97},{code:'7413',nameEn:'Live Streaming Studio 3',nameTh:'ห้องไลฟ์สตรีมมิ่ง 3',cat:'live',dims:'3 × 4 ม.',area:12,x:662,y:182,w:89,h:97},{code:'7414',nameEn:'Live Streaming Studio 2',nameTh:'ห้องไลฟ์สตรีมมิ่ง 2',cat:'live',dims:'6 × 4 ม.',area:24,x:751,y:85,w:126,h:194},{code:'7415',nameEn:'Live Streaming Studio 1',nameTh:'ห้องไลฟ์สตรีมมิ่ง 1',cat:'live',dims:'8.45 × 6 ม.',area:50.7,x:877,y:85,w:203,h:194},
+      {code:'7412',nameEn:'Equipment Room 1',nameTh:'ห้องเก็บอุปกรณ์ 1',cat:'support',color:'#dc2626',x:750,y:10,w:330,h:75},{code:'7426',nameEn:'Equipment Room 3',nameTh:'ห้องเก็บอุปกรณ์ 3',cat:'support',color:'#facc15',x:0,y:167,w:81,h:112},{code:'SVC',nameEn:'Student Service',nameTh:'จุดให้บริการนักศึกษา',cat:'support',x:151,y:20,w:68,h:55},
+      {code:'7425',nameEn:'Content Studio 1',nameTh:'คอนเทนต์สตูดิโอ 1',cat:'content',dims:'18 × 10 ม.',area:180,x:0,y:351,w:149,h:249,path:'M0 351 H149 V600 H90 V533 H0 Z',labelX:78,labelY:437},{code:'MCR',nameEn:'Master Control Room',nameTh:'ห้องควบคุมการออกอากาศ',cat:'content',x:0,y:533,w:90,h:67},{code:'7424',nameEn:'Content Studio 2',nameTh:'คอนเทนต์สตูดิโอ 2',cat:'content',dims:'8.45 × 12 ม.',area:101.4,x:149,y:327,w:172,h:206},{code:'7424-A',nameEn:'Equipment Room 2',nameTh:'ห้องเก็บอุปกรณ์ 2',cat:'support',color:'#14b8a6',x:149,y:533,w:172,h:67},
+      {code:'7422',nameEn:'Sound Studio 1',nameTh:'ห้องบันทึกเสียง 1',cat:'sound',dims:'6.2 × 5.2 ม.',area:32.24,status:'ON AIR',x:321,y:327,w:129,h:139},{code:'7423',nameEn:'Sound Studio 2',nameTh:'ห้องบันทึกเสียง 2',cat:'sound',dims:'6.2 × 7 ม.',area:43.4,status:'ON AIR',x:321,y:466,w:129,h:134},{code:'7421',nameEn:'Voice-Over Studio',nameTh:'ห้องพากย์เสียง',cat:'sound',dims:'8.45 × 4.1 ม.',area:34.6,status:'ON AIR',x:496,y:497,w:114,h:103},
+      {code:'7419',nameEn:'Acting Room 3',nameTh:'ห้องการแสดง 3',cat:'performance',dims:'8.45 × 4.1 ม.',area:34.6,approx:true,x:496,y:327,w:114,h:83},{code:'7420',nameEn:'Acting Room 4',nameTh:'ห้องการแสดง 4',cat:'performance',dims:'8.45 × 4.1 ม.',area:34.6,approx:true,x:496,y:410,w:114,h:87},{code:'7418',nameEn:'Performing Arts Studio',nameTh:'สตูดิโอศิลปะการแสดง',cat:'performance',dims:'8.45 × 12 ม.',area:101.4,x:610,y:327,w:263,h:273},{code:'7416',nameEn:'Acting Room 1',nameTh:'ห้องการแสดง 1',cat:'performance',dims:'8.9 × 6 ม.',area:53.4,x:873,y:327,w:207,h:132},{code:'7417',nameEn:'Acting Room 2',nameTh:'ห้องการแสดง 2',cat:'performance',dims:'8.9 × 6 ม.',area:53.4,approx:true,x:873,y:459,w:207,h:141}
+    ];
+    const zones = [
+      {label:'ลิฟท์ / บันได',type:'core',x:0,y:10,w:150,h:157},{label:'',type:'core',x:81,y:167,w:69,h:112},{label:'พื้นที่นั่งเล่น',type:'lounge',x:219,y:10,w:531,h:75},{label:'',type:'lounge',x:449,y:85,w:47,h:194},{label:'',type:'corridor',x:0,y:279,w:150,h:72},{label:'ทางเดิน',type:'corridor',x:150,y:279,w:930,h:48},{label:'',type:'corridor',x:450,y:327,w:46,h:273}
+    ];
+    const buildingFloors = {7:[4,5],8:[4],9:[1],12:[1]};
+    const svg = document.getElementById('labRoomPlan');
+    const grid = document.getElementById('labRoomDirectoryGrid');
+    const legend = document.getElementById('labRoomLegend');
+    const pending = document.getElementById('labRoomPlanPending');
+    const detailIdle = document.getElementById('labRoomDetailIdle');
+    const detailContent = document.getElementById('labRoomDetailContent');
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const roomReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let currentBuilding = 7;
+    let currentFloor = 4;
+
+    /* Add room media here when files are available. Each room accepts both
+       images:["<room-photo-path>"] and panoramas:[{src:"<2:1-panorama-path>",
+       title:"...",preview:"...",config:{yaw:0,pitch:0,hfov:100}}]. */
+    const roomMediaConfig = {};
+    window.NCLRoomMedia = roomMediaConfig;
+    const roomPopup = document.getElementById('roomPopup');
+    const roomPopupClose = document.getElementById('roomPopupClose');
+    const roomPopupMedia = document.getElementById('roomPopupMedia');
+    const roomPopupPlaceholder = document.getElementById('roomPopupPlaceholder');
+    const roomPopupPlaceholderTitle = document.getElementById('roomPopupPlaceholderTitle');
+    const roomPopupPlaceholderHint = document.getElementById('roomPopupPlaceholderHint');
+    const roomPopupMediaTag = document.getElementById('roomPopupMediaTag');
+    const roomPopupImage = document.getElementById('roomPopupImage');
+    const roomPopupPanorama = document.getElementById('roomPopupPanorama');
+    roomPopupPanorama.dataset.viewerReady = window.pannellum && typeof window.pannellum.viewer === 'function' ? 'true' : 'false';
+    const roomPopupPrev = document.getElementById('roomPopupPrev');
+    const roomPopupNext = document.getElementById('roomPopupNext');
+    const roomPopupDots = document.getElementById('roomPopupDots');
+    let activeRoomMedia = [];
+    let activeRoomMediaIndex = 0;
+    let activePanoramaViewer = null;
+    let roomPopupLastFocus = null;
+    let roomPopupHideTimer = 0;
+
+    const buildRoomMedia = (room)=>{
+      const configured = roomMediaConfig[room.code] || room.media || {};
+      const media = [];
+      (configured.images || room.images || []).forEach((src)=>{if(src) media.push({type:'image',src});});
+      const panoramas = configured.panoramas || room.panoramas || (configured.panorama ? [configured.panorama] : (room.panorama ? [room.panorama] : []));
+      panoramas.forEach((entry)=>{
+        if(typeof entry === 'string') media.push({type:'panorama',src:entry,config:{}});
+        else if(entry && entry.src) media.push({type:'panorama',src:entry.src,title:entry.title||'',author:entry.author||'',preview:entry.preview||'',config:entry.config||{}});
+      });
+      return media;
+    };
+    const destroyRoomPanorama = ()=>{
+      if(activePanoramaViewer && typeof activePanoramaViewer.destroy === 'function'){
+        try{activePanoramaViewer.destroy();}catch(error){}
+      }
+      activePanoramaViewer = null;
+      roomPopupPanorama.textContent = '';
+      roomPopupPanorama.hidden = true;
+      roomPopupMedia.classList.remove('is-panorama');
+    };
+    const showRoomMediaPlaceholder = (tag,title,hint)=>{
+      destroyRoomPanorama();
+      roomPopupImage.classList.remove('is-active');
+      roomPopupImage.removeAttribute('src');
+      roomPopupImage.alt = '';
+      roomPopupPlaceholder.hidden = false;
+      roomPopupPlaceholderTitle.textContent = title;
+      roomPopupPlaceholderHint.textContent = hint;
+      roomPopupMediaTag.textContent = tag;
+    };
+    const createRoomPanorama = (item)=>{
+      destroyRoomPanorama();
+      roomPopupImage.classList.remove('is-active');
+      roomPopupImage.removeAttribute('src');
+      roomPopupImage.alt = '';
+      roomPopupPlaceholder.hidden = true;
+      roomPopupPanorama.hidden = false;
+      roomPopupMedia.classList.add('is-panorama');
+      if(!window.pannellum || typeof window.pannellum.viewer !== 'function'){
+        showRoomMediaPlaceholder('360° UNAVAILABLE','ไม่สามารถเปิดระบบภาพ 360° ได้','ตรวจสอบไฟล์ Pannellum ในโฟลเดอร์ assets/vendor/pannellum');
+        return;
+      }
+      const config = Object.assign({
+        type:'equirectangular',panorama:item.src,autoLoad:true,showControls:true,showZoomCtrl:true,showFullscreenCtrl:true,
+        keyboardZoom:true,mouseZoom:true,draggable:true,orientationOnByDefault:false,ignoreGPanoXMP:true,backgroundColor:[.027,.024,.059]
+      },item.config||{});
+      config.type = 'equirectangular';
+      config.panorama = item.src;
+      if(item.title) config.title = item.title;
+      if(item.author) config.author = item.author;
+      if(item.preview) config.preview = item.preview;
+      try{
+        const viewer = window.pannellum.viewer(roomPopupPanorama,config);
+        activePanoramaViewer = viewer;
+        if(viewer && typeof viewer.on === 'function') viewer.on('error',()=>{
+          if(activePanoramaViewer === viewer) showRoomMediaPlaceholder('360° UNAVAILABLE','ไม่สามารถเปิดภาพพาโนรามาได้','ใช้ภาพ equirectangular JPEG / WebP อัตราส่วน 2:1 และตรวจสอบเส้นทางไฟล์');
+        });
+        requestAnimationFrame(()=>{if(activePanoramaViewer===viewer&&typeof viewer.resize==='function') viewer.resize();});
+      }catch(error){
+        showRoomMediaPlaceholder('360° UNAVAILABLE','อุปกรณ์นี้ไม่สามารถเปิดภาพ 360° ได้','ระบบยังสามารถแสดงรูปปกติรายการอื่นได้ตามเดิม');
+      }
+    };
+    const renderRoomMedia = ()=>{
+      destroyRoomPanorama();
+      const item = activeRoomMedia[activeRoomMediaIndex];
+      if(!item){
+        showRoomMediaPlaceholder('PHOTO · 360° READY','ยังไม่มีรูปตัวอย่างห้อง','ระบบพร้อมรองรับรูปปกติและภาพพาโนรามา 360° แบบ equirectangular อัตราส่วน 2:1');
+      }else if(item.type === 'panorama'){
+        roomPopupMediaTag.textContent = '360° VIEW '+(activeRoomMediaIndex+1)+' / '+activeRoomMedia.length;
+        createRoomPanorama(item);
+      }else{
+        roomPopupPlaceholder.hidden = true;
+        roomPopupMediaTag.textContent = 'PHOTO '+(activeRoomMediaIndex+1)+' / '+activeRoomMedia.length;
+        roomPopupImage.src = item.src;
+        roomPopupImage.alt = document.getElementById('roomPopupCode').textContent+' — '+document.getElementById('roomPopupTitle').textContent;
+        roomPopupImage.classList.add('is-active');
+      }
+      const multiple = activeRoomMedia.length > 1;
+      roomPopupPrev.hidden = !multiple;
+      roomPopupNext.hidden = !multiple;
+      roomPopupDots.textContent = '';
+      if(multiple) activeRoomMedia.forEach((_,index)=>{
+        const dot = document.createElement('i');
+        if(index===activeRoomMediaIndex) dot.className='is-active';
+        roomPopupDots.append(dot);
+      });
+    };
+    const stepRoomMedia = (direction)=>{
+      if(activeRoomMedia.length<2) return;
+      activeRoomMediaIndex = (activeRoomMediaIndex+direction+activeRoomMedia.length)%activeRoomMedia.length;
+      renderRoomMedia();
+    };
+    const appendPopupRow = (label,value)=>{
+      const row = document.createElement('div');row.className='room-popup-row';
+      const key = document.createElement('span');key.textContent=label;
+      const data = document.createElement('b');data.textContent=value;
+      row.append(key,data);document.getElementById('roomPopupRows').append(row);
+    };
+    const openRoomPopup = (room)=>{
+      activeRoomMedia = buildRoomMedia(room);
+      activeRoomMediaIndex = 0;
+      document.getElementById('roomPopupCode').textContent = room.code;
+      document.getElementById('roomPopupTitle').textContent = room.nameTh;
+      document.getElementById('roomPopupNameEn').textContent = room.nameEn;
+      const category = document.getElementById('roomPopupCategory');
+      category.style.setProperty('--popup-room-color',roomColor(room));
+      category.querySelector('span').textContent = categories[room.cat].label;
+      const rows = document.getElementById('roomPopupRows');rows.textContent='';
+      appendPopupRow('อาคาร / ชั้น','7 / 4');
+      appendPopupRow('ขนาด',room.dims ? room.dims+(room.approx?' · โดยประมาณ':'') : 'ไม่ระบุในผังร่าง');
+      if(room.area) appendPopupRow('พื้นที่',room.area+' ตร.ม.');
+      document.getElementById('roomPopupAir').hidden = room.status!=='ON AIR';
+      roomPopupLastFocus = document.activeElement;
+      if(roomPopupHideTimer){clearTimeout(roomPopupHideTimer);roomPopupHideTimer=0;}
+      roomPopup.hidden = false;
+      roomPopup.setAttribute('aria-hidden','false');
+      document.body.classList.add('room-popup-open');
+      renderRoomMedia();
+      requestAnimationFrame(()=>requestAnimationFrame(()=>roomPopup.classList.add('is-open')));
+      roomPopupClose.focus();
+      document.addEventListener('keydown',onRoomPopupKeydown);
+    };
+    const closeRoomPopup = (instant=false)=>{
+      if(roomPopup.hidden) return;
+      destroyRoomPanorama();
+      roomPopup.classList.remove('is-open');
+      roomPopup.setAttribute('aria-hidden','true');
+      document.body.classList.remove('room-popup-open');
+      document.removeEventListener('keydown',onRoomPopupKeydown);
+      const finish = ()=>{roomPopup.hidden=true;roomPopupHideTimer=0;};
+      if(instant||roomReducedMotion) finish();
+      else roomPopupHideTimer=window.setTimeout(finish,230);
+      if(!instant&&roomPopupLastFocus&&typeof roomPopupLastFocus.focus==='function'){
+        try{roomPopupLastFocus.focus({preventScroll:true});}catch(error){roomPopupLastFocus.focus();}
+      }
+    };
+    function onRoomPopupKeydown(event){
+      const fullscreen = document.fullscreenElement||document.webkitFullscreenElement||document.msFullscreenElement;
+      const panoramaFocused = roomPopupMedia.classList.contains('is-panorama')&&(document.activeElement===roomPopupPanorama||roomPopupPanorama.contains(document.activeElement));
+      if(event.key==='Escape'&&!fullscreen){event.preventDefault();closeRoomPopup();}
+      else if(event.key==='ArrowLeft'&&!panoramaFocused){event.preventDefault();stepRoomMedia(-1);}
+      else if(event.key==='ArrowRight'&&!panoramaFocused){event.preventDefault();stepRoomMedia(1);}
+      else if(event.key==='Tab'){
+        const focusable=Array.from(roomPopup.querySelectorAll('button:not([disabled]),[href],[tabindex]:not([tabindex="-1"])')).filter((node)=>!node.hidden&&node.getClientRects().length);
+        if(!focusable.length){event.preventDefault();roomPopupClose.focus();return;}
+        const first=focusable[0],last=focusable[focusable.length-1];
+        if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+        else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+      }
+    }
+    roomPopupClose.addEventListener('click',()=>closeRoomPopup());
+    roomPopup.addEventListener('click',(event)=>{if(event.target===roomPopup) closeRoomPopup();});
+    roomPopupPrev.addEventListener('click',()=>stepRoomMedia(-1));
+    roomPopupNext.addEventListener('click',()=>stepRoomMedia(1));
+    roomPopupImage.addEventListener('error',()=>showRoomMediaPlaceholder('PHOTO UNAVAILABLE','ไม่สามารถเปิดรูปตัวอย่างห้องได้','ตรวจสอบชื่อไฟล์และตำแหน่งรูปอีกครั้ง'));
+    window.addEventListener('resize',()=>{if(activePanoramaViewer&&typeof activePanoramaViewer.resize==='function') activePanoramaViewer.resize();},{passive:true});
+
+    const makeSvg = (tag,attrs={})=>{
+      const node = document.createElementNS(svgNS,tag);
+      Object.entries(attrs).forEach(([key,value])=>node.setAttribute(key,String(value)));
+      return node;
+    };
+    const roomColor = (room)=>room.color || categories[room.cat].color;
+    const locationAvailable = ()=>currentBuilding === 7 && currentFloor === 4;
+    const clearSelection = ()=>{
+      root.querySelectorAll('.is-selected,.room-directory-card.is-active').forEach((node)=>node.classList.remove('is-selected','is-active'));
+      detailContent.hidden = true;
+      detailIdle.hidden = false;
+    };
+    const addDetailRow = (label,value)=>{
+      const row = document.createElement('div');
+      row.className = 'room-detail-row';
+      const key = document.createElement('span');
+      const data = document.createElement('b');
+      key.textContent = label;
+      data.textContent = value;
+      row.append(key,data);
+      document.getElementById('labRoomDetailRows').append(row);
+    };
+    const selectRoom = (room,scrollDetail=false)=>{
+      if(!locationAvailable()) return;
+      root.querySelectorAll('.lab-room-block').forEach((node)=>node.classList.toggle('is-selected',node.dataset.code === room.code));
+      root.querySelectorAll('.room-directory-card').forEach((node)=>node.classList.toggle('is-active',node.dataset.code === room.code));
+      detailIdle.hidden = true;
+      detailContent.hidden = false;
+      document.getElementById('labRoomDetailCode').textContent = room.code;
+      document.getElementById('labRoomDetailCategory').textContent = categories[room.cat].label;
+      document.getElementById('labRoomDetailName').textContent = room.nameTh;
+      document.getElementById('labRoomDetailNameEn').textContent = room.nameEn;
+      const rows = document.getElementById('labRoomDetailRows');
+      rows.textContent = '';
+      addDetailRow('อาคาร / ชั้น','7 / 4');
+      addDetailRow('ขนาด',room.dims ? room.dims + (room.approx ? ' · โดยประมาณ' : '') : 'ไม่ระบุในผังร่าง');
+      if(room.area) addDetailRow('พื้นที่',room.area + ' ตร.ม.');
+      document.getElementById('labRoomDetailAir').hidden = room.status !== 'ON AIR';
+      openRoomPopup(room);
+    };
+
+    zones.forEach((zone)=>{
+      const group = makeSvg('g',{class:'lab-room-zone' + (zone.type === 'lounge' ? ' is-lounge' : '')});
+      group.append(makeSvg('rect',{x:zone.x,y:zone.y,width:zone.w,height:zone.h,rx:6}));
+      if(zone.label){const text = makeSvg('text',{x:zone.x+zone.w/2,y:zone.y+zone.h/2,'font-size':11});text.textContent=zone.label;group.append(text);}
+      svg.append(group);
+    });
+    rooms.forEach((room)=>{
+      const group = makeSvg('g',{class:'lab-room-block','data-code':room.code,tabindex:0,role:'button','aria-label':room.code+' '+room.nameTh});
+      group.style.setProperty('--room-color',roomColor(room));
+      group.append(room.path ? makeSvg('path',{d:room.path,class:'room-shape'}) : makeSvg('rect',{x:room.x,y:room.y,width:room.w,height:room.h,rx:5,class:'room-shape'}));
+      const centerX = room.labelX || room.x + room.w/2;
+      const centerY = room.labelY || room.y + room.h/2;
+      const code = makeSvg('text',{x:centerX,y:centerY-5,class:'room-code'});code.textContent=room.code;
+      const label = makeSvg('text',{x:centerX,y:centerY+11,class:'room-label'});label.textContent=room.nameTh.replace(/^ห้อง/,'').slice(0,18);
+      group.append(code,label);
+      group.addEventListener('click',()=>selectRoom(room,true));
+      group.addEventListener('keydown',(event)=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();selectRoom(room,true);}});
+      svg.append(group);
+
+      const card = document.createElement('button');
+      card.className = 'room-directory-card';
+      card.type = 'button';
+      card.dataset.code = room.code;
+      card.style.setProperty('--room-card-color',roomColor(room));
+      const cardCode = document.createElement('span');cardCode.textContent = room.code+' · '+categories[room.cat].label;
+      const cardName = document.createElement('strong');cardName.textContent = room.nameTh;
+      const cardMeta = document.createElement('small');cardMeta.textContent = room.dims || room.nameEn;
+      card.append(cardCode,cardName,cardMeta);
+      card.addEventListener('click',()=>selectRoom(room,true));
+      grid.append(card);
+    });
+    Object.entries(categories).forEach(([,category])=>{
+      const item = document.createElement('span');
+      item.className = 'room-legend-item';
+      item.style.setProperty('--legend-color',category.color);
+      const dot = document.createElement('i');
+      const label = document.createElement('span');label.textContent=category.label;
+      item.append(dot,label);
+      legend.append(item);
+    });
+
+    const syncFloorOptions = ()=>{
+      const allowed = buildingFloors[currentBuilding] || [];
+      if(!allowed.includes(currentFloor)) currentFloor = allowed[0];
+      root.querySelectorAll('[data-floor]').forEach((button)=>{
+        const floor = Number(button.dataset.floor);
+        const enabled = allowed.includes(floor);
+        button.disabled = !enabled;
+        button.setAttribute('aria-disabled',String(!enabled));
+        button.setAttribute('aria-pressed',String(enabled && floor === currentFloor));
+      });
+    };
+    const updateLocation = ()=>{
+      closeRoomPopup(true);
+      syncFloorOptions();
+      const available = locationAvailable();
+      const pad = (number)=>String(number).padStart(2,'0');
+      document.getElementById('labRoomPlanCode').textContent = 'NITADE·'+pad(currentBuilding)+'·'+pad(currentFloor);
+      document.getElementById('labRoomPlanLabel').textContent = 'Building '+currentBuilding+' / Floor '+currentFloor;
+      document.getElementById('labRoomLocationStatus').textContent = 'อาคาร '+currentBuilding+' · ชั้น '+currentFloor;
+      document.getElementById('labRoomCount').textContent = available ? rooms.length+' ห้อง/พื้นที่' : 'รออัปเดต';
+      document.getElementById('labRoomPendingTitle').textContent = 'ผังพื้นที่ชั้น '+currentFloor+' อาคาร '+currentBuilding;
+      pending.hidden = available;
+      svg.setAttribute('aria-hidden',String(!available));
+      grid.hidden = !available;
+      legend.hidden = !available;
+      root.querySelector('.room-directory-list-head').hidden = !available;
+      clearSelection();
+    };
+    root.querySelectorAll('[data-building]').forEach((button)=>button.addEventListener('click',()=>{
+      currentBuilding = Number(button.dataset.building);
+      root.querySelectorAll('[data-building]').forEach((item)=>item.setAttribute('aria-pressed',String(item===button)));
+      updateLocation();
+    }));
+    root.querySelectorAll('[data-floor]').forEach((button)=>button.addEventListener('click',()=>{
+      if(button.disabled) return;
+      currentFloor = Number(button.dataset.floor);
+      updateLocation();
+    }));
+    document.getElementById('labRoomDetailClose').addEventListener('click',clearSelection);
+    updateLocation();
+  }
+
+  initRoomDirectory();
 
   function initFacilitiesTabs(){
     const tabRoot = document.querySelector('[data-facilities-tabs]');
