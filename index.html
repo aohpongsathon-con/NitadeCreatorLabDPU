@@ -3666,7 +3666,63 @@
     /* Add room media here when files are available. Each room accepts both
        images:["<room-photo-path>"] and panoramas:[{src:"<2:1-panorama-path>",
        title:"...",preview:"...",config:{yaw:0,pitch:0,hfov:100}}]. */
-    const roomMediaConfig = {};
+    const roomPanoramaFiles = {
+      editing:'assets/images/rooms/360/7401-7410.jpg',
+      liveShared:'assets/images/rooms/360/7411-7413.jpg',
+      room7414:'assets/images/rooms/360/7414.jpg',
+      room7415:'assets/images/rooms/360/7415.jpg',
+      actingShared:'assets/images/rooms/360/7416-7417.jpg',
+      room7418:'assets/images/rooms/360/7418.jpg',
+      actingShared2:'assets/images/rooms/360/7419-7420.jpg',
+      room7421Angle1:'assets/images/rooms/360/7421-angle-1.jpg',
+      room7421Angle2:'assets/images/rooms/360/7421-angle-2.jpg',
+      room7422:'assets/images/rooms/360/7422.jpg',
+      room7423Angle1:'assets/images/rooms/360/7423-angle-1.jpg',
+      room7423Angle2:'assets/images/rooms/360/7423-angle-2.jpg',
+      room7424:'assets/images/rooms/360/7424.jpg',
+      room7425:'assets/images/rooms/360/7425.jpg',
+      room7424A:'assets/images/rooms/360/7424-A.jpg',
+      mcr:'assets/images/rooms/360/mcr.jpg'
+    };
+    const panorama = (src,title)=>({
+      src,
+      title,
+      config:{yaw:0,pitch:0,hfov:105}
+    });
+    const roomMediaConfig = {
+      '7401':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7401 · ภาพ 360°')]},
+      '7402':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7402 · ภาพ 360°')]},
+      '7403':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7403 · ภาพ 360°')]},
+      '7404':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7404 · ภาพ 360°')]},
+      '7405':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7405 · ภาพ 360°')]},
+      '7406':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7406 · ภาพ 360°')]},
+      '7407':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7407 · ภาพ 360°')]},
+      '7408':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7408 · ภาพ 360°')]},
+      '7409':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7409 · ภาพ 360°')]},
+      '7410':{panoramas:[panorama(roomPanoramaFiles.editing,'ห้อง 7410 · ภาพ 360°')]},
+      '7411':{panoramas:[panorama(roomPanoramaFiles.liveShared,'ห้อง 7411 · ภาพ 360°')]},
+      '7413':{panoramas:[panorama(roomPanoramaFiles.liveShared,'ห้อง 7413 · ภาพ 360°')]},
+      '7414':{panoramas:[panorama(roomPanoramaFiles.room7414,'ห้อง 7414 · ภาพ 360°')]},
+      '7415':{panoramas:[panorama(roomPanoramaFiles.room7415,'ห้อง 7415 · ภาพ 360°')]},
+      '7416':{panoramas:[panorama(roomPanoramaFiles.actingShared,'ห้อง 7416 · ภาพ 360°')]},
+      '7417':{panoramas:[panorama(roomPanoramaFiles.actingShared,'ห้อง 7417 · ภาพ 360°')]},
+      '7418':{panoramas:[panorama(roomPanoramaFiles.room7418,'ห้อง 7418 · ภาพ 360°')]},
+      '7419':{panoramas:[panorama(roomPanoramaFiles.actingShared2,'ห้อง 7419 · ภาพ 360°')]},
+      '7420':{panoramas:[panorama(roomPanoramaFiles.actingShared2,'ห้อง 7420 · ภาพ 360°')]},
+      '7421':{panoramas:[
+        panorama(roomPanoramaFiles.room7421Angle1,'ห้อง 7421 · มุมที่ 1'),
+        panorama(roomPanoramaFiles.room7421Angle2,'ห้อง 7421 · มุมที่ 2')
+      ]},
+      '7422':{panoramas:[panorama(roomPanoramaFiles.room7422,'ห้อง 7422 · ภาพ 360°')]},
+      '7423':{panoramas:[
+        panorama(roomPanoramaFiles.room7423Angle1,'ห้อง 7423 · มุมที่ 1'),
+        panorama(roomPanoramaFiles.room7423Angle2,'ห้อง 7423 · มุมที่ 2')
+      ]},
+      '7424':{panoramas:[panorama(roomPanoramaFiles.room7424,'ห้อง 7424 · ภาพ 360°')]},
+      '7425':{panoramas:[panorama(roomPanoramaFiles.room7425,'ห้อง 7425 · ภาพ 360°')]},
+      'MCR':{panoramas:[panorama(roomPanoramaFiles.mcr,'ห้อง MCR · ภาพ 360°')]},
+      '7424-A':{panoramas:[panorama(roomPanoramaFiles.room7424A,'ห้อง 7424-A · ภาพ 360°')]}
+    };
     window.NCLRoomMedia = roomMediaConfig;
     const roomPopup = document.getElementById('roomPopup');
     const roomPopupClose = document.getElementById('roomPopupClose');
