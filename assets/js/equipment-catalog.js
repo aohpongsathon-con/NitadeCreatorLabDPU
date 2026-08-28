@@ -1150,11 +1150,24 @@ const DATA = [
     ['accessories','Follow Focus','TILTA','Manual','assets/images/equipment/set-2-transparent/TILTA Manual.png'],
     ['accessories','Matte Box','TILTA','Mini','assets/images/equipment/set-2-transparent/TILTA Mini.png'],
     ['accessories','Follow Focus','TILTA','Nucleus-M (Wireless)','assets/images/equipment/set-2-transparent/TILTA Nucleus-M (Wireless).png'],
-    ['lights','Cinema Lights','Tungsten','ส้ม 800w','assets/images/equipment/set-2-transparent/Tungsten ส้ม 800w.png'],
+    ['lights','Cinema Lights','Tungsten','แดง 800w','assets/images/equipment/set-2-transparent/Tungsten แดง 800w.png'],
     ['lights','Cinema Lights','Tungsten','หัวเหลือง 2000w','assets/images/equipment/set-2-transparent/Tungsten หัวเหลือง 2000w.png'],
     ['lights','Video Lights','Yongnuo','YN 600L II','assets/images/equipment/set-2-transparent/Yongnuo YN 600L ii.png'],
     ['accessories','Accessories — Lights','ผ้าเขียว','Green Screen','assets/images/equipment/set-2-transparent/ผ้าเขียว Green Screen.png'],
     ['accessories','Accessories — Lights','ผ้าดำ','Black Cloth','assets/images/equipment/set-2-transparent/ผ้าดำ Black Cloth.png']
+  );
+
+  // Drive set received 2026-08-27. Only image paths are added here;
+  // equipment brands and model names in DATA remain untouched.
+  EQUIPMENT_IMAGES.push(
+    ['lights','Cinema Lights','Tungsten','ส้ม 800w','assets/images/equipment/drive-20260827-transparent/Tungsten ส้ม 800w.png'],
+    ['sound','Boom Setup','RØDE','NTG3 (Shotgun Mic)','assets/images/equipment/drive-20260827-transparent/RØDE NTG3.png'],
+    ['sound','Boom Setup','RØDE','PG2-R Shock Mount','assets/images/equipment/drive-20260827-transparent/RØDE PG2-R Shock Mount.png'],
+    ['sound','Boom Setup','RØDE','Blimp','assets/images/equipment/drive-20260827-transparent/RØDE Blimp.png'],
+    ['sound','Boom Setup','—','Windshield / Dead Cat','assets/images/equipment/drive-20260827-transparent/Windshield Dead Cat.png'],
+    ['sound','Boom Setup','RØDE','Boompole','assets/images/equipment/drive-20260827-transparent/RØDE Boompole.png'],
+    ['sound','Lavalier Mic','BOYA','BY-M1S','assets/images/equipment/drive-20260827-transparent/BOYA BY-M1S.png'],
+    ['sound','Lavalier Mic','Tentacle','Sync Lavalier','assets/images/equipment/drive-20260827-transparent/Tentacle Sync Lavalier.png']
   );
 
   const EQUIPMENT_IMAGE_MAP = new Map(EQUIPMENT_IMAGES.map(function(entry){
