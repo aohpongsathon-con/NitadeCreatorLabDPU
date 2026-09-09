@@ -1,0 +1,13 @@
+* text=auto eol=lf
+
+# Binary website assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.mp4 binary
+*.webm binary
+*.insp binary

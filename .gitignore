@@ -1,0 +1,13 @@
+# Generated standalone bundle (too large for normal Git/GitHub tracking)
+nitade-creator-lab.html
+
+# Local/generated output
+outputs/
+*.tmp
+*.bak
+*.log
+
+# Operating-system metadata
+Thumbs.db
+.DS_Store
+Desktop.ini
