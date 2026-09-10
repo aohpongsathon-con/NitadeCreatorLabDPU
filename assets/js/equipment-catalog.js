@@ -1446,7 +1446,7 @@ const DATA = [
       }
       return '<li>' +
         '<span class="equipment-service-list-index">' + (index + 1) + '.</span>' +
-        '<span class="equipment-service-list-line"><b>' + escapeHtml(printItemName(record.item)) + '</b><small>' + escapeHtml(record.item.group) + '</small></span>' +
+        '<span class="equipment-service-list-line"><b>' + escapeHtml(printItemName(record.item)) + '</b></span>' +
         '<strong class="equipment-service-list-qty">จำนวน ' + record.quantity + '</strong>' +
       '</li>';
     }).join('');
