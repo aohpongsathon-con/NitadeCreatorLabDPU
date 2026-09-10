@@ -1464,7 +1464,7 @@ const DATA = [
   function renderPrintDocument(){
     if(!elements.printDocument) return;
     const records = selectedRecords();
-    elements.printDocument.classList.toggle('is-dense', records.length > 14 && records.length <= 26);
+    elements.printDocument.classList.toggle('is-dense', records.length > 8 && records.length <= 26);
     elements.printDocument.classList.toggle('is-extra-dense', records.length > 26 && records.length <= 40);
     elements.printDocument.classList.toggle('is-maximum-dense', records.length > 40);
     const buckets = {visual:[],sound:[],lighting:[]};
