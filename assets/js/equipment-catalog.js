@@ -1453,9 +1453,12 @@ const DATA = [
     const otherRow = settings.alwaysOther
       ? '<li class="equipment-service-list-other"><span></span><span class="equipment-service-list-line"><b>อื่นๆ</b></span><span></span></li>'
       : '';
+    const cameraFieldLabels = settings.hideBatteryField
+      ? ['Card','แท่นชาร์จ','อื่นๆ']
+      : ['Card','แท่นชาร์จ','แบตเตอรี่','อื่นๆ'];
     const supplementalFields = settings.cameraFields
-      ? '<div class="equipment-service-supplemental" aria-label="รายการประกอบอุปกรณ์บันทึกภาพ">' +
-          '<span><b>Card</b><i></i></span><span><b>แท่นชาร์จ</b><i></i></span><span><b>แบตเตอรี่</b><i></i></span><span><b>อื่นๆ</b><i></i></span>' +
+      ? '<div class="equipment-service-supplemental' + (settings.hideBatteryField ? ' is-three-fields' : '') + '" aria-label="รายการประกอบอุปกรณ์บันทึกภาพ">' +
+          cameraFieldLabels.map(function(label){ return '<span><b>' + escapeHtml(label) + '</b><i></i></span>'; }).join('') +
         '</div>'
       : '';
     return '<section class="equipment-service-list"><h6>' + escapeHtml(title) + '</h6><ol class="equipment-service-list-grid">' + rows + otherRow + '</ol>' + supplementalFields + '</section>';
@@ -1469,6 +1472,7 @@ const DATA = [
     elements.printDocument.classList.toggle('is-maximum-dense', records.length > 40);
     const buckets = {visual:[],sound:[],lighting:[]};
     records.forEach(function(record){ buckets[printBucketFor(record)].push(record); });
+    const hasSelectedBattery = records.some(function(record){ return normalize(record.item.group) === 'battery'; });
     elements.printDocument.innerHTML =
       '<header class="equipment-service-form-header">' +
         '<img class="equipment-service-form-logo" src="assets/images/dpu-ca-form-logo.png" alt="DPU CA">' +
@@ -1503,7 +1507,7 @@ const DATA = [
       '</section>' +
       '<section class="equipment-service-section equipment-service-equipment">' +
         '<div class="equipment-service-equipment-head"><h5>8. Equipment Service</h5><strong>จำนวนรวม ' + totalQuantity() + ' ชิ้น</strong></div>' +
-        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true}) +
+        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true,hideBatteryField:hasSelectedBattery}) +
         renderPrintEquipmentList('อุปกรณ์บันทึกเสียง', buckets.sound, {alwaysOther:true}) +
         renderPrintEquipmentList('อุปกรณ์จัดแสง', buckets.lighting, {alwaysOther:true}) +
       '</section>' +
