@@ -1426,34 +1426,86 @@ const DATA = [
     }
   }
 
+  function printItemName(item){
+    return [item.b && item.b !== '—' ? item.b : '', item.m].filter(Boolean).join(' ').trim();
+  }
+
+  function printBucketFor(record){
+    if(record.item.category === 'sound') return 'sound';
+    if(record.item.category === 'lights') return 'lighting';
+    if(record.item.category === 'accessories' && /lights/i.test(record.item.group || '')) return 'lighting';
+    return 'visual';
+  }
+
+  function renderPrintEquipmentList(title, records){
+    const displayRecords = records.length ? records : [{empty:true},{empty:true}];
+    const rows = displayRecords.map(function(record, index){
+      if(record.empty){
+        return '<li><span class="equipment-service-list-index">' + (index + 1) + '.</span><span class="equipment-service-empty-line"></span><span></span></li>';
+      }
+      return '<li>' +
+        '<span class="equipment-service-list-index">' + (index + 1) + '.</span>' +
+        '<span class="equipment-service-list-line"><b>' + escapeHtml(printItemName(record.item)) + '</b><small>' + escapeHtml(record.item.group) + '</small></span>' +
+        '<strong class="equipment-service-list-qty">จำนวน ' + record.quantity + '</strong>' +
+      '</li>';
+    }).join('');
+    return '<section class="equipment-service-list"><h6>' + escapeHtml(title) + '</h6><ol class="equipment-service-list-grid">' + rows + '</ol></section>';
+  }
+
   function renderPrintDocument(){
     if(!elements.printDocument) return;
     const records = selectedRecords();
-    const groups = groupedSelectedRecords(records);
-    const categoryHtml = groups.map(function(group){
-      const rows = group.records.map(function(record, index){
-        return '<tr>' +
-          '<td>' + (index + 1) + '</td>' +
-          '<td><b>' + escapeHtml(record.item.b + ' ' + record.item.m) + '</b><small>' + escapeHtml(record.item.categoryTitle) + '</small></td>' +
-          '<td>' + escapeHtml(record.item.group) + '</td>' +
-          '<td><b>' + record.quantity + '</b></td>' +
-        '</tr>';
-      }).join('');
-      return '<section class="equipment-print-category">' +
-        '<div class="equipment-print-category-head"><div><span>' + escapeHtml(group.meta.code) + '</span><h5>' + escapeHtml(group.category.label) + '</h5></div><strong>' + group.quantity + ' ชิ้น</strong></div>' +
-        '<table class="equipment-print-table"><thead><tr><th>#</th><th>รายการอุปกรณ์</th><th>หมวดย่อย</th><th>จำนวน</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-      '</section>';
-    }).join('');
+    elements.printDocument.classList.toggle('is-dense', records.length > 14 && records.length <= 26);
+    elements.printDocument.classList.toggle('is-extra-dense', records.length > 26 && records.length <= 40);
+    elements.printDocument.classList.toggle('is-maximum-dense', records.length > 40);
+    const buckets = {visual:[],sound:[],lighting:[]};
+    records.forEach(function(record){ buckets[printBucketFor(record)].push(record); });
     elements.printDocument.innerHTML =
-      '<header class="equipment-print-paper-head">' +
-        '<div class="equipment-print-brand"><span class="equipment-print-brand-mark">NCL</span><div><b>Nitade Creator Lab</b><small>EQUIPMENT DOCUMENT · CA DPU</small></div></div>' +
-        '<div class="equipment-print-date">จัดทำเมื่อ<br><b>' + escapeHtml(formatThaiDate(new Date())) + '</b></div>' +
+      '<header class="equipment-service-form-header">' +
+        '<img class="equipment-service-form-logo" src="assets/images/dpu-ca-form-logo.png" alt="DPU CA">' +
+        '<div class="equipment-service-form-heading">' +
+          '<div class="equipment-service-form-title"><h4>แบบขอใช้บริการ</h4><strong>Nitade Creator Center Office</strong></div>' +
+          '<div class="equipment-service-schedule"><span>เวลาในตารางเรียน <i class="equipment-service-check" aria-hidden="true"></i></span><span>เวลานอกตารางเรียน <i class="equipment-service-check" aria-hidden="true"></i></span></div>' +
+        '</div>' +
       '</header>' +
-      '<div class="equipment-print-title"><span>SELECTION LIST</span><h4>รายการอุปกรณ์ที่เลือก</h4><p>จัดกลุ่มตามประเภทอุปกรณ์ เพื่อใช้ตรวจสอบและจัดเตรียมรายการ</p></div>' +
-      (categoryHtml || '<p class="equipment-print-note">ยังไม่มีรายการอุปกรณ์</p>') +
-      '<div class="equipment-print-total"><span>จำนวนอุปกรณ์รวมทั้งหมด</span><strong>' + totalQuantity() + ' ชิ้น</strong></div>' +
-      '<p class="equipment-print-note">เอกสารนี้เป็นรายการสำหรับตรวจสอบและจัดเตรียมอุปกรณ์ กรุณาตรวจสอบจำนวนและความพร้อมใช้งานอีกครั้งก่อนนำไปใช้งานจริง</p>' +
-      '<p class="equipment-print-warning"><strong>เอกสารฉบับนี้ไม่ใช่เอกสารการยืมอุปกรณ์</strong> เป็นเพียงสำหรับการตรวจสอบเท่านั้น หากต้องการยืมอุปกรณ์ให้ติดต่อพี่ๆทีมLab อีกครั้ง</p>';
+      '<section class="equipment-service-section">' +
+        '<div class="equipment-service-inline wrap"><h5>1. ข้อมูลผู้ขอใช้บริการ</h5><i class="equipment-service-check" aria-hidden="true"></i><span>นักศึกษา</span><i class="equipment-service-check" aria-hidden="true"></i><span>อาจารย์</span><i class="equipment-service-check" aria-hidden="true"></i><span>บุคลากร</span></div>' +
+        '<div class="equipment-service-inline"><span class="equipment-service-label">ชื่อ-นามสกุล</span><span class="equipment-service-dots"></span><span class="equipment-service-label">เลขทะเบียน</span><span class="equipment-service-dots medium"></span></div>' +
+        '<div class="equipment-service-inline"><span class="equipment-service-label">สาขา/หน่วยงาน</span><span class="equipment-service-dots"></span><span class="equipment-service-label">เบอร์โทรศัพท์</span><span class="equipment-service-dots medium"></span></div>' +
+      '</section>' +
+      '<section class="equipment-service-section">' +
+        '<h5>2. วันเวลาที่ต้องการใช้งาน</h5>' +
+        '<div class="equipment-service-inline"><span>วันที่</span><span class="equipment-service-dots short"></span><span>เวลา</span><span class="equipment-service-dots short"></span><span>น. ถึง วันที่</span><span class="equipment-service-dots short"></span><span>เวลา</span><span class="equipment-service-dots short"></span><span>น.</span></div>' +
+        '<div class="equipment-service-inline"><span>รวมเป็นเวลา</span><span class="equipment-service-dots short"></span><span>ชม.</span><span class="equipment-service-dots short"></span><span>นาที</span><span>รหัสวิชา</span><span class="equipment-service-dots short"></span><span>ชื่อวิชา</span><span class="equipment-service-dots"></span></div>' +
+        '<div class="equipment-service-inline"><span>จำนวนผู้ใช้บริการ</span><span class="equipment-service-dots short"></span><span>คน</span><span>อาจารย์ผู้สอน</span><span class="equipment-service-dots"></span></div>' +
+        '<div class="equipment-service-inline"><span>วัตถุประสงค์เพื่อ</span><span class="equipment-service-dots"></span></div>' +
+      '</section>' +
+      '<section class="equipment-service-section">' +
+        '<h5>3. Studio Production Service</h5>' +
+        '<div class="equipment-service-room-choices">' +
+          '<span><i class="equipment-service-check" aria-hidden="true"></i>Content Studio 1</span><span><i class="equipment-service-check" aria-hidden="true"></i>Content Studio 2</span><span><i class="equipment-service-check" aria-hidden="true"></i>Studio ตึก 7 ชั้น 5</span><span><i class="equipment-service-check" aria-hidden="true"></i>7502</span><span><i class="equipment-service-check" aria-hidden="true"></i>CreativeSpace 1</span><span><i class="equipment-service-check" aria-hidden="true"></i>CreativeSpace 2</span><span><i class="equipment-service-check" aria-hidden="true"></i>Sand Box</span>' +
+        '</div>' +
+      '</section>' +
+      '<section class="equipment-service-rooms-grid">' +
+        '<div class="equipment-service-room-block"><h6>4. Editing Room Service</h6><div class="equipment-service-room-list is-two-column"><span>Editing 1</span><span>Editing 6</span><span>Editing 2</span><span>Editing 7</span><span>Editing 3</span><span>Editing 8</span><span>Editing 4</span><span>Editing 9</span><span>Editing 5</span><span>Editing 10</span></div></div>' +
+        '<div class="equipment-service-room-block"><h6>5. Performing Arts Studio</h6><div class="equipment-service-room-list"><span>Performing Arts Studio 7418</span><span>Acting Room 1 / 7416</span><span>Acting Room 2 / 7417</span><span>Acting Room 3 / 7419</span><span>Acting Room 4 / 7420</span><span>ห้องการแสดง ชั้น 5 / 7501</span></div></div>' +
+        '<div class="equipment-service-room-block"><h6>6. Live Streaming Studio</h6><div class="equipment-service-room-list"><span>Live Streaming Studio 1</span><span>Live Streaming Studio 2</span><span>Live Streaming Studio 3</span><span>Live Streaming Studio 4</span></div></div>' +
+        '<div class="equipment-service-room-block"><h6>7. Sound Studio</h6><div class="equipment-service-room-list"><span>Sound Studio 1</span><span>Sound Studio 2</span><span>Voice Over Studio</span></div></div>' +
+      '</section>' +
+      '<section class="equipment-service-section equipment-service-equipment">' +
+        '<div class="equipment-service-equipment-head"><h5>8. Equipment Service</h5><strong>จำนวนรวม ' + totalQuantity() + ' ชิ้น</strong></div>' +
+        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual) +
+        renderPrintEquipmentList('อุปกรณ์บันทึกเสียง', buckets.sound) +
+        renderPrintEquipmentList('อุปกรณ์จัดแสง', buckets.lighting) +
+      '</section>' +
+      '<section class="equipment-service-signatures">' +
+        '<div class="equipment-service-signature"><p>ลงชื่อ <span class="equipment-service-signature-line"></span> ผู้ขอใช้บริการ</p><p class="equipment-service-signature-date">........ / ........ / ........</p></div>' +
+        '<div class="equipment-service-approval"><h6>หมายเหตุ</h6><p>ผู้สอน / ผู้ดูแลโครงการได้ทำการตรวจสอบรายการอุปกรณ์ที่ผู้ขอใช้บริการแจ้งไว้เป็นที่เรียบร้อยแล้ว</p><div class="equipment-service-signature">ลงชื่อ <span class="equipment-service-signature-line"></span> อาจารย์ผู้รับรอง</div></div>' +
+      '</section>' +
+      '<p class="equipment-service-form-note">เอกสารนี้เป็นรายการสำหรับตรวจสอบและจัดเตรียมอุปกรณ์ กรุณาตรวจสอบจำนวนและความพร้อมใช้งานอีกครั้งก่อนนำไปใช้งานจริง</p>' +
+      '<p class="equipment-print-warning"><strong>เอกสารฉบับนี้ไม่ใช่เอกสารการยืมอุปกรณ์</strong> เป็นเพียงสำหรับการตรวจสอบเท่านั้น หากต้องการยืมอุปกรณ์ให้ติดต่อพี่ๆ ทีม Lab อีกครั้ง</p>' +
+      '<p class="equipment-service-liability">ผู้ขอใช้บริการมีหน้าที่ดูแลรักษาอุปกรณ์ และในกรณีที่อุปกรณ์ได้รับความเสียหายหรือสูญหาย ผู้ขอใช้บริการตกลงรับผิดชอบชดใช้ค่าเสียหายตามมูลค่าความเสียหายที่เกิดขึ้นจริง</p>' +
+      '<p class="equipment-service-generated">จัดทำเมื่อ ' + escapeHtml(formatThaiDate(new Date())) + '</p>';
   }
 
   function renderSelection(){
