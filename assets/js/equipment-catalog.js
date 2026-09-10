@@ -1508,7 +1508,7 @@ const DATA = [
         renderPrintEquipmentList('อุปกรณ์จัดแสง', buckets.lighting, {alwaysOther:true}) +
       '</section>' +
       '<section class="equipment-service-signatures">' +
-        '<div class="equipment-service-signature"><p>ลงชื่อ <span class="equipment-service-signature-line"></span> ผู้ขอใช้บริการ</p><p class="equipment-service-signature-date">........ / ........ / ........</p></div>' +
+        '<div class="equipment-service-signature"><p class="equipment-service-signature-row"><span>ลงชื่อ</span><span class="equipment-service-signature-line"></span><span class="equipment-service-signature-role">ผู้ขอใช้บริการ</span></p><p class="equipment-service-signature-date">........ / ........ / ........</p></div>' +
         '<div class="equipment-service-approval"><h6>หมายเหตุ</h6><p>ผู้สอน / ผู้ดูแลโครงการได้ทำการตรวจสอบรายการอุปกรณ์ที่ผู้ขอใช้บริการแจ้งไว้เป็นที่เรียบร้อยแล้ว</p><div class="equipment-service-signature">ลงชื่อ <span class="equipment-service-signature-line"></span> อาจารย์ผู้รับรอง</div></div>' +
       '</section>' +
       '<p class="equipment-service-form-note">เอกสารนี้เป็นรายการสำหรับตรวจสอบและจัดเตรียมอุปกรณ์ กรุณาตรวจสอบจำนวนและความพร้อมใช้งานอีกครั้งก่อนนำไปใช้งานจริง</p>' +
