@@ -1437,7 +1437,8 @@ const DATA = [
     return 'visual';
   }
 
-  function renderPrintEquipmentList(title, records){
+  function renderPrintEquipmentList(title, records, options){
+    const settings = options || {};
     const displayRecords = records.length ? records : [{empty:true},{empty:true}];
     const rows = displayRecords.map(function(record, index){
       if(record.empty){
@@ -1449,7 +1450,15 @@ const DATA = [
         '<strong class="equipment-service-list-qty">จำนวน ' + record.quantity + '</strong>' +
       '</li>';
     }).join('');
-    return '<section class="equipment-service-list"><h6>' + escapeHtml(title) + '</h6><ol class="equipment-service-list-grid">' + rows + '</ol></section>';
+    const otherRow = settings.alwaysOther
+      ? '<li class="equipment-service-list-other"><span></span><span class="equipment-service-list-line"><b>อื่นๆ</b></span><span></span></li>'
+      : '';
+    const supplementalFields = settings.cameraFields
+      ? '<div class="equipment-service-supplemental" aria-label="รายการประกอบอุปกรณ์บันทึกภาพ">' +
+          '<span><b>Card</b><i></i></span><span><b>แท่นชาร์จ</b><i></i></span><span><b>แบตเตอรี่</b><i></i></span><span><b>อื่นๆ</b><i></i></span>' +
+        '</div>'
+      : '';
+    return '<section class="equipment-service-list"><h6>' + escapeHtml(title) + '</h6><ol class="equipment-service-list-grid">' + rows + otherRow + '</ol>' + supplementalFields + '</section>';
   }
 
   function renderPrintDocument(){
@@ -1494,16 +1503,15 @@ const DATA = [
       '</section>' +
       '<section class="equipment-service-section equipment-service-equipment">' +
         '<div class="equipment-service-equipment-head"><h5>8. Equipment Service</h5><strong>จำนวนรวม ' + totalQuantity() + ' ชิ้น</strong></div>' +
-        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual) +
-        renderPrintEquipmentList('อุปกรณ์บันทึกเสียง', buckets.sound) +
-        renderPrintEquipmentList('อุปกรณ์จัดแสง', buckets.lighting) +
+        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true}) +
+        renderPrintEquipmentList('อุปกรณ์บันทึกเสียง', buckets.sound, {alwaysOther:true}) +
+        renderPrintEquipmentList('อุปกรณ์จัดแสง', buckets.lighting, {alwaysOther:true}) +
       '</section>' +
       '<section class="equipment-service-signatures">' +
         '<div class="equipment-service-signature"><p>ลงชื่อ <span class="equipment-service-signature-line"></span> ผู้ขอใช้บริการ</p><p class="equipment-service-signature-date">........ / ........ / ........</p></div>' +
         '<div class="equipment-service-approval"><h6>หมายเหตุ</h6><p>ผู้สอน / ผู้ดูแลโครงการได้ทำการตรวจสอบรายการอุปกรณ์ที่ผู้ขอใช้บริการแจ้งไว้เป็นที่เรียบร้อยแล้ว</p><div class="equipment-service-signature">ลงชื่อ <span class="equipment-service-signature-line"></span> อาจารย์ผู้รับรอง</div></div>' +
       '</section>' +
       '<p class="equipment-service-form-note">เอกสารนี้เป็นรายการสำหรับตรวจสอบและจัดเตรียมอุปกรณ์ กรุณาตรวจสอบจำนวนและความพร้อมใช้งานอีกครั้งก่อนนำไปใช้งานจริง</p>' +
-      '<p class="equipment-print-warning"><strong>เอกสารฉบับนี้ไม่ใช่เอกสารการยืมอุปกรณ์</strong> เป็นเพียงสำหรับการตรวจสอบเท่านั้น หากต้องการยืมอุปกรณ์ให้ติดต่อพี่ๆ ทีม Lab อีกครั้ง</p>' +
       '<p class="equipment-service-liability">ผู้ขอใช้บริการมีหน้าที่ดูแลรักษาอุปกรณ์ และในกรณีที่อุปกรณ์ได้รับความเสียหายหรือสูญหาย ผู้ขอใช้บริการตกลงรับผิดชอบชดใช้ค่าเสียหายตามมูลค่าความเสียหายที่เกิดขึ้นจริง</p>' +
       '<p class="equipment-service-generated">จัดทำเมื่อ ' + escapeHtml(formatThaiDate(new Date())) + '</p>';
   }

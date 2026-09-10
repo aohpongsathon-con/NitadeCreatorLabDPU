@@ -1119,13 +1119,17 @@
   .equipment-service-list-line small{display:block;margin-top:.35mm;color:#555;font-size:6.8pt;line-height:1.1;}
   .equipment-service-list-qty{padding-bottom:.55mm;font-size:7.5pt;font-weight:600;white-space:nowrap;}
   .equipment-service-empty-line{height:4mm;border-bottom:.25mm dotted #555;}
+  .equipment-service-list-grid li.equipment-service-list-other{grid-column:1/-1;grid-template-columns:5mm minmax(0,1fr) auto;}
+  .equipment-service-list-other .equipment-service-list-line b{font-weight:500;}
+  .equipment-service-supplemental{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2mm 5mm;margin:1.8mm 0 0 10mm;}
+  .equipment-service-supplemental span{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.3mm;align-items:end;min-width:0;}
+  .equipment-service-supplemental b{font-size:8.5pt;font-weight:500;white-space:nowrap;}
+  .equipment-service-supplemental i{height:1.1em;border-bottom:.25mm dotted #555;}
   .equipment-service-signatures{display:grid;grid-template-columns:.8fr 1.45fr;gap:12mm;align-items:start;margin-top:5mm;break-inside:avoid;page-break-inside:avoid;}
   .equipment-service-signature{text-align:center;}.equipment-service-signature p{margin:0 0 3mm;}.equipment-service-signature-line{display:inline-block;width:48mm;border-bottom:.3mm dotted #555;}
   .equipment-service-signature-date{margin-top:2mm!important;letter-spacing:.12em;}
   .equipment-service-approval h6{margin:0 0 2mm;font-size:9.5pt;text-align:left;}.equipment-service-approval p{margin:0 0 4mm;text-align:left;line-height:1.45;}
   .equipment-service-form-note{margin-top:4mm;color:#333;font-size:7.4pt;line-height:1.5;text-align:center;break-inside:avoid;page-break-inside:avoid;}
-  .equipment-print-warning{margin-top:3mm;color:#ef3038;font-size:8pt;font-weight:500;line-height:1.65;text-align:left;break-inside:avoid;page-break-inside:avoid;}
-  .equipment-print-warning strong{font-weight:800;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:2px;}
   .equipment-service-liability{margin-top:2mm;color:#ef3038;font-size:8pt;line-height:1.6;break-inside:avoid;page-break-inside:avoid;}
   .equipment-service-generated{margin-top:2.5mm;color:#6b7280;font-size:6.5pt;text-align:right;}
   .equipment-print-footer{border-top:1px solid var(--panel-line);border-bottom:0;justify-content:flex-end;}
@@ -1179,7 +1183,7 @@
     body.equipment-printing .equipment-print-paper.is-dense{width:247.06mm!important;min-width:247.06mm!important;min-height:349.42mm!important;padding:10.59mm 12.94mm 9.42mm!important;zoom:.85;}
     body.equipment-printing .equipment-print-paper.is-extra-dense{width:291.67mm!important;min-width:291.67mm!important;min-height:412.5mm!important;padding:12.5mm 15.28mm 11.11mm!important;zoom:.72;}
     body.equipment-printing .equipment-print-paper.is-maximum-dense{width:362.07mm!important;min-width:362.07mm!important;min-height:512.07mm!important;padding:15.52mm 18.97mm 13.79mm!important;zoom:.58;}
-    body.equipment-printing .equipment-service-section,body.equipment-printing .equipment-service-rooms-grid,body.equipment-printing .equipment-service-list,body.equipment-printing .equipment-service-signatures,body.equipment-printing .equipment-print-warning,body.equipment-printing .equipment-service-liability{break-inside:avoid;page-break-inside:avoid;}
+    body.equipment-printing .equipment-service-section,body.equipment-printing .equipment-service-rooms-grid,body.equipment-printing .equipment-service-list,body.equipment-printing .equipment-service-signatures,body.equipment-printing .equipment-service-liability{break-inside:avoid;page-break-inside:avoid;}
     body.equipment-printing .equipment-service-equipment,body.equipment-printing .equipment-service-equipment .equipment-service-list{break-inside:auto;page-break-inside:auto;}
     body.equipment-printing .equipment-service-list-grid li{break-inside:avoid;page-break-inside:avoid;}
   }
