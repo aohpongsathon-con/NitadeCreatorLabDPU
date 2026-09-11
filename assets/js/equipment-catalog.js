@@ -1214,6 +1214,20 @@ const DATA = [
     ['sound','Lavalier Mic','Tentacle','Sync Lavalier','assets/images/equipment/drive-20260827-transparent/Tentacle Sync Lavalier.png']
   );
 
+  // Uniform transparent product cutouts for the video and sound cable cards.
+  EQUIPMENT_IMAGES.push(
+    ['accessories','Accessories Video','—','สาย HDMI','assets/images/equipment/accessories-cables/cable-hdmi.png'],
+    ['accessories','Accessories Video','—','สาย Mini HDMI','assets/images/equipment/accessories-cables/cable-mini-hdmi.png'],
+    ['accessories','Accessories Video','—','สาย Micro HDMI','assets/images/equipment/accessories-cables/cable-micro-hdmi.png'],
+    ['accessories','Accessories Video','—','สาย SDI','assets/images/equipment/accessories-cables/cable-sdi.png'],
+    ['accessories','Accessories Sound','—','สาย XLR to XLR','assets/images/equipment/accessories-cables/cable-xlr-to-xlr.png'],
+    ['accessories','Accessories Sound','—','สาย XLR to 6.3 (TRS or TS)','assets/images/equipment/accessories-cables/cable-xlr-to-6-3.png'],
+    ['accessories','Accessories Sound','—','สาย XLR to 3.5','assets/images/equipment/accessories-cables/cable-xlr-to-3-5.png'],
+    ['accessories','Accessories Sound','—','สาย 6.3 (TRS or TS) to 6.3 (TRS or TS)','assets/images/equipment/accessories-cables/cable-6-3-to-6-3.png'],
+    ['accessories','Accessories Sound','—','สาย 6.3 (TRS or TS) to 3.5','assets/images/equipment/accessories-cables/cable-6-3-to-3-5.png'],
+    ['accessories','Accessories Sound','—','สาย 3.5 to 3.5','assets/images/equipment/accessories-cables/cable-3-5-to-3-5.png']
+  );
+
   const EQUIPMENT_IMAGE_MAP = new Map(EQUIPMENT_IMAGES.map(function(entry){
     return [[entry[0],entry[1],entry[2],entry[3]].join('|'),entry[4]];
   }));
