@@ -627,6 +627,50 @@ const DATA = [
             <li>เป็นอุปกรณ์พื้นฐานที่ใช้บ่อยในการจัดวางอุปกรณ์รอบตัวกล้อง</li>
           </ul>`},
       ]},
+      { name:'Accessories Video', items:[
+        {b:'—', m:'สาย HDMI',
+          desc:`<ul class="im-spec-list">
+            <li>สายสำหรับเชื่อมต่ออุปกรณ์ภาพที่ใช้พอร์ต HDMI</li>
+          </ul>`},
+        {b:'—', m:'สาย Mini HDMI',
+          desc:`<ul class="im-spec-list">
+            <li>สายสำหรับเชื่อมต่ออุปกรณ์ภาพที่ใช้พอร์ต Mini HDMI</li>
+          </ul>`},
+        {b:'—', m:'สาย Micro HDMI',
+          desc:`<ul class="im-spec-list">
+            <li>สายสำหรับเชื่อมต่ออุปกรณ์ภาพที่ใช้พอร์ต Micro HDMI</li>
+          </ul>`},
+        {b:'—', m:'สาย SDI',
+          desc:`<ul class="im-spec-list">
+            <li>สายสำหรับเชื่อมต่ออุปกรณ์ภาพที่ใช้พอร์ต SDI</li>
+          </ul>`},
+      ]},
+      { name:'Accessories Sound', items:[
+        {b:'—', m:'สาย XLR to XLR',
+          desc:`<ul class="im-spec-list">
+            <li>สายสัญญาณเสียงแบบ XLR ทั้งสองด้าน</li>
+          </ul>`},
+        {b:'—', m:'สาย XLR to 6.3 (TRS or TS)',
+          desc:`<ul class="im-spec-list">
+            <li>สายสัญญาณเสียงระหว่างหัวต่อ XLR และหัวต่อ 6.3 มม. แบบ TRS หรือ TS</li>
+          </ul>`},
+        {b:'—', m:'สาย XLR to 3.5',
+          desc:`<ul class="im-spec-list">
+            <li>สายสัญญาณเสียงระหว่างหัวต่อ XLR และหัวต่อ 3.5 มม.</li>
+          </ul>`},
+        {b:'—', m:'สาย 6.3 (TRS or TS) to 6.3 (TRS or TS)',
+          desc:`<ul class="im-spec-list">
+            <li>สายสัญญาณเสียงที่ใช้หัวต่อ 6.3 มม. แบบ TRS หรือ TS ทั้งสองด้าน</li>
+          </ul>`},
+        {b:'—', m:'สาย 6.3 (TRS or TS) to 3.5',
+          desc:`<ul class="im-spec-list">
+            <li>สายสัญญาณเสียงระหว่างหัวต่อ 6.3 มม. แบบ TRS หรือ TS และหัวต่อ 3.5 มม.</li>
+          </ul>`},
+        {b:'—', m:'สาย 3.5 to 3.5',
+          desc:`<ul class="im-spec-list">
+            <li>สายสัญญาณเสียงที่ใช้หัวต่อ 3.5 มม. ทั้งสองด้าน</li>
+          </ul>`},
+      ]},
       { name:'Monitor Camera', items:[
         {b:'Atomos', m:'Ninja 5"',
           desc:`<ul class="im-spec-list">
@@ -1433,6 +1477,7 @@ const DATA = [
   function printBucketFor(record){
     if(record.item.category === 'sound') return 'sound';
     if(record.item.category === 'lights') return 'lighting';
+    if(record.item.category === 'accessories' && /sound/i.test(record.item.group || '')) return 'sound';
     if(record.item.category === 'accessories' && /lights/i.test(record.item.group || '')) return 'lighting';
     return 'visual';
   }
