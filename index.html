@@ -21,7 +21,6 @@
     var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
     var theme = stored || (prefersLight ? 'light' : 'dark');
     if(theme === 'light'){ document.documentElement.setAttribute('data-theme', 'light'); }
-    document.documentElement.classList.add('test-notice-pending');
     var themeMeta = document.getElementById('themeColorMeta');
     if(themeMeta){ themeMeta.setAttribute('content', theme === 'light' ? '#f3f5fa' : '#07060f'); }
   })();
@@ -158,25 +157,6 @@
     max-width:1200px;margin:0 auto;
     padding:28px 32px;
   }
-
-  .alpha-bar{
-    position:relative;z-index:10;
-    display:flex;align-items:center;justify-content:center;
-    max-width:1200px;margin:0 auto;
-    padding:0 32px 18px;
-  }
-  .alpha-badge{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:6px 14px;
-    border:1px solid var(--red);
-    border-radius:100px;
-    background:rgba(255,84,112,0.08);
-    font-family:'IBM Plex Mono',monospace;
-    font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;
-    color:var(--text-2);
-  }
-  .alpha-badge .dot-live{width:5px;height:5px;}
-  .alpha-badge b{color:var(--red);font-weight:600;}
 
   .brand{display:flex;align-items:center;gap:10px;}
   .brand-mark{
@@ -902,7 +882,7 @@
 
   /* ---------- room media popup ---------- */
   body.room-popup-open{overflow:hidden;}
-  body.room-popup-open header,body.room-popup-open .alpha-bar{pointer-events:none;}
+  body.room-popup-open header{pointer-events:none;}
   .room-popup-overlay{
     position:fixed;inset:0;z-index:470;display:flex;align-items:center;justify-content:center;
     padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-right:calc(24px + env(safe-area-inset-right,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));padding-left:calc(24px + env(safe-area-inset-left,0px));
@@ -933,8 +913,7 @@
 
   /* ---------- equipment directory ---------- */
   body.equipment-layer-open{overflow:hidden;}
-  body.equipment-layer-open header,
-  body.equipment-layer-open .alpha-bar{
+  body.equipment-layer-open header{
     z-index:1;
     pointer-events:none;
   }
@@ -1558,80 +1537,6 @@
     font-size:0.6rem;letter-spacing:0.08em;color:var(--text-2);
   }
 
-  /* ---------- first-visit test notice ---------- */
-  .test-notice-overlay{
-    position:fixed;inset:0;z-index:220;
-    display:flex;align-items:center;justify-content:center;
-    padding:20px;
-    padding-top:calc(20px + env(safe-area-inset-top, 0px));
-    padding-right:calc(20px + env(safe-area-inset-right, 0px));
-    padding-bottom:calc(20px + env(safe-area-inset-bottom, 0px));
-    padding-left:calc(20px + env(safe-area-inset-left, 0px));
-    background:rgba(5,4,10,0.88);
-    -webkit-backdrop-filter:blur(12px);
-    backdrop-filter:blur(12px);
-    overflow-y:auto;overscroll-behavior:contain;
-    -webkit-overflow-scrolling:touch;
-    opacity:0;visibility:hidden;pointer-events:none;
-    transition:opacity .28s ease,visibility 0s linear .28s;
-  }
-  .test-notice-overlay.open{
-    opacity:1;visibility:visible;pointer-events:auto;
-    transition-delay:0s;
-  }
-  .test-notice-panel{
-    position:relative;width:100%;max-width:500px;
-    max-height:calc(100vh - 40px);
-    max-height:calc(100dvh - 40px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-    overflow-y:auto;overscroll-behavior:contain;
-    padding:40px 34px 34px;
-    border:1px solid rgba(148,201,253,0.2);
-    border-radius:26px;
-    background:
-      radial-gradient(circle at 50% 0%,rgba(106,27,255,0.19),transparent 48%),
-      linear-gradient(180deg,var(--panel),var(--panel-2));
-    box-shadow:0 32px 90px rgba(0,0,0,0.62),0 0 50px rgba(106,27,255,0.12);
-    text-align:center;
-    transform:translateY(16px) scale(0.97);
-    transition:transform .38s cubic-bezier(.2,.8,.2,1);
-  }
-  .test-notice-overlay.open .test-notice-panel{transform:translateY(0) scale(1);}
-  .test-notice-icon{
-    width:58px;height:58px;margin:0 auto 22px;
-    display:flex;align-items:center;justify-content:center;
-    border:1px solid rgba(148,201,253,0.28);border-radius:18px;
-    background:linear-gradient(135deg,var(--violet),#8b5cff);
-    color:#fff;font-family:'Chakra Petch',sans-serif;
-    font-size:1.6rem;font-weight:700;
-    box-shadow:0 12px 30px rgba(106,27,255,0.3);
-  }
-  .test-notice-eyebrow{
-    display:block;margin-bottom:10px;
-    color:var(--sky);font-family:'IBM Plex Mono',monospace;
-    font-size:0.66rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
-  }
-  .test-notice-panel h2{
-    color:var(--text-0);font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;
-    font-size:clamp(1.4rem,5vw,1.85rem);font-weight:600;line-height:1.25;
-  }
-  .test-notice-panel p{
-    margin:16px auto 0;max-width:410px;
-    color:var(--text-1);font-size:0.96rem;line-height:1.8;
-  }
-  .test-notice-accept{
-    width:100%;min-height:52px;margin-top:28px;padding:12px 22px;
-    border:0;border-radius:14px;
-    background:linear-gradient(135deg,var(--violet),#7c3cff);
-    color:#fff;font-weight:700;font-size:0.95rem;
-    box-shadow:0 12px 28px rgba(106,27,255,0.28);
-    transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
-  }
-  .test-notice-accept:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 16px 34px rgba(106,27,255,0.36);}
-  .test-notice-accept:active{transform:translateY(0);}
-  .test-notice-footnote{
-    display:block;margin-top:14px;color:var(--text-2);
-    font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.04em;
-  }
 
   /* ---------- footer ---------- */
   footer{
@@ -1724,7 +1629,7 @@
       right:calc(18px + env(safe-area-inset-right, 0px));
       top:calc(100% - 4px);
     }
-    .hero-wrap,.alpha-bar,.modules,.student-showcase,.facilities-hub,.about-lab,footer{
+    .hero-wrap,.modules,.student-showcase,.facilities-hub,.about-lab,footer{
       padding-left:calc(18px + env(safe-area-inset-left, 0px));
       padding-right:calc(18px + env(safe-area-inset-right, 0px));
     }
@@ -1790,7 +1695,7 @@
 
   @supports (-webkit-touch-callout:none){
     body{min-height:-webkit-fill-available;}
-    .modal-overlay,.test-notice-overlay{-webkit-transform:translateZ(0);transform:translateZ(0);}
+    .modal-overlay{-webkit-transform:translateZ(0);transform:translateZ(0);}
   }
 
   @media (forced-colors:active){
@@ -1867,13 +1772,6 @@
     </div>
   </div>
 </header>
-
-<div class="alpha-bar">
-  <span class="alpha-badge">
-    <span class="dot-live"></span>
-    <b>(ทดสอบระบบ) alpha test v.2.0</b>
-  </span>
-</div>
 
 <main id="mainContent" tabindex="-1">
   <section class="hero-wrap" id="home">
@@ -2367,17 +2265,6 @@
   </section>
 </div>
 
-<div class="test-notice-overlay" id="testNoticeModal" aria-hidden="true" inert>
-  <div class="test-notice-panel" role="dialog" aria-modal="true" aria-labelledby="testNoticeTitle" aria-describedby="testNoticeDescription">
-    <div class="test-notice-icon" aria-hidden="true">!</div>
-    <span class="test-notice-eyebrow">Alpha Test Notice</span>
-    <h2 id="testNoticeTitle">แจ้งก่อนใช้งานเว็บไซต์</h2>
-    <p id="testNoticeDescription">เว็ปไซค์นี้ อยู่ในขั้นตอนการทดสอบ ข้อมูลบางอย่างอาจจะยังไม่ได้รับการอัพเดต หรือ ได้รับข้อมูลที่ถูกต้อง 100%</p>
-    <button class="test-notice-accept" id="testNoticeAccept" type="button">ตกลงและยอมรับ</button>
-    <small class="test-notice-footnote">ข้อความนี้จะแสดงทุกครั้งที่เข้าใช้งานหรือรีเฟรชหน้าเว็บ</small>
-  </div>
-</div>
-
 <div class="modal-overlay team-modal-overlay" id="teamProfileModal" aria-hidden="true" inert>
   <div class="modal-panel team-profile-panel" role="dialog" aria-modal="true" aria-labelledby="teamProfileName" aria-describedby="teamProfileDescription">
     <button class="modal-close" id="teamProfileClose" type="button" aria-label="ปิดรายละเอียดทีมงาน">
@@ -2487,10 +2374,6 @@
         .fromTo('#siteHeader',
           {autoAlpha:0,y:-18},
           {autoAlpha:1,y:0,duration:0.72,clearProps:'opacity,visibility,transform'})
-        .fromTo('.alpha-bar',
-          {autoAlpha:0,y:-10},
-          {autoAlpha:1,y:0,duration:0.55,clearProps:'opacity,visibility,transform'},
-          '-=0.46')
         .fromTo('.hero-wrap > .eyebrow',
           {autoAlpha:0,y:14},
           {autoAlpha:1,y:0,duration:0.55,clearProps:'opacity,visibility,transform'},
@@ -2759,8 +2642,6 @@
   const teamImageLightboxPhoto = document.getElementById('teamImageLightboxPhoto');
   const teamImageLightboxName = document.getElementById('teamImageLightboxName');
   const teamImageLightboxRole = document.getElementById('teamImageLightboxRole');
-  const testNoticeModal = document.getElementById('testNoticeModal');
-  const testNoticeAccept = document.getElementById('testNoticeAccept');
   let lastModalTrigger = null;
   let lastTeamProfileTrigger = null;
   let teamProfileClosing = false;
@@ -2835,7 +2716,7 @@
   }
 
   function setTeamProfileBackgroundInteractive(enabled){
-    const backgroundTargets = document.querySelectorAll('.skip-link,.glow-field,#siteHeader,.alpha-bar,#mainContent,#contactModal');
+    const backgroundTargets = document.querySelectorAll('.skip-link,.glow-field,#siteHeader,#mainContent,#contactModal');
     backgroundTargets.forEach((element)=>{
       if(enabled){
         if(element.hasAttribute('data-team-profile-inert')){
@@ -2860,43 +2741,6 @@
     document.body.classList.remove('modal-open');
     document.body.style.top = '';
     window.scrollTo(0,restoreY);
-  }
-
-  function setTestNoticeBackgroundInteractive(enabled){
-    const backgroundTargets = document.querySelectorAll('.skip-link,.glow-field,#siteHeader,.alpha-bar,#mainContent,#contactModal,#teamProfileModal,#teamImageLightbox');
-    backgroundTargets.forEach((element)=>{
-      if(enabled){
-        if(element.hasAttribute('data-test-notice-inert')){
-          element.removeAttribute('inert');
-          element.removeAttribute('data-test-notice-inert');
-        }
-      }else if(!element.hasAttribute('inert')){
-        element.setAttribute('inert','');
-        element.setAttribute('data-test-notice-inert','');
-      }
-    });
-  }
-
-  function openTestNotice(){
-    if(!testNoticeModal) return;
-    setTestNoticeBackgroundInteractive(false);
-    testNoticeModal.removeAttribute('inert');
-    testNoticeModal.setAttribute('aria-hidden','false');
-    testNoticeModal.classList.add('open');
-    lockPageScroll();
-    requestAnimationFrame(()=>focusWithoutScroll(testNoticeAccept));
-  }
-
-  function acceptTestNotice(){
-    if(!testNoticeModal || !testNoticeModal.classList.contains('open')) return;
-    testNoticeModal.classList.remove('open');
-    testNoticeModal.setAttribute('aria-hidden','true');
-    testNoticeModal.setAttribute('inert','');
-    document.documentElement.classList.remove('test-notice-pending');
-    document.documentElement.classList.add('test-notice-accepted');
-    setTestNoticeBackgroundInteractive(true);
-    unlockPageScroll();
-    requestAnimationFrame(()=>focusWithoutScroll(document.getElementById('mainContent')));
   }
 
   const contactModalContent = {
@@ -3206,22 +3050,7 @@
   setModalInteractive(false);
   setTeamProfileInteractive(false);
   setTeamImageLightboxInteractive(false);
-  if(testNoticeAccept) testNoticeAccept.addEventListener('click',acceptTestNotice);
-  if(testNoticeModal) openTestNotice();
-  else{
-    document.documentElement.classList.remove('test-notice-pending');
-    document.documentElement.classList.add('test-notice-accepted');
-  }
-
   document.addEventListener('keydown', (e)=>{
-    const testNoticeOpen = testNoticeModal && testNoticeModal.classList.contains('open');
-    if(testNoticeOpen){
-      if(e.key === 'Escape' || e.key === 'Tab'){
-        e.preventDefault();
-        focusWithoutScroll(testNoticeAccept);
-      }
-      return;
-    }
     const modalOpen = contactModal && contactModal.classList.contains('open');
     const teamModalOpen = teamProfileModal && teamProfileModal.classList.contains('open');
     const imageModalOpen = teamImageLightbox && teamImageLightbox.classList.contains('open');
