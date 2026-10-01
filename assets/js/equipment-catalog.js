@@ -1266,6 +1266,17 @@ const DATA = [
     printClose: document.getElementById('equipmentPrintClose'),
     printCancel: document.getElementById('equipmentPrintCancel'),
     printConfirm: document.getElementById('equipmentPrintConfirm'),
+    printEyebrow: document.getElementById('equipmentPrintEyebrow'),
+    printTitle: document.getElementById('equipmentPrintTitle'),
+    requestPane: document.getElementById('equipmentRequestPane'),
+    requestForm: document.getElementById('equipmentRequestForm'),
+    requestFields: document.getElementById('equipmentRequestFields'),
+    requestStatus: document.getElementById('equipmentRequestStatus'),
+    printPane: document.getElementById('equipmentPrintPane'),
+    formClear: document.getElementById('equipmentFormClear'),
+    formSave: document.getElementById('equipmentFormSave'),
+    formPreview: document.getElementById('equipmentFormPreview'),
+    printBack: document.getElementById('equipmentPrintBack'),
     printDocument: document.getElementById('equipmentPrintDocument'),
     modal: document.getElementById('equipmentItemModal'),
     modalOverlay: document.getElementById('equipmentItemOverlay'),
@@ -1308,6 +1319,10 @@ const DATA = [
   let modalReturnFocus = null;
   let printReturnFocus = null;
   let printRequested = false;
+  let printMode = 'form';
+  let activeRequestData = null;
+  let requestFormInitialized = false;
+  let requestDraftRestored = false;
   const selected = new Map();
 
   function focusWithoutScroll(element){
@@ -1484,6 +1499,260 @@ const DATA = [
     }
   }
 
+  const REQUEST_DRAFT_KEY = 'nitadeCreatorLab.equipmentRequestDraft.v1';
+  const REQUEST_FIELD_NAMES = [
+    'fullName','registrationId','department','phone','startDate','startTime','endDate','endTime',
+    'subjectCode','subjectName','participants','instructor','purpose'
+  ];
+  const ROOM_SERVICE_GROUPS = [
+    {id:'studio',number:'3',title:'Studio Production Service',options:[
+      {value:'content-1',label:'Content Studio 1'},{value:'content-2',label:'Content Studio 2'},
+      {value:'studio-7-5',label:'Studio ตึก 7 ชั้น 5'},{value:'7502',label:'7502'},
+      {value:'creative-1',label:'CreativeSpace 1'},{value:'creative-2',label:'CreativeSpace 2'},
+      {value:'sand-box',label:'Sand Box'}
+    ]},
+    {id:'editing',number:'4',title:'Editing Room Service',options:Array.from({length:10},function(_,index){
+      return {value:'editing-' + (index + 1),label:'Editing ' + (index + 1)};
+    })},
+    {id:'performance',number:'5',title:'Performing Arts Studio',options:[
+      {value:'performance-7418',label:'Performing Arts Studio 7418'},
+      {value:'acting-7416',label:'Acting Room 1 / 7416'},{value:'acting-7417',label:'Acting Room 2 / 7417'},
+      {value:'acting-7419',label:'Acting Room 3 / 7419'},{value:'acting-7420',label:'Acting Room 4 / 7420'},
+      {value:'performance-7501',label:'ห้องการแสดง ชั้น 5 / 7501'}
+    ]},
+    {id:'live',number:'6',title:'Live Streaming Studio',options:Array.from({length:4},function(_,index){
+      return {value:'live-' + (index + 1),label:'Live Streaming Studio ' + (index + 1)};
+    })},
+    {id:'sound',number:'7',title:'Sound Studio',options:[
+      {value:'sound-1',label:'Sound Studio 1'},{value:'sound-2',label:'Sound Studio 2'},
+      {value:'voice-over',label:'Voice Over Studio'}
+    ]}
+  ];
+  const ROOM_CODE_TO_FORM_VALUE = {
+    '7401':'editing-1','7402':'editing-2','7403':'editing-3','7404':'editing-4','7405':'editing-5',
+    '7406':'editing-6','7407':'editing-7','7408':'editing-8','7409':'editing-9','7410':'editing-10',
+    '7415':'live-1','7414':'live-2','7413':'live-3','7411':'live-4',
+    '7418':'performance-7418','7416':'acting-7416','7417':'acting-7417','7419':'acting-7419','7420':'acting-7420',
+    '7425':'content-1','7424':'content-2','7422':'sound-1','7423':'sound-2','7421':'voice-over'
+  };
+
+  function requestChoice(type, name, value, label, required){
+    return '<label class="equipment-request-choice"><input type="' + type + '" name="' + escapeHtml(name) + '" value="' + escapeHtml(value) + '"' + (required ? ' required' : '') + '><span>' + escapeHtml(label) + '</span></label>';
+  }
+
+  function requestField(name, label, type, options){
+    const settings = options || {};
+    const inputType = type || 'text';
+    const attributes = [
+      'id="equipmentRequest-' + name + '"','name="' + name + '"','type="' + inputType + '"',
+      settings.required ? 'required' : '',settings.min ? 'min="' + settings.min + '"' : '',
+      settings.inputmode ? 'inputmode="' + settings.inputmode + '"' : '',
+      settings.autocomplete ? 'autocomplete="' + settings.autocomplete + '"' : '',
+      'placeholder="' + escapeHtml(settings.placeholder || 'กรอกข้อมูล') + '"'
+    ].filter(Boolean).join(' ');
+    return '<label class="equipment-request-field' + (settings.wide ? ' is-wide' : '') + '"><span>' + escapeHtml(label) + (settings.required ? ' <b class="equipment-request-required">*</b>' : '') + '</span><input ' + attributes + '></label>';
+  }
+
+  function roomRequestGroupMarkup(group){
+    const options = group.options.map(function(option){
+      return requestChoice('checkbox','rooms',option.value,option.label,false);
+    }).join('');
+    return '<div class="equipment-request-room-group" data-room-form-group="' + group.id + '">' +
+      '<h6>' + group.number + '. ' + escapeHtml(group.title) + '</h6>' +
+      '<div class="equipment-request-choice-grid">' + options + '</div>' +
+      '<div class="equipment-request-other">' +
+        '<label class="equipment-request-choice"><input type="checkbox" name="roomOtherEnabled" value="' + group.id + '" data-other-toggle="' + group.id + '"><span>อื่น ๆ</span></label>' +
+        '<input type="text" name="roomOther_' + group.id + '" data-other-input="' + group.id + '" placeholder="ระบุห้องหรือพื้นที่อื่น" disabled>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderRequestForm(){
+    if(!elements.requestFields || requestFormInitialized) return;
+    elements.requestFields.innerHTML =
+      '<section class="equipment-request-card">' +
+        '<div class="equipment-request-card-head"><span>01</span><div><h5>ข้อมูลผู้ขอใช้บริการ</h5><p>ช่องที่มี * ต้องกรอกก่อนดูตัวอย่างเอกสาร</p></div></div>' +
+        '<div class="equipment-request-choice-row" role="radiogroup" aria-label="ประเภทผู้ขอใช้บริการ">' +
+          requestChoice('radio','requesterType','student','นักศึกษา',true) +
+          requestChoice('radio','requesterType','teacher','อาจารย์',true) +
+          requestChoice('radio','requesterType','staff','บุคลากร',true) +
+        '</div>' +
+        '<div class="equipment-request-grid" style="margin-top:14px">' +
+          requestField('fullName','ชื่อ-นามสกุล','text',{required:true,autocomplete:'name'}) +
+          requestField('registrationId','เลขทะเบียน','text',{placeholder:'กรอกเมื่อเป็นนักศึกษา'}) +
+          requestField('department','สาขา / หน่วยงาน','text',{required:true}) +
+          requestField('phone','เบอร์โทรศัพท์','tel',{required:true,inputmode:'tel',autocomplete:'tel'}) +
+        '</div>' +
+      '</section>' +
+      '<section class="equipment-request-card">' +
+        '<div class="equipment-request-card-head"><span>02</span><div><h5>วันเวลาที่ต้องการใช้งาน</h5><p>ระบบจะคำนวณระยะเวลาเป็นชั่วโมงและนาทีให้ในเอกสาร</p></div></div>' +
+        '<div class="equipment-request-choice-row" role="radiogroup" aria-label="ช่วงเวลาการใช้งาน">' +
+          requestChoice('radio','scheduleType','in-class','เวลาในตารางเรียน',true) +
+          requestChoice('radio','scheduleType','out-class','เวลานอกตารางเรียน',true) +
+        '</div>' +
+        '<div class="equipment-request-grid is-four" style="margin-top:14px">' +
+          requestField('startDate','วันที่เริ่ม','date',{required:true}) + requestField('startTime','เวลาเริ่ม','time',{required:true}) +
+          requestField('endDate','วันที่สิ้นสุด','date',{required:true}) + requestField('endTime','เวลาสิ้นสุด','time',{required:true}) +
+        '</div>' +
+        '<div class="equipment-request-grid" style="margin-top:14px">' +
+          requestField('subjectCode','รหัสวิชา','text',{placeholder:'ถ้ามี'}) + requestField('subjectName','ชื่อวิชา','text',{placeholder:'ถ้ามี'}) +
+          requestField('participants','จำนวนผู้ใช้บริการ','number',{required:true,min:'1',placeholder:'อย่างน้อย 1 คน'}) + requestField('instructor','อาจารย์ผู้สอน','text',{placeholder:'ถ้ามี'}) +
+          '<label class="equipment-request-field is-wide"><span>วัตถุประสงค์ <b class="equipment-request-required">*</b></span><textarea id="equipmentRequest-purpose" name="purpose" required placeholder="ระบุวัตถุประสงค์การใช้งาน"></textarea></label>' +
+        '</div>' +
+      '</section>' +
+      '<section class="equipment-request-card" id="equipmentRequestRoomsCard">' +
+        '<div class="equipment-request-card-head"><span>03</span><div><h5>ห้องและพื้นที่ให้บริการ (ข้อ 3–7)</h5><p>เลือกได้หลายห้อง และระบบจะติ๊กห้องที่กำลังเลือกอยู่ในหน้าห้องให้อัตโนมัติ</p></div></div>' +
+        ROOM_SERVICE_GROUPS.map(roomRequestGroupMarkup).join('') +
+        '<p class="equipment-request-help">ห้องเก็บอุปกรณ์ จุดบริการนักศึกษา และ MCR ไม่มีช่องตรงในแบบฟอร์มข้อ 3–7 ระบบจึงจะไม่เลือกแทนโดยอัตโนมัติ เพื่อป้องกันข้อมูลคลาดเคลื่อน</p>' +
+      '</section>';
+    requestFormInitialized = true;
+    syncOtherInputs();
+  }
+
+  function setRequestStatus(message, type){
+    if(!elements.requestStatus) return;
+    elements.requestStatus.textContent = message || '';
+    elements.requestStatus.classList.toggle('is-success', type === 'success');
+    elements.requestStatus.classList.toggle('is-error', type === 'error');
+  }
+
+  function syncOtherInputs(){
+    if(!elements.requestForm) return;
+    elements.requestForm.querySelectorAll('[data-other-toggle]').forEach(function(toggle){
+      const input = elements.requestForm.querySelector('[data-other-input="' + toggle.getAttribute('data-other-toggle') + '"]');
+      if(!input) return;
+      input.disabled = !toggle.checked;
+      input.required = toggle.checked;
+      if(!toggle.checked) input.value = '';
+    });
+  }
+
+  function collectRequestData(){
+    if(!elements.requestForm) return {};
+    const formData = new FormData(elements.requestForm);
+    const data = {requesterType:formData.get('requesterType') || '',scheduleType:formData.get('scheduleType') || '',rooms:formData.getAll('rooms'),roomOthers:{}};
+    REQUEST_FIELD_NAMES.forEach(function(name){ data[name] = String(formData.get(name) || '').trim(); });
+    formData.getAll('roomOtherEnabled').forEach(function(groupId){
+      const value = String(formData.get('roomOther_' + groupId) || '').trim();
+      if(value) data.roomOthers[groupId] = value;
+    });
+    return data;
+  }
+
+  function applyRequestData(data){
+    if(!elements.requestForm || !data) return;
+    REQUEST_FIELD_NAMES.forEach(function(name){
+      const field = elements.requestForm.elements.namedItem(name);
+      if(field) field.value = data[name] || '';
+    });
+    ['requesterType','scheduleType'].forEach(function(name){
+      elements.requestForm.querySelectorAll('[name="' + name + '"]').forEach(function(input){ input.checked = input.value === data[name]; });
+    });
+    const rooms = Array.isArray(data.rooms) ? data.rooms : [];
+    elements.requestForm.querySelectorAll('[name="rooms"]').forEach(function(input){ input.checked = rooms.indexOf(input.value) !== -1; });
+    const others = data.roomOthers || {};
+    elements.requestForm.querySelectorAll('[data-other-toggle]').forEach(function(toggle){
+      const groupId = toggle.getAttribute('data-other-toggle');
+      toggle.checked = Boolean(others[groupId]);
+      const input = elements.requestForm.querySelector('[data-other-input="' + groupId + '"]');
+      if(input) input.value = others[groupId] || '';
+    });
+    syncOtherInputs();
+  }
+
+  function loadRequestDraft(){
+    try{
+      const saved = window.localStorage.getItem(REQUEST_DRAFT_KEY);
+      if(!saved) return false;
+      const payload = JSON.parse(saved);
+      if(!payload || !payload.data) return false;
+      applyRequestData(payload.data);
+      const savedAt = payload.savedAt ? new Date(payload.savedAt) : null;
+      setRequestStatus('โหลดร่างที่บันทึกไว้ในเครื่อง' + (savedAt && !Number.isNaN(savedAt.getTime()) ? ' · ' + formatThaiDate(savedAt) : ''), 'success');
+      return true;
+    }catch(error){
+      setRequestStatus('ไม่สามารถอ่านร่างเดิมได้ แต่ยังกรอกแบบฟอร์มใหม่ได้ตามปกติ', 'error');
+      return false;
+    }
+  }
+
+  function saveRequestDraft(){
+    try{
+      const savedAt = new Date();
+      window.localStorage.setItem(REQUEST_DRAFT_KEY, JSON.stringify({version:1,savedAt:savedAt.toISOString(),data:collectRequestData()}));
+      setRequestStatus('บันทึกร่างไว้เฉพาะในเบราว์เซอร์เครื่องนี้แล้ว · ' + formatThaiDate(savedAt), 'success');
+    }catch(error){
+      setRequestStatus('เบราว์เซอร์ไม่อนุญาตให้บันทึกร่างในเครื่อง กรุณาตรวจการตั้งค่าความเป็นส่วนตัว', 'error');
+    }
+  }
+
+  function syncSelectedRoomToForm(){
+    if(!elements.requestForm) return;
+    const activeRoom = document.querySelector('.room-directory-card.is-active');
+    const code = activeRoom && activeRoom.dataset ? activeRoom.dataset.code : '';
+    const value = ROOM_CODE_TO_FORM_VALUE[code];
+    if(!value) return;
+    const input = elements.requestForm.querySelector('[name="rooms"][value="' + value + '"]');
+    if(input && !input.checked){
+      input.checked = true;
+      setRequestStatus('เลือกห้อง ' + code + ' ให้ในข้อ 3–7 อัตโนมัติแล้ว', 'success');
+    }
+  }
+
+  function validateRequestForm(){
+    if(!elements.requestForm) return false;
+    const registration = elements.requestForm.elements.namedItem('registrationId');
+    const requester = elements.requestForm.querySelector('[name="requesterType"]:checked');
+    if(registration) registration.required = Boolean(requester && requester.value === 'student');
+    const startDate = elements.requestForm.elements.namedItem('startDate');
+    const startTime = elements.requestForm.elements.namedItem('startTime');
+    const endDate = elements.requestForm.elements.namedItem('endDate');
+    const endTime = elements.requestForm.elements.namedItem('endTime');
+    if(endDate) endDate.setCustomValidity('');
+    if(startDate && startTime && endDate && endTime && startDate.value && startTime.value && endDate.value && endTime.value){
+      const start = new Date(startDate.value + 'T' + startTime.value);
+      const end = new Date(endDate.value + 'T' + endTime.value);
+      if(end <= start) endDate.setCustomValidity('วันและเวลาสิ้นสุดต้องอยู่หลังเวลาเริ่มต้น');
+    }
+    if(!elements.requestForm.checkValidity()){
+      setRequestStatus('กรุณาตรวจช่องสำคัญที่ยังว่างหรือข้อมูลวันเวลาไม่ถูกต้องก่อนดูตัวอย่าง', 'error');
+      elements.requestForm.reportValidity();
+      return false;
+    }
+    setRequestStatus('', '');
+    return true;
+  }
+
+  function formatRequestDate(value){
+    if(!value) return '';
+    const date = new Date(value + 'T00:00:00');
+    if(Number.isNaN(date.getTime())) return value;
+    try{return new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric'}).format(date);}
+    catch(error){return value;}
+  }
+
+  function requestDuration(data){
+    if(!data.startDate || !data.startTime || !data.endDate || !data.endTime) return {hours:'',minutes:''};
+    const start = new Date(data.startDate + 'T' + data.startTime);
+    const end = new Date(data.endDate + 'T' + data.endTime);
+    const totalMinutes = Math.max(0, Math.round((end - start) / 60000));
+    return {hours:String(Math.floor(totalMinutes / 60)),minutes:String(totalMinutes % 60)};
+  }
+
+  function setPrintMode(mode){
+    printMode = mode === 'preview' ? 'preview' : 'form';
+    const preview = printMode === 'preview';
+    if(elements.requestPane) elements.requestPane.hidden = preview;
+    if(elements.printPane) elements.printPane.hidden = !preview;
+    if(elements.formClear) elements.formClear.hidden = preview;
+    if(elements.formSave) elements.formSave.hidden = preview;
+    if(elements.formPreview) elements.formPreview.hidden = preview;
+    if(elements.printBack) elements.printBack.hidden = !preview;
+    if(elements.printConfirm) elements.printConfirm.hidden = !preview;
+    if(elements.printEyebrow) elements.printEyebrow.textContent = preview ? 'PRINT PREVIEW · A4' : 'REQUEST FORM · LOCAL ONLY';
+    if(elements.printTitle) elements.printTitle.textContent = preview ? 'ตัวอย่างเอกสารรายการอุปกรณ์' : 'กรอกข้อมูลแบบขอใช้บริการ';
+  }
+
   function printItemName(item){
     return [item.b && item.b !== '—' ? item.b : '', item.m].filter(Boolean).join(' ').trim();
   }
@@ -1523,8 +1792,28 @@ const DATA = [
     return '<section class="equipment-service-list"><h6>' + escapeHtml(title) + '</h6><ol class="equipment-service-list-grid">' + rows + otherRow + '</ol>' + supplementalFields + '</section>';
   }
 
-  function renderPrintDocument(){
+  function printFormValue(value, size){
+    return '<span class="equipment-service-value' + (size ? ' ' + size : '') + '">' + (value ? escapeHtml(String(value)) : '&nbsp;') + '</span>';
+  }
+
+  function printFormCheck(checked){
+    return '<i class="equipment-service-check' + (checked ? ' is-checked' : '') + '" aria-hidden="true"></i>';
+  }
+
+  function printRoomChoice(label, value, selectedRooms){
+    return '<span>' + printFormCheck(selectedRooms.indexOf(value) !== -1) + escapeHtml(label) + '</span>';
+  }
+
+  function printRoomListItem(label, value, selectedRooms){
+    return '<span>' + printFormCheck(selectedRooms.indexOf(value) !== -1) + '<b>' + escapeHtml(label) + '</b></span>';
+  }
+
+  function renderPrintDocument(requestData){
     if(!elements.printDocument) return;
+    const data = requestData || activeRequestData || {};
+    const selectedRooms = Array.isArray(data.rooms) ? data.rooms : [];
+    const roomOthers = data.roomOthers || {};
+    const duration = requestDuration(data);
     const records = selectedRecords();
     elements.printDocument.classList.toggle('is-dense', records.length > 8 && records.length <= 26);
     elements.printDocument.classList.toggle('is-extra-dense', records.length > 26 && records.length <= 40);
@@ -1537,32 +1826,33 @@ const DATA = [
         '<img class="equipment-service-form-logo" src="assets/images/dpu-ca-form-logo.png" alt="DPU CA">' +
         '<div class="equipment-service-form-heading">' +
           '<div class="equipment-service-form-title"><h4>แบบขอใช้บริการ</h4><strong>Nitade Creator Center Office</strong></div>' +
-          '<div class="equipment-service-schedule"><span>เวลาในตารางเรียน <i class="equipment-service-check" aria-hidden="true"></i></span><span>เวลานอกตารางเรียน <i class="equipment-service-check" aria-hidden="true"></i></span></div>' +
+          '<div class="equipment-service-schedule"><span>เวลาในตารางเรียน ' + printFormCheck(data.scheduleType === 'in-class') + '</span><span>เวลานอกตารางเรียน ' + printFormCheck(data.scheduleType === 'out-class') + '</span></div>' +
         '</div>' +
       '</header>' +
       '<section class="equipment-service-section">' +
-        '<div class="equipment-service-inline wrap"><h5>1. ข้อมูลผู้ขอใช้บริการ</h5><i class="equipment-service-check" aria-hidden="true"></i><span>นักศึกษา</span><i class="equipment-service-check" aria-hidden="true"></i><span>อาจารย์</span><i class="equipment-service-check" aria-hidden="true"></i><span>บุคลากร</span></div>' +
-        '<div class="equipment-service-inline"><span class="equipment-service-label">ชื่อ-นามสกุล</span><span class="equipment-service-dots"></span><span class="equipment-service-label">เลขทะเบียน</span><span class="equipment-service-dots medium"></span></div>' +
-        '<div class="equipment-service-inline"><span class="equipment-service-label">สาขา/หน่วยงาน</span><span class="equipment-service-dots"></span><span class="equipment-service-label">เบอร์โทรศัพท์</span><span class="equipment-service-dots medium"></span></div>' +
+        '<div class="equipment-service-inline wrap"><h5>1. ข้อมูลผู้ขอใช้บริการ</h5>' + printFormCheck(data.requesterType === 'student') + '<span>นักศึกษา</span>' + printFormCheck(data.requesterType === 'teacher') + '<span>อาจารย์</span>' + printFormCheck(data.requesterType === 'staff') + '<span>บุคลากร</span></div>' +
+        '<div class="equipment-service-inline"><span class="equipment-service-label">ชื่อ-นามสกุล</span>' + printFormValue(data.fullName) + '<span class="equipment-service-label">เลขทะเบียน</span>' + printFormValue(data.registrationId,'medium') + '</div>' +
+        '<div class="equipment-service-inline"><span class="equipment-service-label">สาขา/หน่วยงาน</span>' + printFormValue(data.department) + '<span class="equipment-service-label">เบอร์โทรศัพท์</span>' + printFormValue(data.phone,'medium') + '</div>' +
       '</section>' +
       '<section class="equipment-service-section">' +
         '<h5>2. วันเวลาที่ต้องการใช้งาน</h5>' +
-        '<div class="equipment-service-inline"><span>วันที่</span><span class="equipment-service-dots short"></span><span>เวลา</span><span class="equipment-service-dots short"></span><span>น. ถึง วันที่</span><span class="equipment-service-dots short"></span><span>เวลา</span><span class="equipment-service-dots short"></span><span>น.</span></div>' +
-        '<div class="equipment-service-inline"><span>รวมเป็นเวลา</span><span class="equipment-service-dots short"></span><span>ชม.</span><span class="equipment-service-dots short"></span><span>นาที</span><span>รหัสวิชา</span><span class="equipment-service-dots short"></span><span>ชื่อวิชา</span><span class="equipment-service-dots"></span></div>' +
-        '<div class="equipment-service-inline"><span>จำนวนผู้ใช้บริการ</span><span class="equipment-service-dots short"></span><span>คน</span><span>อาจารย์ผู้สอน</span><span class="equipment-service-dots"></span></div>' +
-        '<div class="equipment-service-inline"><span>วัตถุประสงค์เพื่อ</span><span class="equipment-service-dots"></span></div>' +
+        '<div class="equipment-service-inline"><span>วันที่</span>' + printFormValue(formatRequestDate(data.startDate),'short') + '<span>เวลา</span>' + printFormValue(data.startTime,'short') + '<span>น. ถึง วันที่</span>' + printFormValue(formatRequestDate(data.endDate),'short') + '<span>เวลา</span>' + printFormValue(data.endTime,'short') + '<span>น.</span></div>' +
+        '<div class="equipment-service-inline"><span>รวมเป็นเวลา</span>' + printFormValue(duration.hours,'short') + '<span>ชม.</span>' + printFormValue(duration.minutes,'short') + '<span>นาที</span><span>รหัสวิชา</span>' + printFormValue(data.subjectCode,'short') + '<span>ชื่อวิชา</span>' + printFormValue(data.subjectName) + '</div>' +
+        '<div class="equipment-service-inline"><span>จำนวนผู้ใช้บริการ</span>' + printFormValue(data.participants,'short') + '<span>คน</span><span>อาจารย์ผู้สอน</span>' + printFormValue(data.instructor) + '</div>' +
+        '<div class="equipment-service-inline"><span>วัตถุประสงค์เพื่อ</span>' + printFormValue(data.purpose) + '</div>' +
       '</section>' +
       '<section class="equipment-service-section">' +
         '<h5>3. Studio Production Service</h5>' +
         '<div class="equipment-service-room-choices">' +
-          '<span><i class="equipment-service-check" aria-hidden="true"></i>Content Studio 1</span><span><i class="equipment-service-check" aria-hidden="true"></i>Content Studio 2</span><span><i class="equipment-service-check" aria-hidden="true"></i>Studio ตึก 7 ชั้น 5</span><span><i class="equipment-service-check" aria-hidden="true"></i>7502</span><span><i class="equipment-service-check" aria-hidden="true"></i>CreativeSpace 1</span><span><i class="equipment-service-check" aria-hidden="true"></i>CreativeSpace 2</span><span><i class="equipment-service-check" aria-hidden="true"></i>Sand Box</span>' +
+          ROOM_SERVICE_GROUPS[0].options.map(function(option){ return printRoomChoice(option.label,option.value,selectedRooms); }).join('') +
+          (roomOthers.studio ? '<span>' + printFormCheck(true) + 'อื่น ๆ: ' + escapeHtml(roomOthers.studio) + '</span>' : '') +
         '</div>' +
       '</section>' +
       '<section class="equipment-service-rooms-grid">' +
-        '<div class="equipment-service-room-block"><h6>4. Editing Room Service</h6><div class="equipment-service-room-list is-two-column"><span>Editing 1</span><span>Editing 6</span><span>Editing 2</span><span>Editing 7</span><span>Editing 3</span><span>Editing 8</span><span>Editing 4</span><span>Editing 9</span><span>Editing 5</span><span>Editing 10</span></div></div>' +
-        '<div class="equipment-service-room-block"><h6>5. Performing Arts Studio</h6><div class="equipment-service-room-list"><span>Performing Arts Studio 7418</span><span>Acting Room 1 / 7416</span><span>Acting Room 2 / 7417</span><span>Acting Room 3 / 7419</span><span>Acting Room 4 / 7420</span><span>ห้องการแสดง ชั้น 5 / 7501</span></div></div>' +
-        '<div class="equipment-service-room-block"><h6>6. Live Streaming Studio</h6><div class="equipment-service-room-list"><span>Live Streaming Studio 1</span><span>Live Streaming Studio 2</span><span>Live Streaming Studio 3</span><span>Live Streaming Studio 4</span></div></div>' +
-        '<div class="equipment-service-room-block"><h6>7. Sound Studio</h6><div class="equipment-service-room-list"><span>Sound Studio 1</span><span>Sound Studio 2</span><span>Voice Over Studio</span></div></div>' +
+        '<div class="equipment-service-room-block"><h6>4. Editing Room Service</h6><div class="equipment-service-room-list is-two-column">' + [1,6,2,7,3,8,4,9,5,10].map(function(number){ return printRoomListItem('Editing ' + number,'editing-' + number,selectedRooms); }).join('') + (roomOthers.editing ? printRoomListItem('อื่น ๆ: ' + roomOthers.editing,'__other-editing',[ '__other-editing' ]) : '') + '</div></div>' +
+        '<div class="equipment-service-room-block"><h6>5. Performing Arts Studio</h6><div class="equipment-service-room-list">' + ROOM_SERVICE_GROUPS[2].options.map(function(option){ return printRoomListItem(option.label,option.value,selectedRooms); }).join('') + (roomOthers.performance ? printRoomListItem('อื่น ๆ: ' + roomOthers.performance,'__other-performance',['__other-performance']) : '') + '</div></div>' +
+        '<div class="equipment-service-room-block"><h6>6. Live Streaming Studio</h6><div class="equipment-service-room-list">' + ROOM_SERVICE_GROUPS[3].options.map(function(option){ return printRoomListItem(option.label,option.value,selectedRooms); }).join('') + (roomOthers.live ? printRoomListItem('อื่น ๆ: ' + roomOthers.live,'__other-live',['__other-live']) : '') + '</div></div>' +
+        '<div class="equipment-service-room-block"><h6>7. Sound Studio</h6><div class="equipment-service-room-list">' + ROOM_SERVICE_GROUPS[4].options.map(function(option){ return printRoomListItem(option.label,option.value,selectedRooms); }).join('') + (roomOthers.sound ? printRoomListItem('อื่น ๆ: ' + roomOthers.sound,'__other-sound',['__other-sound']) : '') + '</div></div>' +
       '</section>' +
       '<section class="equipment-service-section equipment-service-equipment">' +
         '<div class="equipment-service-equipment-head"><h5>8. Equipment Service</h5><strong>จำนวนรวม ' + totalQuantity() + ' ชิ้น</strong></div>' +
@@ -1764,7 +2054,13 @@ const DATA = [
   function openPrintPreview(){
     if(!elements.printOverlay || !selectedRecords().length) return;
     printReturnFocus = document.activeElement;
-    renderPrintDocument();
+    renderRequestForm();
+    if(!requestDraftRestored){
+      loadRequestDraft();
+      requestDraftRestored = true;
+    }
+    syncSelectedRoomToForm();
+    setPrintMode('form');
     elements.printOverlay.hidden = false;
     elements.printOverlay.removeAttribute('inert');
     elements.printOverlay.setAttribute('aria-hidden','false');
@@ -1774,8 +2070,36 @@ const DATA = [
     }
     requestAnimationFrame(function(){
       elements.printOverlay.classList.add('is-open');
-      focusWithoutScroll(elements.printClose);
+      const firstField = elements.requestForm && elements.requestForm.querySelector('input,textarea');
+      focusWithoutScroll(firstField || elements.printClose);
     });
+  }
+
+  function previewRequestDocument(){
+    if(!validateRequestForm()) return;
+    activeRequestData = collectRequestData();
+    renderPrintDocument(activeRequestData);
+    setPrintMode('preview');
+    if(elements.printPane) elements.printPane.scrollTop = 0;
+    focusWithoutScroll(elements.printBack || elements.printClose);
+  }
+
+  function editRequestDocument(){
+    setPrintMode('form');
+    focusWithoutScroll(elements.requestForm && elements.requestForm.querySelector('input,textarea'));
+  }
+
+  function clearRequestForm(){
+    if(!elements.requestForm) return;
+    if(!window.confirm('ล้างข้อมูลแบบฟอร์มและร่างที่บันทึกไว้ในเครื่องนี้หรือไม่?')) return;
+    elements.requestForm.reset();
+    elements.requestForm.querySelectorAll('input').forEach(function(input){ input.setCustomValidity(''); });
+    try{ window.localStorage.removeItem(REQUEST_DRAFT_KEY); }catch(error){}
+    activeRequestData = null;
+    syncOtherInputs();
+    syncSelectedRoomToForm();
+    setRequestStatus('ล้างข้อมูลแบบฟอร์มและร่างในเครื่องแล้ว', 'success');
+    focusWithoutScroll(elements.requestForm.querySelector('input,textarea'));
   }
 
   function closePrintPreview(){
@@ -1796,7 +2120,11 @@ const DATA = [
 
   function printSelection(){
     if(!selectedRecords().length) return;
-    renderPrintDocument();
+    if(printMode !== 'preview'){
+      previewRequestDocument();
+      if(printMode !== 'preview') return;
+    }
+    renderPrintDocument(activeRequestData || collectRequestData());
     printRequested = true;
     document.body.classList.add('equipment-printing');
     requestAnimationFrame(function(){
@@ -1864,7 +2192,29 @@ const DATA = [
   if(elements.printOpen) elements.printOpen.addEventListener('click', openPrintPreview);
   if(elements.printClose) elements.printClose.addEventListener('click', closePrintPreview);
   if(elements.printCancel) elements.printCancel.addEventListener('click', closePrintPreview);
+  if(elements.formClear) elements.formClear.addEventListener('click', clearRequestForm);
+  if(elements.formSave) elements.formSave.addEventListener('click', saveRequestDraft);
+  if(elements.formPreview) elements.formPreview.addEventListener('click', previewRequestDocument);
+  if(elements.printBack) elements.printBack.addEventListener('click', editRequestDocument);
   if(elements.printConfirm) elements.printConfirm.addEventListener('click', printSelection);
+  if(elements.requestForm) elements.requestForm.addEventListener('change', function(event){
+    if(event.target.matches('[data-other-toggle]')) syncOtherInputs();
+    if(event.target.name === 'requesterType'){
+      const registration = elements.requestForm.elements.namedItem('registrationId');
+      if(registration){
+        registration.required = event.target.value === 'student';
+        registration.setCustomValidity('');
+      }
+    }
+    if(/^(startDate|startTime|endDate|endTime)$/.test(event.target.name)){
+      const endDate = elements.requestForm.elements.namedItem('endDate');
+      if(endDate) endDate.setCustomValidity('');
+    }
+  });
+  if(elements.requestForm) elements.requestForm.addEventListener('submit', function(event){
+    event.preventDefault();
+    previewRequestDocument();
+  });
   if(elements.printOverlay) elements.printOverlay.addEventListener('click', function(event){
     if(event.target === elements.printOverlay) closePrintPreview();
   });
@@ -1892,7 +2242,7 @@ const DATA = [
 
   window.addEventListener('beforeprint', function(){
     if(!printRequested) return;
-    renderPrintDocument();
+    renderPrintDocument(activeRequestData || collectRequestData());
     document.body.classList.add('equipment-printing');
   });
   window.addEventListener('afterprint', function(){
