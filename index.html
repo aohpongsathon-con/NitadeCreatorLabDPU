@@ -11,6 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Nitade Creator Lab">
 <title>Nitade Creator Lab — Learning Hub</title>
+<link rel="icon" type="image/png" href="assets/images/dpu-ca-form-logo.png">
 <script>
   (function(){
     document.documentElement.className += ' js';
@@ -1112,6 +1113,46 @@
   .equipment-service-form-note{margin-top:4mm;color:#333;font-size:7.4pt;line-height:1.5;text-align:center;break-inside:avoid;page-break-inside:avoid;}
   .equipment-service-liability{margin-top:2mm;color:#ef3038;font-size:8pt;line-height:1.6;break-inside:avoid;page-break-inside:avoid;}
   .equipment-service-generated{margin-top:2.5mm;color:#6b7280;font-size:6.5pt;text-align:right;}
+  .equipment-service-value{min-height:1.15em;min-width:15mm;flex:1;padding:0 1mm .35mm;border-bottom:.3mm dotted #555;color:#111;font-weight:500;overflow-wrap:anywhere;}
+  .equipment-service-value.short{max-width:34mm}.equipment-service-value.medium{max-width:56mm}
+  .equipment-service-check.is-checked{position:relative}.equipment-service-check.is-checked::after{content:'✓';position:absolute;inset:-1.9mm -1mm auto;color:#111;font-family:Arial,sans-serif;font-size:5mm;font-weight:700;line-height:1;text-align:center;}
+  .equipment-service-room-list span{gap:1.1mm;font-size:7.4pt;white-space:nowrap}.equipment-service-room-list .equipment-service-check{width:2.8mm;height:2.8mm;border-width:.22mm}.equipment-service-room-list .equipment-service-check.is-checked::after{inset:-1.4mm -.75mm auto;font-size:3.6mm}
+  .equipment-request-scroll{padding:24px;overflow:auto;overscroll-behavior:contain;background:radial-gradient(circle at 20% 0%,rgba(106,27,255,.12),transparent 36%),var(--bg-0);}
+  .equipment-request-scroll[hidden],.equipment-print-scroll[hidden]{display:none;}
+  .equipment-request-form{width:min(880px,100%);margin:0 auto;}
+  .equipment-request-intro{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:start;padding:20px;border:1px solid var(--panel-line);border-radius:20px;background:linear-gradient(145deg,var(--veil-1),transparent),var(--panel);}
+  .equipment-request-intro span{color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:.54rem;letter-spacing:.13em;}
+  .equipment-request-intro h4{margin-top:6px;font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;font-size:1.35rem;font-weight:600;}
+  .equipment-request-intro p{max-width:650px;margin-top:7px;color:var(--text-1);font-size:.78rem;line-height:1.65;}
+  .equipment-request-privacy{padding:8px 11px;border:1px solid rgba(34,197,94,.26);border-radius:999px;background:rgba(34,197,94,.08);color:#67d68b!important;font-size:.58rem!important;letter-spacing:.04em!important;white-space:nowrap;}
+  .equipment-request-status{min-height:20px;margin:10px 4px 0;color:var(--text-2);font-size:.7rem;line-height:1.5;}
+  .equipment-request-status.is-success{color:#67d68b}.equipment-request-status.is-error{color:var(--red)}
+  .equipment-request-card{margin-top:14px;padding:20px;border:1px solid var(--panel-line);border-radius:20px;background:var(--panel);}
+  .equipment-request-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;}
+  .equipment-request-card-head span{display:grid;width:32px;height:32px;flex:none;place-items:center;border-radius:10px;background:var(--violet-soft);color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:700;}
+  .equipment-request-card-head div{min-width:0;flex:1}.equipment-request-card-head h5{font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;font-size:1rem;font-weight:600}.equipment-request-card-head p{margin-top:4px;color:var(--text-2);font-size:.7rem;line-height:1.5;}
+  .equipment-request-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  .equipment-request-grid.is-four{grid-template-columns:repeat(4,minmax(0,1fr));}.equipment-request-grid .is-wide{grid-column:1/-1;}
+  .equipment-request-field{display:flex;min-width:0;flex-direction:column;gap:7px;color:var(--text-1);font-size:.72rem;}
+  .equipment-request-field>span{display:flex;align-items:center;gap:5px}.equipment-request-required{color:var(--red);}
+  .equipment-request-field input,.equipment-request-field textarea,.equipment-request-field>select{width:100%;min-height:42px;padding:10px 12px;border:1px solid var(--panel-line);border-radius:11px;background:var(--veil-1);color:var(--text-0);font:inherit;outline:none;}
+  .equipment-request-field>select{padding-right:34px;color-scheme:dark;white-space:nowrap;text-overflow:ellipsis;}
+  .equipment-request-field textarea{min-height:82px;resize:vertical}.equipment-request-field input:focus,.equipment-request-field textarea:focus,.equipment-request-field>select:focus{border-color:var(--sky);box-shadow:0 0 0 3px var(--sky-soft);}
+  .equipment-request-field input:invalid:not(:placeholder-shown),.equipment-request-field textarea:invalid:not(:placeholder-shown),.equipment-request-field>select:invalid{border-color:rgba(255,84,112,.66);color:var(--text-2);}
+  .equipment-request-time-24{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}.equipment-request-time-24>span{color:var(--text-1);font-family:'IBM Plex Mono',monospace;font-size:1rem;font-weight:700}.equipment-request-time-24 select{width:100%;min-height:42px;padding:9px 30px 9px 11px;border:1px solid var(--panel-line);border-radius:11px;background:var(--veil-1);color:var(--text-0);font:inherit;outline:none;color-scheme:dark}.equipment-request-time-24 select:focus{border-color:var(--sky);box-shadow:0 0 0 3px var(--sky-soft)}.equipment-request-time-24 select:invalid{color:var(--text-2)}
+  .equipment-request-choice-row,.equipment-request-choice-grid{display:flex;flex-wrap:wrap;gap:9px;}
+  .equipment-request-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+  .equipment-request-choice{display:flex;min-width:0;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--panel-line);border-radius:11px;background:var(--veil-1);color:var(--text-1);font-size:.72rem;line-height:1.35;cursor:pointer;}
+  .equipment-request-choice:has(input:checked){border-color:rgba(148,201,253,.5);background:var(--sky-soft);color:var(--text-0);}
+  .equipment-request-choice input{width:17px;height:17px;flex:none;accent-color:var(--violet);}
+  .equipment-request-room-group+.equipment-request-room-group{margin-top:14px}.equipment-request-room-group h6{margin-bottom:8px;color:var(--sky);font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.08em;}
+  .equipment-request-other{display:grid;grid-template-columns:auto minmax(120px,1fr);gap:9px;align-items:center;margin-top:9px}.equipment-request-other .equipment-request-choice{white-space:nowrap}.equipment-request-other input[type="text"]{min-height:42px;padding:10px 12px;border:1px solid var(--panel-line);border-radius:11px;background:var(--veil-1);color:var(--text-0);font:inherit;outline:none}.equipment-request-other input[type="text"]:disabled{opacity:.45;}
+  .equipment-request-help{margin-top:13px;padding:11px 13px;border-left:3px solid var(--sky);border-radius:0 10px 10px 0;background:var(--sky-soft);color:var(--text-1);font-size:.69rem;line-height:1.55;}
+  .equipment-print-footer{flex-wrap:wrap}.equipment-print-footer-group{display:flex;flex-wrap:wrap;gap:9px;margin-left:auto;}
+  .equipment-form-save,.equipment-form-clear,.equipment-form-preview,.equipment-print-back{min-height:42px;padding:10px 16px;border-radius:11px;font-size:.75rem;font-weight:700;}
+  .equipment-form-save,.equipment-print-back{border:1px solid rgba(148,201,253,.35);background:var(--sky-soft);color:var(--sky)}
+  .equipment-form-clear{border:1px solid rgba(255,84,112,.3);background:rgba(255,84,112,.08);color:var(--red)}
+  .equipment-form-preview{border:1px solid transparent;background:linear-gradient(135deg,var(--violet),#8250ff);color:#fff;box-shadow:0 10px 24px rgba(106,27,255,.22)}
   .equipment-print-footer{border-top:1px solid var(--panel-line);border-bottom:0;justify-content:flex-end;}
   .equipment-print-cancel,.equipment-print-confirm{min-height:42px;padding:10px 18px;border-radius:11px;font-size:.75rem;font-weight:700;}.equipment-print-cancel{border:1px solid var(--panel-line);background:transparent;color:var(--text-0);}.equipment-print-confirm{border:1px solid transparent;background:linear-gradient(135deg,var(--violet),#8250ff);color:#fff;box-shadow:0 10px 24px rgba(106,27,255,.22);}
   .equipment-item-modal{position:fixed;left:50%;top:50%;z-index:440;width:min(920px,calc(100% - 36px));max-height:min(720px,calc(100dvh - 36px));border:1px solid var(--panel-line);border-radius:26px;background:var(--bg-1);box-shadow:0 30px 100px rgba(3,2,12,0.56);opacity:0;transform:translate(-50%,-46%) scale(.98);transition:opacity .22s ease,transform .24s cubic-bezier(.22,.8,.22,1);overflow:hidden;}
@@ -1144,7 +1185,7 @@
     .equipment-catalog{padding:18px;border-radius:22px;}.equipment-toolbar{grid-template-columns:1fr;}.equipment-result-count{order:3;}.equipment-selection-button{justify-content:space-between;}
     .equipment-grid{grid-template-columns:1fr;}.equipment-card-info{grid-template-columns:82px minmax(0,1fr);}.equipment-category-section+.equipment-category-section{margin-top:44px;}
     .equipment-item-modal{width:calc(100% - 22px);max-height:calc(100dvh - 22px);border-radius:20px;}.equipment-item-layout{display:block;}.equipment-item-photo{min-height:210px;border-right:0;border-bottom:1px solid var(--panel-line);}.equipment-item-photo.has-image{padding:18px;}.equipment-item-photo img{max-height:190px;}.equipment-item-photo b{font-size:3rem;}.equipment-item-content{padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));overflow:visible;}.equipment-item-content h3{padding-right:44px;}
-    .equipment-drawer-head{align-items:flex-start;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) 16px 16px;}.equipment-drawer-head h3{font-size:1.08rem;}.equipment-drawer-body{padding:14px 14px 20px;}.equipment-drawer-footer{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));}.equipment-drawer-actions{grid-template-columns:1fr;}.equipment-print-overlay{padding:8px;}.equipment-print-dialog{max-height:calc(100dvh - 16px);border-radius:18px;}.equipment-print-head,.equipment-print-footer{padding:15px;}.equipment-print-scroll{padding:10px;}.equipment-print-paper{margin:0;}
+    .equipment-drawer-head{align-items:flex-start;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) 16px 16px;}.equipment-drawer-head h3{font-size:1.08rem;}.equipment-drawer-body{padding:14px 14px 20px;}.equipment-drawer-footer{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));}.equipment-drawer-actions{grid-template-columns:1fr;}.equipment-print-overlay{padding:8px;}.equipment-print-dialog{max-height:calc(100dvh - 16px);border-radius:18px;}.equipment-print-head,.equipment-print-footer{padding:15px;}.equipment-print-scroll,.equipment-request-scroll{padding:10px;}.equipment-print-paper{margin:0;}.equipment-request-intro{grid-template-columns:1fr;padding:16px}.equipment-request-privacy{justify-self:start}.equipment-request-card{padding:16px}.equipment-request-grid,.equipment-request-grid.is-four,.equipment-request-choice-grid{grid-template-columns:1fr}.equipment-request-other{grid-template-columns:1fr}.equipment-print-footer-group{width:100%;margin-left:0}.equipment-print-footer-group button{flex:1}.equipment-print-cancel{width:100%}
   }
   @media (max-height:520px) and (orientation:landscape){
     .equipment-drawer-head{padding-top:10px;padding-bottom:10px;}.equipment-drawer-head h3{font-size:1rem;}.equipment-drawer-body{padding-top:10px;padding-bottom:12px;}.equipment-drawer-footer{padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));}.equipment-drawer-actions{margin-top:9px;}
@@ -2220,15 +2261,31 @@
 <div class="equipment-print-overlay" id="equipmentPrintPreview" aria-hidden="true" hidden>
   <section class="equipment-print-dialog" id="equipmentPrintDialog" role="dialog" aria-modal="true" aria-labelledby="equipmentPrintTitle">
     <div class="equipment-print-head">
-      <div class="equipment-print-head-copy"><span>PRINT PREVIEW · A4</span><h3 id="equipmentPrintTitle">ตัวอย่างเอกสารรายการอุปกรณ์</h3></div>
+      <div class="equipment-print-head-copy"><span id="equipmentPrintEyebrow">REQUEST FORM · LOCAL ONLY</span><h3 id="equipmentPrintTitle">กรอกข้อมูลแบบขอใช้บริการ</h3></div>
       <button class="equipment-layer-close" id="equipmentPrintClose" type="button" aria-label="ปิดตัวอย่างเอกสาร">×</button>
     </div>
-    <div class="equipment-print-scroll">
+    <div class="equipment-request-scroll" id="equipmentRequestPane">
+      <form class="equipment-request-form" id="equipmentRequestForm" novalidate>
+        <div class="equipment-request-intro">
+          <div><span>LOCAL FORM · SECTION 1–7</span><h4>กรอกข้อมูลก่อนสร้างเอกสาร</h4><p>กรอกเฉพาะข้อมูลที่ต้องการให้ปรากฏบนเอกสาร ระบบจะตรวจช่องสำคัญก่อนเปิดตัวอย่าง A4</p></div>
+          <span class="equipment-request-privacy">● เก็บข้อมูลเฉพาะเครื่องนี้</span>
+        </div>
+        <p class="equipment-request-status" id="equipmentRequestStatus" role="status" aria-live="polite"></p>
+        <div id="equipmentRequestFields"></div>
+      </form>
+    </div>
+    <div class="equipment-print-scroll" id="equipmentPrintPane" hidden>
       <article class="equipment-print-paper" id="equipmentPrintDocument"></article>
     </div>
     <div class="equipment-print-footer">
       <button class="equipment-print-cancel" id="equipmentPrintCancel" type="button">ปิด</button>
-      <button class="equipment-print-confirm" id="equipmentPrintConfirm" type="button">พิมพ์เอกสาร</button>
+      <div class="equipment-print-footer-group">
+        <button class="equipment-form-clear" id="equipmentFormClear" type="button">ล้างข้อมูล</button>
+        <button class="equipment-form-save" id="equipmentFormSave" type="button">บันทึกร่าง</button>
+        <button class="equipment-form-preview" id="equipmentFormPreview" type="button">ตรวจสอบก่อนพิมพ์</button>
+        <button class="equipment-print-back" id="equipmentPrintBack" type="button" hidden>ย้อนกลับไปแก้ไข</button>
+        <button class="equipment-print-confirm" id="equipmentPrintConfirm" type="button" hidden>พิมพ์เอกสาร</button>
+      </div>
     </div>
   </section>
 </div>
