@@ -1319,6 +1319,7 @@ const DATA = [
   let modalReturnFocus = null;
   let printReturnFocus = null;
   let printRequested = false;
+  let printCleanupTimer = 0;
   let printMode = 'form';
   let activeRequestData = null;
   let requestFormInitialized = false;
@@ -2223,6 +2224,26 @@ const DATA = [
     }, 220);
   }
 
+  function endPrintState(){
+    if(printCleanupTimer){
+      window.clearTimeout(printCleanupTimer);
+      printCleanupTimer = 0;
+    }
+    printRequested = false;
+    document.body.classList.remove('equipment-printing');
+  }
+
+  function beginPrintState(){
+    if(printCleanupTimer) window.clearTimeout(printCleanupTimer);
+    printRequested = true;
+    document.body.classList.add('equipment-printing');
+    // iOS/WKWebView prepares the print snapshot after window.print() has
+    // already returned. Keep print-only CSS active until afterprint instead
+    // of clearing it on the next event-loop turn.
+    void document.body.offsetHeight;
+    printCleanupTimer = window.setTimeout(endPrintState, 300000);
+  }
+
   function printSelection(){
     if(!selectedRecords().length) return;
     if(printMode !== 'preview'){
@@ -2230,15 +2251,13 @@ const DATA = [
       if(printMode !== 'preview') return;
     }
     renderPrintDocument(activeRequestData || collectRequestData());
-    printRequested = true;
-    document.body.classList.add('equipment-printing');
+    beginPrintState();
     requestAnimationFrame(function(){
-      try{ window.print(); }
-      finally{
-        window.setTimeout(function(){
-          printRequested = false;
-          document.body.classList.remove('equipment-printing');
-        }, 0);
+      try{
+        window.print();
+      }catch(error){
+        endPrintState();
+        window.console.error('Unable to open print preview.', error);
       }
     });
   }
@@ -2351,11 +2370,10 @@ const DATA = [
   window.addEventListener('beforeprint', function(){
     if(!printRequested) return;
     renderPrintDocument(activeRequestData || collectRequestData());
-    document.body.classList.add('equipment-printing');
+    beginPrintState();
   });
   window.addEventListener('afterprint', function(){
-    printRequested = false;
-    document.body.classList.remove('equipment-printing');
+    endPrintState();
   });
 
   renderTabs();
