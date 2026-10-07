@@ -1873,6 +1873,7 @@ const DATA = [
 
   function renderPrintEquipmentList(title, records, options){
     const settings = options || {};
+    const supplementalValues = settings.supplementalValues || {};
     const displayRecords = records.length ? records : [{empty:true},{empty:true}];
     const rows = displayRecords.map(function(record, index){
       if(record.empty){
@@ -1892,7 +1893,10 @@ const DATA = [
       : ['Card','แท่นชาร์จ','แบตเตอรี่','อื่นๆ'];
     const supplementalFields = settings.cameraFields
       ? '<div class="equipment-service-supplemental' + (settings.hideBatteryField ? ' is-three-fields' : '') + '" aria-label="รายการประกอบอุปกรณ์บันทึกภาพ">' +
-          cameraFieldLabels.map(function(label){ return '<span><b>' + escapeHtml(label) + '</b><i></i></span>'; }).join('') +
+          cameraFieldLabels.map(function(label){
+            const value = supplementalValues[label] || '';
+            return '<span><b>' + escapeHtml(label) + '</b><i>' + escapeHtml(value) + '</i></span>';
+          }).join('') +
         '</div>'
       : '';
     return '<section class="equipment-service-list"><h6>' + escapeHtml(title) + '</h6><ol class="equipment-service-list-grid">' + rows + otherRow + '</ol>' + supplementalFields + '</section>';
@@ -1927,6 +1931,13 @@ const DATA = [
     const buckets = {visual:[],sound:[],lighting:[]};
     records.forEach(function(record){ buckets[printBucketFor(record)].push(record); });
     const hasSelectedBattery = records.some(function(record){ return normalize(record.item.group) === 'battery'; });
+    const mirrorlessCameraQuantity = records.reduce(function(total, record){
+      const isMirrorlessCamera = record.item.category === 'mirrorless' && normalize(record.item.role) === 'camera';
+      return total + (isMirrorlessCamera ? record.quantity : 0);
+    }, 0);
+    const cameraSupplementalValues = mirrorlessCameraQuantity
+      ? {Card:'Memory Card 64GB × ' + mirrorlessCameraQuantity + ' ใบ'}
+      : {};
     elements.printDocument.innerHTML =
       '<header class="equipment-service-form-header">' +
         '<img class="equipment-service-form-logo" src="assets/images/dpu-ca-form-logo.png" alt="DPU CA">' +
@@ -1962,7 +1973,7 @@ const DATA = [
       '</section>' +
       '<section class="equipment-service-section equipment-service-equipment">' +
         '<div class="equipment-service-equipment-head"><h5>8. Equipment Service</h5><strong>จำนวนรวม ' + totalQuantity() + ' ชิ้น</strong></div>' +
-        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true,hideBatteryField:hasSelectedBattery}) +
+        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true,hideBatteryField:hasSelectedBattery,supplementalValues:cameraSupplementalValues}) +
         renderPrintEquipmentList('อุปกรณ์บันทึกเสียง', buckets.sound, {alwaysOther:true}) +
         renderPrintEquipmentList('อุปกรณ์จัดแสง', buckets.lighting, {alwaysOther:true}) +
       '</section>' +

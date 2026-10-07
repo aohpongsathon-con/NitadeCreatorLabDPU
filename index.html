@@ -1104,7 +1104,7 @@
   .equipment-service-supplemental.is-three-fields{grid-template-columns:repeat(3,minmax(0,1fr));}
   .equipment-service-supplemental span{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.3mm;align-items:end;min-width:0;}
   .equipment-service-supplemental b{font-size:8.5pt;font-weight:500;white-space:nowrap;}
-  .equipment-service-supplemental i{height:1.1em;border-bottom:.25mm dotted #555;}
+  .equipment-service-supplemental i{display:flex;min-width:0;min-height:1.1em;align-items:flex-end;padding:0 .7mm .2mm;border-bottom:.25mm dotted #555;font-size:7.2pt;font-style:normal;line-height:1.15;white-space:nowrap;}
   .equipment-service-signatures{display:grid;grid-template-columns:.8fr 1.45fr;gap:12mm;align-items:start;margin-top:5mm;break-inside:avoid;page-break-inside:avoid;}
   .equipment-service-signature{text-align:center;}.equipment-service-signature p{margin:0 0 3mm;}.equipment-service-signature-line{display:inline-block;width:48mm;border-bottom:.3mm dotted #555;}
   .equipment-service-signature-row{display:flex;align-items:flex-end;gap:1.2mm;white-space:nowrap;}.equipment-service-signature-row .equipment-service-signature-line{width:auto;min-width:12mm;flex:1;}.equipment-service-signature-role{white-space:nowrap;}
@@ -2395,7 +2395,7 @@
 
 <script src="assets/vendor/pannellum/pannellum.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
-<script src="assets/js/equipment-catalog.js?v=20261006-ios-print-fix"></script>
+<script src="assets/js/equipment-catalog.js?v=20261007-memory-card"></script>
 <script>
   const ruler = document.getElementById('ruler');
   if(ruler){
