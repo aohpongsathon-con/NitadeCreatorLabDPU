@@ -404,7 +404,7 @@ const DATA = [
           </ul>`},
       ]},
       { name:'Softbox', items:[
-        {b:'Softbox', m:'NiceFoto',
+        {b:'NiceFoto', m:'Rectangle Softbox',
           desc:`<ul class="im-spec-list">
             <li>ซอฟท์บ็อกซ์ทรงสี่เหลี่ยม ช่วยกระจายแสงให้นุ่มและสม่ำเสมอ พร้อมลดเงาแข็งบนตัวแบบ</li>
             <li>เหมาะสำหรับงานถ่ายภาพบุคคล สัมภาษณ์ และงานวิดีโอที่ต้องการแสงนุ่ม</li>
@@ -1117,7 +1117,7 @@ const DATA = [
     ['lights','Video Lights','NanGuang','CN-600HS','assets/images/equipment/catalog-2026/Video Lights/NanGuang CN-600HS.png'],
     ['lights','Video Lights','—','Ring Light 60w','assets/images/equipment/catalog-2026/Video Lights/Ring Light 60 w.png'],
     ['lights','Video Lights','Nicefoto','100w','assets/images/equipment/catalog-2026/Video Lights/Nicefoto 100w.png'],
-    ['lights','Softbox','Softbox','NiceFoto','assets/images/equipment/catalog-2026/Softbox/Softbox NiceFoto.png'],
+    ['lights','Softbox','NiceFoto','Rectangle Softbox','assets/images/equipment/catalog-2026/Softbox/Softbox NiceFoto.png'],
     ['lights','Softbox','Nicefoto','Lantern 60','assets/images/equipment/catalog-2026/Softbox/Nicefoto lantern 60.png'],
     ['lights','Softbox','Nanlite','Lantern 80','assets/images/equipment/catalog-2026/Softbox/Nanlite lantern 80.png'],
     ['lights','Softbox','Aputure','Lantern 90','assets/images/equipment/catalog-2026/Softbox/Aputure lantern 90.png'],
