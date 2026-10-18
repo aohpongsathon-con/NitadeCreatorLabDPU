@@ -534,7 +534,7 @@ const DATA = [
   { id:'accessories', label:'Accessories', accent:'--violet',
     groups:[
       { name:'Accessories — Lights', items:[
-        {b:'—', m:'ขาไฟดำ',
+        {b:'Lights Stand', m:'ขาไฟดำ',
           desc:`<ul class="im-spec-list">
             <li>ขาตั้งไฟสีดำแบบปรับระดับความสูง ใช้จัดตำแหน่งไฟหรืออุปกรณ์แสงในกองถ่าย</li>
             <li>ควรกางขาให้มั่นคง ล็อกทุกจุด และตรวจสอบน้ำหนักอุปกรณ์ก่อนใช้งานจริง</li>
@@ -1156,7 +1156,7 @@ const DATA = [
     ['accessories','Monitor Camera','Atomos','Shogun 7"','assets/images/equipment/set-2-transparent/Atomos Shogun 7.png'],
     ['accessories','Tripod','—','Baby Tripod','assets/images/equipment/set-2-transparent/Baby Tripod.png'],
     ['accessories','Accessories — Lights','Back Drop','Green Screen','assets/images/equipment/set-2-transparent/Back Drop Green Screen.png'],
-    ['accessories','Accessories — Lights','—','ขาไฟดำ','assets/images/equipment/catalog-2026/Accessories Lights/ขาไฟดำ.png'],
+    ['accessories','Accessories — Lights','Lights Stand','ขาไฟดำ','assets/images/equipment/catalog-2026/Accessories Lights/ขาไฟดำ.png'],
     ['accessories','Power Box','Bluetti','600W','assets/images/equipment/set-2-transparent/Bluetti 600W.png'],
     ['mirrorless','เลนส์ Canon','Canon','RF-S 18-150mm F3.5-6.3','assets/images/equipment/set-2-transparent/Canon RF-S 18-150mm F3.5-6.3.png'],
     ['accessories','Power Box','EcoFlow','1050W','assets/images/equipment/set-2-transparent/EcoFlow 1050W.png'],
