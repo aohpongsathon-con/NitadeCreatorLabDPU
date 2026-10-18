@@ -404,6 +404,11 @@ const DATA = [
           </ul>`},
       ]},
       { name:'Softbox', items:[
+        {b:'Softbox', m:'NiceFoto',
+          desc:`<ul class="im-spec-list">
+            <li>ซอฟท์บ็อกซ์ทรงสี่เหลี่ยม ช่วยกระจายแสงให้นุ่มและสม่ำเสมอ พร้อมลดเงาแข็งบนตัวแบบ</li>
+            <li>เหมาะสำหรับงานถ่ายภาพบุคคล สัมภาษณ์ และงานวิดีโอที่ต้องการแสงนุ่ม</li>
+          </ul>`},
         {b:'Nicefoto', m:'Lantern 60',
           desc:`<ul class="im-spec-list">
             <li>ซอฟท์บ็อกซ์ทรงโคม ขนาด 60cm ช่วยกระจายแสงจากไฟให้นุ่มขึ้น ลดเงาแข็งบนตัวแบบ</li>
@@ -529,6 +534,11 @@ const DATA = [
   { id:'accessories', label:'Accessories', accent:'--violet',
     groups:[
       { name:'Accessories — Lights', items:[
+        {b:'—', m:'ขาไฟดำ',
+          desc:`<ul class="im-spec-list">
+            <li>ขาตั้งไฟสีดำแบบปรับระดับความสูง ใช้จัดตำแหน่งไฟหรืออุปกรณ์แสงในกองถ่าย</li>
+            <li>ควรกางขาให้มั่นคง ล็อกทุกจุด และตรวจสอบน้ำหนักอุปกรณ์ก่อนใช้งานจริง</li>
+          </ul>`},
         {b:'—', m:'Grip Head 2.5',
           desc:`<ul class="im-spec-list">
             <li>อุปกรณ์หนีบยึด ใช้ต่อขาตั้งไฟเข้ากับแขนจับ Flag หรืออุปกรณ์กริปอื่นๆ ปรับมุมได้อิสระ</li>
@@ -1107,6 +1117,7 @@ const DATA = [
     ['lights','Video Lights','NanGuang','CN-600HS','assets/images/equipment/catalog-2026/Video Lights/NanGuang CN-600HS.png'],
     ['lights','Video Lights','—','Ring Light 60w','assets/images/equipment/catalog-2026/Video Lights/Ring Light 60 w.png'],
     ['lights','Video Lights','Nicefoto','100w','assets/images/equipment/catalog-2026/Video Lights/Nicefoto 100w.png'],
+    ['lights','Softbox','Softbox','NiceFoto','assets/images/equipment/catalog-2026/Softbox/Softbox NiceFoto.jpg'],
     ['lights','Softbox','Nicefoto','Lantern 60','assets/images/equipment/catalog-2026/Softbox/Nicefoto lantern 60.png'],
     ['lights','Softbox','Nanlite','Lantern 80','assets/images/equipment/catalog-2026/Softbox/Nanlite lantern 80.png'],
     ['lights','Softbox','Aputure','Lantern 90','assets/images/equipment/catalog-2026/Softbox/Aputure lantern 90.png'],
@@ -1145,6 +1156,7 @@ const DATA = [
     ['accessories','Monitor Camera','Atomos','Shogun 7"','assets/images/equipment/set-2-transparent/Atomos Shogun 7.png'],
     ['accessories','Tripod','—','Baby Tripod','assets/images/equipment/set-2-transparent/Baby Tripod.png'],
     ['accessories','Accessories — Lights','Back Drop','Green Screen','assets/images/equipment/set-2-transparent/Back Drop Green Screen.png'],
+    ['accessories','Accessories — Lights','—','ขาไฟดำ','assets/images/equipment/catalog-2026/Accessories Lights/ขาไฟดำ.webp'],
     ['accessories','Power Box','Bluetti','600W','assets/images/equipment/set-2-transparent/Bluetti 600W.png'],
     ['mirrorless','เลนส์ Canon','Canon','RF-S 18-150mm F3.5-6.3','assets/images/equipment/set-2-transparent/Canon RF-S 18-150mm F3.5-6.3.png'],
     ['accessories','Power Box','EcoFlow','1050W','assets/images/equipment/set-2-transparent/EcoFlow 1050W.png'],
