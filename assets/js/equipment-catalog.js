@@ -1175,7 +1175,7 @@ const DATA = [
     ['lights','Cinema Lights','Kino','2 Bank 110w','assets/images/equipment/set-2-transparent/Kino 2 Bank 110w.png'],
     ['lights','Cinema Lights','Kino','4 Bank 220w','assets/images/equipment/set-2-transparent/Kino 4 Bank 220w.png'],
     ['accessories','Accessories — Lights','Lights Stand','Baby Stand','assets/images/equipment/set-2-transparent/Lights Stand Baby Stand.png'],
-    ['accessories','Accessories — Lights','Lights Stand','Boom Stand','assets/images/equipment/set-2-transparent/Lights Stand Boom Stand.png'],
+    ['accessories','Accessories — Lights','Lights Stand','Boom Stand','assets/images/equipment/set-2-transparent/Lights Stand Boom Stand-v2.png'],
     ['accessories','Accessories — Lights','Lights Stand','C-Stand','assets/images/equipment/set-2-transparent/Lights Stand C-Stand.png'],
     ['accessories','Accessories — Lights','Lights Stand','Combo Stand','assets/images/equipment/set-2-transparent/Lights Stand Combo Stand.png'],
     ['accessories','Accessories — Lights','Lights Stand','Junior Stand','assets/images/equipment/set-2-transparent/Lights Stand Junior Stand.png'],
