@@ -1254,6 +1254,34 @@ const DATA = [
     sound: { label: 'เสียง (Sound)', code: 'SND' }
   };
 
+  const PRINT_BUCKET_BY_CATEGORY = Object.freeze({
+    mirrorless:'visual',
+    cinema:'visual',
+    lights:'lighting',
+    sound:'sound'
+  });
+
+  // Every Accessories group is assigned explicitly so new utility gear cannot
+  // silently fall into the image-recording section of the printed document.
+  const PRINT_BUCKET_BY_ACCESSORY_GROUP = Object.freeze({
+    'accessories — lights':'lighting',
+    'accessories — cinema camera':'visual',
+    'accessories video':'visual',
+    'accessories sound':'sound',
+    'monitor camera':'visual',
+    'monitor director':'visual',
+    'wireless video':'visual',
+    'follow focus':'visual',
+    'matte box':'visual',
+    'power box':'lighting',
+    'battery':'visual',
+    'gimbal stabilizer':'visual',
+    'action camera':'visual',
+    'tripod':'visual',
+    'power plug':'lighting',
+    'maglinier':'lighting'
+  });
+
   const catalog = document.getElementById('equipmentCatalog');
   if(!catalog) return;
 
@@ -1876,11 +1904,16 @@ const DATA = [
   }
 
   function printBucketFor(record){
-    if(record.item.category === 'sound') return 'sound';
-    if(record.item.category === 'lights') return 'lighting';
-    if(record.item.category === 'accessories' && /sound/i.test(record.item.group || '')) return 'sound';
-    if(record.item.category === 'accessories' && /lights/i.test(record.item.group || '')) return 'lighting';
-    return 'visual';
+    const item = record && record.item ? record.item : {};
+    const category = normalize(item.category);
+    if(category === 'accessories'){
+      const group = normalize(item.group);
+      const accessoryBucket = PRINT_BUCKET_BY_ACCESSORY_GROUP[group];
+      if(accessoryBucket) return accessoryBucket;
+      window.console.warn('Unmapped Accessories print group:', item.group || '(empty)');
+      return 'visual';
+    }
+    return PRINT_BUCKET_BY_CATEGORY[category] || 'visual';
   }
 
   function renderPrintEquipmentList(title, records, options){
