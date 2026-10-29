@@ -351,7 +351,8 @@ const DATA = [
             <li>สว่างจัดจ้าน เหมาะเป็นไฟหลักที่ต้องการความยืดหยุ่นเรื่องโทนสี</li>
           </ul>
           <div class="im-spec-source">อ้างอิงข้อมูลจากเว็บไซต์ทางการ Nanlite</div>`},
-        {b:'Nanlite', m:'Fs-300 C',
+        // Temporarily hidden from the public catalog; keep the full record for easy restoration.
+        {b:'Nanlite', m:'Fs-300 C', hidden:true,
           desc:`<ul class="im-spec-list">
             <li>ไฟ LED รุ่นสีเต็มรูปแบบ (RGBW) ปรับได้ทุกโทนสี อุณหภูมิสี 2700–7500K สีสมจริงสูง (CRI 95+)</li>
             <li>เหมาะกับงานที่ต้องการสร้างบรรยากาศด้วยแสงสี เช่น มิวสิควิดีโอหรือโฆษณา</li>
@@ -1346,7 +1347,7 @@ const DATA = [
           categoryTitle: category.label,
           group: group.name
         });
-        flatItems.push(record);
+        if(!record.hidden) flatItems.push(record);
         itemMap.set(id, record);
       });
     });
@@ -1431,6 +1432,7 @@ const DATA = [
   }
 
   function matchesItem(item){
+    if(!item || item.hidden) return false;
     const inCategory = activeCategory === 'all' || item.category === activeCategory;
     if(!inCategory) return false;
     if(!searchTerm) return true;
