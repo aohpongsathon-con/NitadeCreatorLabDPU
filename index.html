@@ -1098,7 +1098,7 @@
   .equipment-service-list-line b{display:block;overflow-wrap:anywhere;font-size:8.8pt;font-weight:500;line-height:1.15;}
   .equipment-service-list-qty{padding-bottom:.55mm;font-size:7.5pt;font-weight:600;white-space:nowrap;}
   .equipment-service-empty-line{height:4mm;border-bottom:.25mm dotted #555;}
-  .equipment-service-list-grid li.equipment-service-list-other{grid-column:1/-1;grid-template-columns:5mm minmax(0,1fr) auto;}
+  .equipment-service-list-grid li.equipment-service-list-other,.equipment-service-list-grid li.equipment-service-list-card{grid-column:1/-1;grid-template-columns:5mm minmax(0,1fr) auto;}
   .equipment-service-list-other .equipment-service-list-line b{font-weight:500;}
   .equipment-service-supplemental{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2mm 5mm;margin:1.8mm 0 0 10mm;}
   .equipment-service-supplemental.is-three-fields{grid-template-columns:repeat(3,minmax(0,1fr));}
@@ -2445,7 +2445,7 @@
 
 <script src="assets/vendor/pannellum/pannellum.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
-<script src="assets/js/equipment-catalog.js?v=print-queue-reminder"></script>
+<script src="assets/js/equipment-catalog.js?v=print-equipment-kits"></script>
 <script>
   const ruler = document.getElementById('ruler');
   if(ruler){

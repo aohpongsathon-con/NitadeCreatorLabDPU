@@ -1907,6 +1907,31 @@ const DATA = [
     return [item.b && item.b !== '—' ? item.b : '', item.m].filter(Boolean).join(' ').trim();
   }
 
+  const PRINT_CAMERA_KIT_BATTERIES = new Map([
+    ['Panasonic Lumix S5',3], ['Panasonic Lumix S5 II',3],
+    ['Canon EOS R6 Mark II',2], ['Canon EOS R7',2], ['Canon EOS RP',2]
+  ]);
+  const PRINT_AUDIO_CARD_RECORDERS = new Set(['Zoom H6','Zoom H8','Zoom F4','Zoom F6']);
+
+  function printKitQuantities(records){
+    const quantities = {cameraCards:0,chargers:0,batteries:0,audioCards:0};
+    records.forEach(function(record){
+      const item = record.item;
+      const name = printItemName(item);
+      if(item.category === 'mirrorless' && normalize(item.role) === 'camera'){
+        quantities.cameraCards += record.quantity;
+        const batteryCount = PRINT_CAMERA_KIT_BATTERIES.get(name);
+        if(batteryCount){
+          quantities.chargers += record.quantity;
+          quantities.batteries += record.quantity * batteryCount;
+        }
+      }else if(item.category === 'sound' && PRINT_AUDIO_CARD_RECORDERS.has(name)){
+        quantities.audioCards += record.quantity;
+      }
+    });
+    return quantities;
+  }
+
   function printBucketFor(record){
     const item = record && record.item ? record.item : {};
     const category = normalize(item.category);
@@ -1934,6 +1959,10 @@ const DATA = [
         '<strong class="equipment-service-list-qty">จำนวน ' + record.quantity + '</strong>' +
       '</li>';
     }).join('');
+    const memoryCardRow = settings.audioCardQuantity
+      ? '<li class="equipment-service-list-card"><span></span><span class="equipment-service-list-line"><b>Memory Card 32GB</b></span>' +
+        '<strong class="equipment-service-list-qty">จำนวน ' + settings.audioCardQuantity + ' ใบ</strong></li>'
+      : '';
     const otherRow = settings.alwaysOther
       ? '<li class="equipment-service-list-other"><span></span><span class="equipment-service-list-line"><b>อื่นๆ</b></span><span></span></li>'
       : '';
@@ -1948,7 +1977,7 @@ const DATA = [
           }).join('') +
         '</div>'
       : '';
-    return '<section class="equipment-service-list"><h6>' + escapeHtml(title) + '</h6><ol class="equipment-service-list-grid">' + rows + otherRow + '</ol>' + supplementalFields + '</section>';
+    return '<section class="equipment-service-list"><h6>' + escapeHtml(title) + '</h6><ol class="equipment-service-list-grid">' + rows + memoryCardRow + otherRow + '</ol>' + supplementalFields + '</section>';
   }
 
   function printFormValue(value, size){
@@ -1980,13 +2009,11 @@ const DATA = [
     const buckets = {visual:[],sound:[],lighting:[]};
     records.forEach(function(record){ buckets[printBucketFor(record)].push(record); });
     const hasSelectedBattery = records.some(function(record){ return normalize(record.item.group) === 'battery'; });
-    const mirrorlessCameraQuantity = records.reduce(function(total, record){
-      const isMirrorlessCamera = record.item.category === 'mirrorless' && normalize(record.item.role) === 'camera';
-      return total + (isMirrorlessCamera ? record.quantity : 0);
-    }, 0);
-    const cameraSupplementalValues = mirrorlessCameraQuantity
-      ? {Card:'Memory Card 64GB × ' + mirrorlessCameraQuantity + ' ใบ'}
-      : {};
+    const kit = printKitQuantities(records);
+    const cameraSupplementalValues = {};
+    if(kit.cameraCards) cameraSupplementalValues.Card = 'Memory Card 64GB × ' + kit.cameraCards + ' ใบ';
+    if(kit.chargers) cameraSupplementalValues['แท่นชาร์จ'] = kit.chargers + ' แท่น';
+    if(kit.batteries) cameraSupplementalValues['แบตเตอรี่'] = kit.batteries + ' ก้อน' + (hasSelectedBattery ? ' (ชุดกล้อง)' : '');
     elements.printDocument.innerHTML =
       '<header class="equipment-service-form-header">' +
         '<img class="equipment-service-form-logo" src="assets/images/dpu-ca-form-logo.png" alt="DPU CA">' +
@@ -2022,8 +2049,8 @@ const DATA = [
       '</section>' +
       '<section class="equipment-service-section equipment-service-equipment">' +
         '<div class="equipment-service-equipment-head"><h5>8. Equipment Service</h5><strong>จำนวนรวม ' + totalQuantity() + ' ชิ้น</strong></div>' +
-        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true,hideBatteryField:hasSelectedBattery,supplementalValues:cameraSupplementalValues}) +
-        renderPrintEquipmentList('อุปกรณ์บันทึกเสียง', buckets.sound, {alwaysOther:true}) +
+        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true,hideBatteryField:hasSelectedBattery && !kit.batteries,supplementalValues:cameraSupplementalValues}) +
+        renderPrintEquipmentList('อุปกรณ์บันทึกเสียง', buckets.sound, {alwaysOther:true,audioCardQuantity:kit.audioCards}) +
         renderPrintEquipmentList('อุปกรณ์จัดแสง', buckets.lighting, {alwaysOther:true}) +
       '</section>' +
       '<section class="equipment-service-signatures">' +
