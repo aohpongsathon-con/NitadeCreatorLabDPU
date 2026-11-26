@@ -2303,13 +2303,21 @@
       <div class="equipment-print-footer-group">
         <button class="equipment-form-clear" id="equipmentFormClear" type="button">ล้างข้อมูล</button>
         <button class="equipment-form-save" id="equipmentFormSave" type="button">บันทึกร่าง</button>
-        <button class="equipment-form-preview" id="equipmentFormPreview" type="button">ตรวจสอบก่อนพิมพ์</button>
+        <button class="equipment-form-preview" id="equipmentFormPreview" type="button" aria-haspopup="dialog" aria-controls="equipmentRequestNotice">ตรวจสอบก่อนพิมพ์</button>
         <button class="equipment-print-back" id="equipmentPrintBack" type="button" hidden>ย้อนกลับไปแก้ไข</button>
         <button class="equipment-print-confirm" id="equipmentPrintConfirm" type="button" hidden>พิมพ์เอกสาร</button>
       </div>
     </div>
   </section>
 </div>
+
+<dialog class="site-notice" id="equipmentRequestNotice" aria-labelledby="equipmentRequestNoticeTitle" aria-describedby="equipmentRequestNoticeText">
+  <h2 id="equipmentRequestNoticeTitle">ตรวจสอบคิวก่อนพิมพ์</h2>
+  <p id="equipmentRequestNoticeText">โปรดตรวจสอบคิวอุปกรณ์-ห้อง กับ พี่ๆทีม Creator Lab อีกครั้งเพื่อความถูกต้อง</p>
+  <form method="dialog">
+    <button type="submit" value="acknowledged" autofocus>รับทราบ</button>
+  </form>
+</dialog>
 
 <div class="room-popup-overlay" id="roomPopup" aria-hidden="true" hidden>
   <section class="room-popup-card" id="roomPopupCard" role="dialog" aria-modal="true" aria-labelledby="roomPopupTitle" aria-describedby="roomPopupNameEn">
@@ -2437,7 +2445,7 @@
 
 <script src="assets/vendor/pannellum/pannellum.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
-<script src="assets/js/equipment-catalog.js?v=20261029-hide-nanlite-fs300c"></script>
+<script src="assets/js/equipment-catalog.js?v=print-queue-reminder"></script>
 <script>
   const ruler = document.getElementById('ruler');
   if(ruler){

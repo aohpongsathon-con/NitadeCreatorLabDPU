@@ -1317,6 +1317,8 @@ const DATA = [
     formClear: document.getElementById('equipmentFormClear'),
     formSave: document.getElementById('equipmentFormSave'),
     formPreview: document.getElementById('equipmentFormPreview'),
+    requestNotice: document.getElementById('equipmentRequestNotice'),
+    requestNoticeText: document.getElementById('equipmentRequestNoticeText'),
     printBack: document.getElementById('equipmentPrintBack'),
     printDocument: document.getElementById('equipmentPrintDocument'),
     modal: document.getElementById('equipmentItemModal'),
@@ -2239,6 +2241,20 @@ const DATA = [
     });
   }
 
+  function openRequestNotice(){
+    if(printMode !== 'form' || !elements.printOverlay || elements.printOverlay.hidden) return;
+    const notice = elements.requestNotice;
+    if(notice && typeof notice.showModal === 'function'){
+      if(!notice.open){
+        notice.returnValue = '';
+        notice.showModal();
+      }
+      return;
+    }
+    if(elements.requestNoticeText) window.alert(elements.requestNoticeText.textContent.trim());
+    previewRequestDocument();
+  }
+
   function previewRequestDocument(){
     if(!validateRequestForm()) return;
     activeRequestData = collectRequestData();
@@ -2376,7 +2392,12 @@ const DATA = [
   if(elements.printCancel) elements.printCancel.addEventListener('click', closePrintPreview);
   if(elements.formClear) elements.formClear.addEventListener('click', clearRequestForm);
   if(elements.formSave) elements.formSave.addEventListener('click', saveRequestDraft);
-  if(elements.formPreview) elements.formPreview.addEventListener('click', previewRequestDocument);
+  if(elements.formPreview) elements.formPreview.addEventListener('click', openRequestNotice);
+  if(elements.requestNotice) elements.requestNotice.addEventListener('close', function(){
+    if(elements.requestNotice.returnValue === 'acknowledged' && elements.printOverlay && !elements.printOverlay.hidden && printMode === 'form'){
+      previewRequestDocument();
+    }
+  });
   if(elements.printBack) elements.printBack.addEventListener('click', editRequestDocument);
   if(elements.printConfirm) elements.printConfirm.addEventListener('click', printSelection);
   if(elements.requestForm) elements.requestForm.addEventListener('change', function(event){
@@ -2398,7 +2419,7 @@ const DATA = [
   });
   if(elements.requestForm) elements.requestForm.addEventListener('submit', function(event){
     event.preventDefault();
-    previewRequestDocument();
+    openRequestNotice();
   });
   if(elements.printOverlay) elements.printOverlay.addEventListener('click', function(event){
     if(event.target === elements.printOverlay) closePrintPreview();
@@ -2413,6 +2434,7 @@ const DATA = [
   });
 
   document.addEventListener('keydown', function(event){
+    if(elements.requestNotice && elements.requestNotice.open) return;
     if(event.key === 'Tab'){
       if(elements.printOverlay && !elements.printOverlay.hidden) keepFocusInside(event, elements.printDialog);
       else if(!elements.modal.hidden) keepFocusInside(event, elements.modal);
