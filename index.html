@@ -1211,6 +1211,27 @@
   @media (prefers-reduced-motion:reduce){
     .equipment-card,.equipment-category-tab,.equipment-selection-button,.equipment-layer-overlay,.equipment-drawer,.equipment-item-modal{transition:none!important;}
   }
+  body.site-notice-open{overflow:hidden;}
+  .site-notice{
+    position:fixed;inset:0;margin:auto;
+    width:min(460px,calc(100% - 32px));
+    max-height:calc(100vh - 32px);
+    max-height:calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+    overflow:auto;overscroll-behavior:contain;
+    padding:clamp(20px,5vw,36px);border:1px solid var(--panel-line-strong);border-radius:24px;
+    background:var(--bg-1);color:var(--text-0);text-align:center;
+    box-shadow:0 24px 80px rgba(3,2,14,.42);
+  }
+  .site-notice::backdrop{background:rgba(7,6,15,.66);}
+  .site-notice h2{font-family:'Chakra Petch','IBM Plex Sans Thai',sans-serif;font-size:clamp(1.25rem,4vw,1.65rem);line-height:1.35;}
+  .site-notice p{margin-top:12px;color:var(--text-1);line-height:1.65;}
+  .site-notice button{
+    min-height:44px;margin-top:22px;padding:10px 24px;border:1px solid transparent;border-radius:12px;
+    background:var(--violet);color:#fff;font:inherit;font-weight:600;cursor:pointer;
+  }
+  .site-notice button:focus-visible{outline:2px solid var(--sky);outline-offset:3px;}
+  @media print{.site-notice,.site-notice::backdrop{display:none!important;}}
+
   @media (forced-colors:active){
     .equipment-card,.equipment-catalog,.equipment-category-tab,.equipment-item-modal,.equipment-drawer{border:1px solid CanvasText;}.equipment-item-photo,.equipment-card-photo{background:Canvas;}
   }
@@ -2392,6 +2413,27 @@
     <div class="modal-note" id="contactModalNote">เลือกติดต่อทีม Lab ได้ผ่านช่องทางด้านบน</div>
   </div>
 </div>
+
+<dialog class="site-notice" id="siteNotice" aria-labelledby="siteNoticeTitle" aria-describedby="siteNoticeDescription">
+  <h2 id="siteNoticeTitle">แจ้งก่อนใช้งานเว็บไซต์</h2>
+  <p id="siteNoticeDescription">ข้อมูลบางส่วนบนเว็บไซต์อาจยังไม่เป็นปัจจุบันหรือไม่ครบถ้วน หากต้องการใช้ห้องหรืออุปกรณ์ กรุณายืนยันข้อมูลกับทีม Nitade Creator Lab ก่อนใช้งาน</p>
+  <form method="dialog">
+    <button type="submit" autofocus>รับทราบและเข้าเว็บไซต์</button>
+  </form>
+</dialog>
+<script>
+  (function(){
+    const notice = document.getElementById('siteNotice');
+    if(!notice || typeof notice.showModal !== 'function') return;
+    notice.addEventListener('close',()=>{
+      document.body.classList.remove('site-notice-open');
+      const main = document.getElementById('mainContent');
+      if(main) main.focus({preventScroll:true});
+    });
+    notice.showModal();
+    document.body.classList.add('site-notice-open');
+  })();
+</script>
 
 <script src="assets/vendor/pannellum/pannellum.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
