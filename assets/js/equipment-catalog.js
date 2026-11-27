@@ -1908,22 +1908,23 @@ const DATA = [
   }
 
   const PRINT_CAMERA_KIT_BATTERIES = new Map([
-    ['Panasonic Lumix S5',3], ['Panasonic Lumix S5 II',3],
-    ['Canon EOS R6 Mark II',2], ['Canon EOS R7',2], ['Canon EOS RP',2]
+    ['Panasonic Lumix S5',['Lumix Battery',3]], ['Panasonic Lumix S5 II',['Lumix Battery',3]],
+    ['Canon EOS R6 Mark II',['Canon Battery',2]], ['Canon EOS R7',['Canon Battery',2]], ['Canon EOS RP',['Canon Battery',2]]
   ]);
   const PRINT_AUDIO_CARD_RECORDERS = new Set(['Zoom H6','Zoom H8','Zoom F4','Zoom F6']);
 
   function printKitQuantities(records){
-    const quantities = {cameraCards:0,chargers:0,batteries:0,audioCards:0};
+    const quantities = {cameraCards:0,chargers:0,batteries:{'Lumix Battery':0,'Canon Battery':0},audioCards:0};
     records.forEach(function(record){
       const item = record.item;
       const name = printItemName(item);
       if(item.category === 'mirrorless' && normalize(item.role) === 'camera'){
         quantities.cameraCards += record.quantity;
-        const batteryCount = PRINT_CAMERA_KIT_BATTERIES.get(name);
-        if(batteryCount){
+        const battery = PRINT_CAMERA_KIT_BATTERIES.get(name);
+        if(battery){
+          const [batteryName,batteryCount] = battery;
           quantities.chargers += record.quantity;
-          quantities.batteries += record.quantity * batteryCount;
+          quantities.batteries[batteryName] += record.quantity * batteryCount;
         }
       }else if(item.category === 'sound' && PRINT_AUDIO_CARD_RECORDERS.has(name)){
         quantities.audioCards += record.quantity;
@@ -1973,6 +1974,9 @@ const DATA = [
       ? '<div class="equipment-service-supplemental' + (settings.hideBatteryField ? ' is-three-fields' : '') + '" aria-label="รายการประกอบอุปกรณ์บันทึกภาพ">' +
           cameraFieldLabels.map(function(label){
             const value = supplementalValues[label] || '';
+            if(Array.isArray(value)){
+              return '<span class="has-battery-values"><b>' + escapeHtml(label) + '</b><i>' + value.map(escapeHtml).join('<br>') + '</i></span>';
+            }
             return '<span><b>' + escapeHtml(label) + '</b><i>' + escapeHtml(value) + '</i></span>';
           }).join('') +
         '</div>'
@@ -2010,10 +2014,13 @@ const DATA = [
     records.forEach(function(record){ buckets[printBucketFor(record)].push(record); });
     const hasSelectedBattery = records.some(function(record){ return normalize(record.item.group) === 'battery'; });
     const kit = printKitQuantities(records);
+    const batteryValues = Object.entries(kit.batteries).filter(function(entry){ return entry[1] > 0; }).map(function(entry){
+      return entry[0] + ' ' + entry[1] + ' ก้อน' + (hasSelectedBattery ? ' (ชุดกล้อง)' : '');
+    });
     const cameraSupplementalValues = {};
     if(kit.cameraCards) cameraSupplementalValues.Card = 'Memory Card 64GB × ' + kit.cameraCards + ' ใบ';
     if(kit.chargers) cameraSupplementalValues['แท่นชาร์จ'] = kit.chargers + ' แท่น';
-    if(kit.batteries) cameraSupplementalValues['แบตเตอรี่'] = kit.batteries + ' ก้อน' + (hasSelectedBattery ? ' (ชุดกล้อง)' : '');
+    if(batteryValues.length) cameraSupplementalValues['แบตเตอรี่'] = batteryValues;
     elements.printDocument.innerHTML =
       '<header class="equipment-service-form-header">' +
         '<img class="equipment-service-form-logo" src="assets/images/dpu-ca-form-logo.png" alt="DPU CA">' +
@@ -2049,7 +2056,7 @@ const DATA = [
       '</section>' +
       '<section class="equipment-service-section equipment-service-equipment">' +
         '<div class="equipment-service-equipment-head"><h5>8. Equipment Service</h5><strong>จำนวนรวม ' + totalQuantity() + ' ชิ้น</strong></div>' +
-        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true,hideBatteryField:hasSelectedBattery && !kit.batteries,supplementalValues:cameraSupplementalValues}) +
+        renderPrintEquipmentList('อุปกรณ์บันทึกภาพ', buckets.visual, {cameraFields:true,hideBatteryField:hasSelectedBattery && !batteryValues.length,supplementalValues:cameraSupplementalValues}) +
         renderPrintEquipmentList('อุปกรณ์บันทึกเสียง', buckets.sound, {alwaysOther:true,audioCardQuantity:kit.audioCards}) +
         renderPrintEquipmentList('อุปกรณ์จัดแสง', buckets.lighting, {alwaysOther:true}) +
       '</section>' +
