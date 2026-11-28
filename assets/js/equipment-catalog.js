@@ -1000,6 +1000,12 @@ const DATA = [
             <li>เครื่องรับบอดี้แพ็ก EK 100 G4 ใช้เอาต์พุตเสียง 3.5mm แบบล็อกเกลียว — เลือกสายต่อให้ตรงกับอินพุตของกล้องหรือเครื่องบันทึก</li>
           </ul>
           <div class="im-spec-source">อ้างอิงข้อมูลจากเว็บไซต์ทางการ Sennheiser</div>`},
+        {b:'Sennheiser', m:'Plug on', image:'assets/images/equipment/sennheiser-plug-on-transparent.png', imageAlt:'ตัวส่งสัญญาณไร้สาย Sennheiser Plug on', role:'transmitter', connector:'XLR (Input)',
+          desc:`<ul class="im-spec-list">
+            <li>ตัวส่งสัญญาณไร้สายแบบเสียบเข้ากับไมโครโฟน XLR โดยตรง เช่น ไมค์ไดนามิกสำหรับงานสัมภาษณ์</li>
+            <li>ต้องใช้คู่กับเครื่องรับไร้สายที่รองรับและอยู่ในย่านความถี่เดียวกัน</li>
+          </ul>
+          <div class="im-spec-source">อ้างอิงข้อมูลจากเว็บไซต์ทางการ Sennheiser</div>`},
       ]},
       { name:'Boom Setup', items:[
         {b:'RØDE', m:'NTG3 (Shotgun Mic)', role:'source', channels:1, connector:'xlr',
